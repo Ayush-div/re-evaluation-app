@@ -3,8 +3,29 @@ import FluentEyeIcon from '../../public/icons/eye';
 import FacebookIcon from '../../public/icons/facebook_ic';
 import GoogleIcon from '../../public/icons/google_ic';
 import AppleIcon from '../../public/icons/cib_apple';
+import { Link } from 'react-router-dom';
+import {  useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const LoginCard = () => {
+    const login = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            try {
+                const userInfo = await axios.get(
+                    'https://www.googleapis.com/oauth2/v3/userinfo',
+                    {
+                        headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                    }
+                );
+                console.log('Full Google Response:', userInfo.data);
+                // userInfo.data will now contain: email, name, picture, given_name, family_name, etc.
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        onError: (error) => console.error('Login Failed:', error),
+        scope: 'email profile', // Add this line to request email access
+    });
     return (
         <div className=" h-full flex justify-center font-['Urbanist']">
             <div className='flex flex-col gap-'>
@@ -76,7 +97,7 @@ const LoginCard = () => {
                             </div>
 
                             <div className="w-[70px] h-[46px] rounded-[8px] flex border items-center justify-center transition-all duration-300 hover:bg-red-50 hover:border-red-400 cursor-pointer hover:scale-105">
-                                <div className="relative w-[24px] h-[24px]">
+                                <div className="relative w-[24px] h-[24px] " onClick={login}>
                                     <GoogleIcon className="transition-colors duration-300 hover:text-red-500" />
                                 </div>
                             </div>
@@ -87,7 +108,9 @@ const LoginCard = () => {
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Don't have an account? </div>
-                            <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Register Now</div>
+                            <Link to='/register'>
+                                <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Register Now</div>
+                            </Link>
                         </div>
                     </div>
 

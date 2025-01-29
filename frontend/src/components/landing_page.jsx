@@ -71,24 +71,24 @@ const LandingPage = () => {
               <div
                 key={index}
                 className="group bg-white p-8 rounded-[16px] border border-[#DADADA] 
-                       cursor-pointer select-none
-                       transition-all duration-300 
-                       hover:shadow-lg hover:border-[#000000] hover:scale-[1.02]
-                       active:scale-[0.98]"
+                        cursor-pointer select-none
+                        transition-all duration-300 
+                        hover:shadow-lg hover:border-[#000000] hover:scale-[1.02]
+                        active:scale-[0.98]"
                 onClick={() => console.log(`Selected role: ${role.title}`)}
               >
                 <div className="flex flex-col items-center text-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-[#F7F8F9] flex items-center justify-center 
-                             group-hover:bg-black group-hover:text-white transition-all duration-300 hover:scale-[1.1]">
+                              group-hover:bg-black group-hover:text-white transition-all duration-300 hover:scale-[1.1]">
                     {role.icon}
                   </div>
                   <h3 className="text-xl font-bold text-[#1E232C]">{role.title}</h3>
                   <p className="text-[#6A707C] text-[14px] h-12">{role.description}</p>
                   <div className="mt-4">
                     <button className="px-6 py-2 bg-black text-white rounded-[8px] 
-                                 transition-all duration-300
-                                 hover:bg-gray-800 hover:scale-[1.02]
-                                 active:scale-[0.98] ">
+                                  transition-all duration-300
+                                  hover:bg-gray-800 hover:scale-[1.02]
+                                  active:scale-[0.98] ">
                       Continue as {role.title}
                     </button>
                   </div>
@@ -104,8 +104,8 @@ const LandingPage = () => {
             Need help? Contact our support team
           </p>
           <button className="mt-4 px-6 py-2 border border-[#DADADA] rounded-[8px] text-[#1E232C]
-                         transition-all duration-300
-                         hover:border-black hover:shadow-md">
+                          transition-all duration-300
+                          hover:border-black hover:shadow-md">
             Contact Support
           </button>
         </div>
