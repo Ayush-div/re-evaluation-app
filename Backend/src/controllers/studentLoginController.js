@@ -1,8 +1,9 @@
 const { loginStudent } = require("../services/studentLoginService");
 
 async function LoginStudent(req,res){
-    console.log(req.body);
+    console.log(req);
     try{
+        console.log(req)
         const response = await loginStudent(req.body);
         res.cookie('authToken', response, {
             httpOnly: true,

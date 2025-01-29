@@ -1,11 +1,12 @@
 const {findStudent, createStudent} = require("../repositories/studentRepository")
 
         async function registerStudent(studentDetails) {
+            console.log("register service : ",studentDetails)
             const student = await findStudent({
-                rollNumber : studentDetails.rollno,
+                rollNumber : studentDetails.rollNumber,
                 mobileNumber: studentDetails.mobileNumber
             });
-
+            
             // 1.  we need to check if the student with this rollNumber or mobileNumber existes or not
             if(!student){ // we found user
                 throw {reason : "Please check your mobileNumber or RollNumber ", statuscode : 400}
@@ -14,7 +15,7 @@ const {findStudent, createStudent} = require("../repositories/studentRepository"
             // 2. if not then create the user into the database
             const newStudent = await createStudent({
                 mobileNumber: studentDetails.mobileNumber,
-                rollNumber: studentDetails.rollno,
+                rollNumber: studentDetails.rollNumber,
                 studentName: studentDetails.studentName,
                 email: studentDetails.email,
                 password: studentDetails.password

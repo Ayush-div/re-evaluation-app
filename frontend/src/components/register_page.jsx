@@ -29,7 +29,7 @@ export default function RegisterCard() {
   });
 
   const [formData, setFormData] = useState({
-    rollno: '',
+    rollNumber: '',
     mobileNumber: '',
     studentName: '',
     email: '',
@@ -47,12 +47,12 @@ export default function RegisterCard() {
     try {
       const response = await axios.post('/api/students/register', {
         mobileNumber: formData.mobileNumber,
-        rollno: formData.rollno,
+        rollNumber: formData.rollNumber,
         studentName: formData.studentName,
         email: formData.email,
         password: formData.password,
       });
-
+      console.log("Response is : ",response);
       if (response.data.success) {
         navigate('/register-success');
       }
@@ -73,8 +73,8 @@ export default function RegisterCard() {
 
           <input
             type="text"
-            name="rollno"
-            value={formData.rollno}
+            name="rollNumber"
+            value={formData.rollNumber}
             onChange={handleChange}
             placeholder="Enter Your Roll Number"
             className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 

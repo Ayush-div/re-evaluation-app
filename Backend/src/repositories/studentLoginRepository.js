@@ -3,6 +3,8 @@ const Student = require("../schema/studentSchema");
 
     async function findStudent({rollNumber, mobileNumber}){
         try{
+            console.log("roll is : ",rollNumber)
+            console.log("phone number is : ", mobileNumber)
             const response = await Student.findOne({rollNumber, mobileNumber});
             console.log(response)
             return response;

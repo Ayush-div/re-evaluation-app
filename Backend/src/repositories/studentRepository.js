@@ -12,7 +12,6 @@ const adminStudent = require('../schema/addStudentAdminSchema')
     }
     async function createStudent(studentDetails){
         try{
-            console.log(studentDetails);
             const response = await Student.create(studentDetails);
             return response
         } catch(error) {

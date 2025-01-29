@@ -59,13 +59,14 @@ import RegisterSuccess from './components/RegisterSuccess.jsx'
 import RegisterCard from './components/register_page.jsx'
 import LoginCard from './components/login_page.jsx'
 import { googleLogout, GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import ForgotPassword from './components/forgot_password.jsx'
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <BrowserRouter>
+      {/* <BrowserRouter>
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/admin' element={<AdminDashboard />} />
@@ -85,7 +86,8 @@ function App() {
           <Route path='/login' element={<LoginCard />} />
           <Route path='/register-success' element={<RegisterSuccess />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
+      <ForgotPassword/>
     </GoogleOAuthProvider>
   );
 }

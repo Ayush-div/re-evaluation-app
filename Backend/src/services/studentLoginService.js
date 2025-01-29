@@ -7,11 +7,12 @@ const jwt = require('jsonwebtoken');
         async function loginStudent(studentDetails) {
             const plainPassword = studentDetails.password;
             const mobileNumber = studentDetails.mobileNumber;
-            const rollNumber = studentDetails.rollno;
+            const rollNumber = studentDetails.rollNumber;
             // check if there is registered student with the given email or not 
+
             const student = await findStudent({rollNumber,mobileNumber});
             console.log("Service login : ",student)
-            
+            console.log(studentDetails.rollNumber)
             // 1.  we need to check if the student with given details existes or not
             if(!student){ // we found student
                 throw {reason : "student does not exists", statuscode : 400}

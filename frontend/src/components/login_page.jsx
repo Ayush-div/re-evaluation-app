@@ -27,7 +27,7 @@ const LoginCard = () => {
         scope: 'email profile', // Add this line to request email access
     });
     const [formData, setFormData] = useState({
-        rollno: '',
+        rollNumber: '',
         mobileNumber: '',
         password: '',
     });
@@ -45,7 +45,7 @@ const LoginCard = () => {
         try {
             const response = await axios.post('/api/students/login', {
                 mobileNumber: formData.mobileNumber,
-                rollno: formData.rollno,
+                rollNumber: formData.rollNumber,
                 password: formData.password,
             });
             console.log('Login successful:', response.data);
@@ -64,8 +64,8 @@ const LoginCard = () => {
                 <div className='flex justify-center mt-[57px]'>
                     <input
                         type="text"
-                        name="rollno"
-                        value={formData.rollno}
+                        name="rollNumber"
+                        value={formData.rollNumber}
                         onChange={handleChange}
                         placeholder='Enter Your Roll Number'
                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
