@@ -107,9 +107,11 @@ const LoginCard = () => {
                     <div className="absolute inset-y-0 right-10 flex items-center pr-12">
                         <FluentEyeIcon />
                     </div>
+                    <Link to='/forgot-password'>
                     <div className='absolute left-[300px] top-[55px] text-[#6A707C] text-[14px] cursor-pointer'>
                         Forgot Password?
                     </div>
+                    </Link>
                 </div>
 
                 <div className='flex justify-center mt-[55px]'>

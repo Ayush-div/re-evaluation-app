@@ -57,7 +57,7 @@ function App() {
           <Route path='/reset-password' element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
-
+      {/* <ResetPassword/> */}
       {/* <OtpCard/> */}
     </GoogleOAuthProvider>
   );
