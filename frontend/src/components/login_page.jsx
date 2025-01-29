@@ -3,11 +3,12 @@ import FluentEyeIcon from '../../public/icons/eye';
 import FacebookIcon from '../../public/icons/facebook_ic';
 import GoogleIcon from '../../public/icons/google_ic';
 import AppleIcon from '../../public/icons/cib_apple';
-import { Link } from 'react-router-dom';
 import {  useGoogleLogin } from '@react-oauth/google';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginCard = () => {
+    const navigate = useNavigate();
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -49,6 +50,9 @@ const LoginCard = () => {
                 password: formData.password,
             });
             console.log('Login successful:', response.data);
+            if (response.data.message==='Logged In successfully') {
+                navigate('/student');
+              }
         } catch (error) {
             console.error('Error logging in:', error);
         }

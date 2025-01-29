@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import axios from 'axios';
 export default function VerifyOtp() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const inputRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
+  console.log("email is dash : ",email)
 
   const handleChange = (index, value) => {
     if (isNaN(value)) return;
@@ -26,11 +27,24 @@ export default function VerifyOtp() {
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     const otpValue = otp.join('');
-    console.log('Verifying OTP:', otpValue);
-    // Add your verification logic here
-    navigate('/reset-password', { state: { email } });
+    console.log('Verifying OTP:', otpValue, email);
+    
+    try {
+      const response = await axios.post('/api/students/verifyOtp', {
+          otp: otpValue,
+          email: email,
+      });
+      console.log('verified successfully:', response.data);
+      if (response.data.message==='OTP verified successfully') {
+        navigate('/reset-password', { state: { email } });
+      }
+  } catch (error) {
+      console.error('Error in verifying otp :', error);
+  }
+    
+    
   };
 
   return (

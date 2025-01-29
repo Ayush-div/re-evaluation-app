@@ -52,8 +52,8 @@ export default function RegisterCard() {
         email: formData.email,
         password: formData.password,
       });
-      console.log("Response is : ",response);
-      if (response.data.success) {
+      console.log("Response is : ",response.data.message);
+      if (response.data.message==='successfully resistered the user') {
         navigate('/register-success');
       }
 
@@ -171,7 +171,9 @@ export default function RegisterCard() {
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Already have an account? </div>
-                            <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Login Now</div>
+                            <Link to='/login'>
+                                <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Login Now</div>   
+                            </Link>
                         </div>
                     </div>
             </form>

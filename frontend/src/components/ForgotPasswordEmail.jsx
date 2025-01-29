@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function ForgotPasswordEmail() {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Add logic to send OTP to the email
-    navigate('/verify-otp', { state: { email } });
+    try {
+      const response = await axios.post('/api/students/createOtp', {
+          email: email,
+      });
+      console.log('created successfully:', response.data);
+      if (response.data.message==='Otp sent successfully') {
+        navigate('/verify-otp', { state: { email } });
+      }
+  } catch (error) {
+      console.error('Error in verifying otp :', error);
+  }
+    
   };
 
   return (
