@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const QuestionPaperViewer = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
+  // const [selectedYear, setSelectedYear] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data
@@ -12,13 +12,12 @@ const QuestionPaperViewer = () => {
     { id: 3, name: "Chemistry" }
   ];
 
-  const years = ["2023", "2022", "2021"];
+  // const years = ["2023", "2022", "2021"];
 
   const papers = [
     {
       id: 1,
       subject: "Mathematics",
-      year: "2023",
       exam: "Mid Semester",
       date: "2023-11-15",
       resources: [
@@ -83,7 +82,6 @@ const QuestionPaperViewer = () => {
 
   const filteredPapers = papers.filter(paper => 
     (!selectedSubject || paper.subject === selectedSubject) &&
-    (!selectedYear || paper.year === selectedYear) &&
     (!searchQuery || 
       paper.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
       paper.exam.toLowerCase().includes(searchQuery.toLowerCase())
@@ -96,7 +94,7 @@ const QuestionPaperViewer = () => {
         {/* Header Section */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#1E232C]">Question Papers & Resources</h1>
+            <h1 className="text-2xl font-bold text-[#1E232C]">Question Papers & Answer Keys</h1>
             <p className="text-[#6A707C] mt-1">Download past papers and study materials</p>
           </div>
 
@@ -137,9 +135,9 @@ const QuestionPaperViewer = () => {
               </div>
             </div>
             <div className="flex-1">
-              <label className="block text-[#6A707C] text-sm mb-2">Year</label>
+              {/* <label className="block text-[#6A707C] text-sm mb-2">Year</label> */}
               <div className="flex flex-wrap gap-2">
-                {years.map(year => (
+                {/* {years.map(year => (
                   <button
                     key={year}
                     onClick={() => setSelectedYear(selectedYear === year ? null : year)}
@@ -150,7 +148,7 @@ const QuestionPaperViewer = () => {
                   >
                     {year}
                   </button>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
@@ -163,12 +161,12 @@ const QuestionPaperViewer = () => {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-xl font-bold text-[#1E232C]">{paper.subject}</h2>
-                  <p className="text-[#6A707C]">{paper.exam} • {paper.year}</p>
+                  <p className="text-[#6A707C]">{paper.exam} </p>
                 </div>
-                <div className="text-right text-[#6A707C] text-sm">
+                {/* <div className="text-right text-[#6A707C] text-sm">
                   <p>Date: {paper.date}</p>
                   <p>Duration: {paper.metadata.duration}</p>
-                </div>
+                </div> */}
               </div>
 
               {/* Resources - Now grouped by category */}
@@ -208,52 +206,11 @@ const QuestionPaperViewer = () => {
                 </div>
 
                 {/* Study Materials */}
-                <div>
-                  <h3 className="text-[#1E232C] font-medium mb-3">Additional Study Materials</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {paper.resources
-                      .filter(resource => resource.category === 'study')
-                      .map(resource => (
-                        <div
-                          key={resource.name}
-                          className="flex items-center justify-between p-4 rounded-[8px] border border-[#DADADA] hover:border-black transition-all duration-300"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-[#F7F8F9] flex items-center justify-center">
-                              <svg className="w-5 h-5 text-[#1E232C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                              </svg>
-                            </div>
-                            <div>
-                              <p className="font-medium text-[#1E232C]">{resource.name}</p>
-                              <p className="text-xs text-[#6A707C]">{resource.size} • {resource.downloads} downloads</p>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleDownload(resource)}
-                            className={`px-4 py-2 rounded-[8px] text-sm font-medium transition-all duration-300
-                              ${resource.isPremium 
-                                ? 'bg-[#F7F8F9] text-[#1E232C] hover:bg-gray-100'
-                                : 'bg-black text-white hover:bg-gray-900'}`}
-                          >
-                            {resource.isPremium ? 'Premium' : 'Download'}
-                          </button>
-                        </div>
-                      ))}
-                  </div>
-                </div>
+               
               </div>
 
               {/* Metadata */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Object.entries(paper.metadata).map(([key, value]) => (
-                  <div key={key} className="bg-[#F7F8F9] p-3 rounded-[8px]">
-                    <p className="text-[#6A707C] text-sm capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                    <p className="text-[#1E232C] font-bold">{value}</p>
-                  </div>
-                ))}
-              </div>
+           
             </div>
           ))}
         </div>

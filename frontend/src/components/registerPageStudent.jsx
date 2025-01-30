@@ -6,7 +6,7 @@ import AppleIcon from '../../public/icons/cib_apple';
 import axios from 'axios';
 import { useGoogleLogin } from '@react-oauth/google';
 
-export default function RegisterCard() {
+export default function RegisterCardStudent() {
   const navigate = useNavigate();
   
   const login = useGoogleLogin({
@@ -171,7 +171,7 @@ export default function RegisterCard() {
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Already have an account? </div>
-                            <Link to='/login'>
+                            <Link to='/student/login'>
                                 <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Login Now</div>   
                             </Link>
                         </div>

@@ -55,6 +55,11 @@ const AdminDashboard = () => {
               Add Teacher
             </button>
             </Link>
+            <Link to='/admin/add-student'>
+            <button className="cursor-pointer px-4 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all">
+              Add Student
+            </button>
+            </Link>
             <Link to='/admin/generate-report'>
               <button className="cursor-pointer px-4 py-2 border border-[#DADADA] rounded-[8px] hover:border-black transition-all">
                 Generate Report
