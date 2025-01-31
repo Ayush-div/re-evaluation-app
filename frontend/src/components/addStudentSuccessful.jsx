@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const RegisterSuccess = () => {
+const AddedStudentSuccess = () => {
   const navigate = useNavigate();
 
   return (
@@ -42,7 +42,7 @@ const RegisterSuccess = () => {
           transition={{ delay: 0.3 }}
           className="text-[30px] font-bold text-[#1E232C] mb-3 text-center"
         >
-          Registration Successful!
+          Added Successfully!
         </motion.h2>
         
         <motion.p 
@@ -51,7 +51,7 @@ const RegisterSuccess = () => {
           transition={{ delay: 0.4 }}
           className="text-[#6A707C] text-center mb-8"
         >
-          Your account has been created successfully. Please login to continue.
+          student has been added successfully.
         </motion.p>
 
         {/* Login Button */}
@@ -61,17 +61,17 @@ const RegisterSuccess = () => {
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/student/login')}
+          onClick={() => navigate('/admin')}
           className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
                     transition-all duration-300 
                     hover:bg-gray-800 hover:shadow-lg
                     focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
         >
-          Go to Login
+          Go to Admin page
         </motion.button>
       </motion.div>
     </div>
   );
 };
 
-export default RegisterSuccess;
+export default AddedStudentSuccess;

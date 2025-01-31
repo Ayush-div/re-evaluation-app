@@ -63,9 +63,9 @@ const SearchOrganization = () => {
 
         if (orgId === 'iiitpune') {
             if (hasAccount) {
-                navigate('/login');
+                navigate('/student/login');
             } else {
-                navigate('/register', {
+                navigate('/student/register', {
                     state: {
                         organization: 'Indian Institute of Information Technology, Pune',
                         orgId: 'iiitpune'

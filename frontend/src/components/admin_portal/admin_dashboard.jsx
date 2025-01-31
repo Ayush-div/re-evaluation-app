@@ -10,10 +10,10 @@ const AdminDashboard = () => {
   }
 
   const ArrowIcon = () => (
-    <svg 
-      className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors duration-300" 
-      fill="none" 
-      stroke="currentColor" 
+    <svg
+      className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors duration-300"
+      fill="none"
+      stroke="currentColor"
       viewBox="0 0 24 24"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -47,14 +47,9 @@ const AdminDashboard = () => {
             </h1>
             <p className="text-[#6A707C] mt-2">
               Here's your organization's overview
-            </p> 
+            </p>
           </div>
           <div className="flex gap-4 cursor-pointer">
-            <Link to='/admin/add-teacher'>
-            <button className="cursor-pointer px-4 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all">
-              Add Teacher
-            </button>
-            </Link>
             <Link to='/admin/generate-report'>
               <button className="cursor-pointer px-4 py-2 border border-[#DADADA] rounded-[8px] hover:border-black transition-all">
                 Generate Report
@@ -85,35 +80,40 @@ const AdminDashboard = () => {
 
         {/* Quick Access Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {/* Verification Tasks */}
-          <div className="group bg-white rounded-[12px] border border-[#DADADA] p-6 hover:shadow-md transition-all cursor-pointer">
+          {/* Quick Actions Card - Replacing Verification Tasks */}
+          <div className="group bg-white rounded-[12px] border border-[#DADADA] p-6 hover:shadow-md transition-all">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-[#1E232C]">Pending Verifications</h2>
+              <h2 className="text-lg font-bold text-[#1E232C]">Quick Actions</h2>
               <ArrowIcon />
             </div>
             <div className="space-y-3">
-              <div className="p-3 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium text-[#1E232C]">New Teacher Registration</p>
-                    <p className="text-sm text-[#6A707C]">Mathematics Department</p>
+              <Link to='/admin/add-teacher'>
+                <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group ">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-[#1E232C] group-hover:text-black">Add New Teacher</p>
+                      <p className="text-sm text-[#6A707C] ">Register teacher account</p>
+                    </div>
+                    <svg className="w-6 h-6 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
                   </div>
-                  <button className="text-xs px-3 py-1 bg-black text-white rounded-full hover:bg-gray-800">
-                    Verify
-                  </button>
                 </div>
-              </div>
-              <div className="p-3 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium text-[#1E232C]">Student Documents</p>
-                    <p className="text-sm text-[#6A707C]">5 pending requests</p>
+              </Link>
+
+              <Link to='/admin/add-student'>
+                <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group mt-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-[#1E232C] group-hover:text-black">Add New Student</p>
+                      <p className="text-sm text-[#6A707C]">Register student account</p>
+                    </div>
+                    <svg className="w-6 h-6 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
                   </div>
-                  <button className="text-xs px-3 py-1 bg-black text-white rounded-full hover:bg-gray-800">
-                    Review
-                  </button>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -128,14 +128,14 @@ const AdminDashboard = () => {
                 <p className="text-[#6A707C] text-sm">Today's Collections</p>
                 <p className="text-xl font-bold text-[#1E232C]">₹12,450</p>
                 <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{width: '70%'}}></div>
+                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '70%' }}></div>
                 </div>
               </div>
               <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
                 <p className="text-[#6A707C] text-sm">Pending Payments</p>
                 <p className="text-xl font-bold text-orange-500">₹5,240</p>
                 <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div className="bg-orange-500 h-2 rounded-full" style={{width: '30%'}}></div>
+                  <div className="bg-orange-500 h-2 rounded-full" style={{ width: '30%' }}></div>
                 </div>
               </div>
             </div>

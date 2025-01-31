@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import VideoModal from './VideoModal';
+import VideoModal from '../VideoModal';
 
 // Sample subjects data with papers, questions, and video solutions
 const subjects = [

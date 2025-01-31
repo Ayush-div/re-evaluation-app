@@ -1,6 +1,6 @@
 import React from 'react'
-
-const AddTeacher = () => {
+import { Link } from 'react-router-dom'
+const RegisterCardTeacher = () => {
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
       {/* Navbar */}
@@ -84,32 +84,25 @@ const AddTeacher = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[#6A707C] text-sm mb-2">Department</label>
-                <select
+                <input
                   className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                            transition-all duration-300 
                            hover:shadow-md hover:border-gray-400 
                            focus:outline-none focus:border-[#000000] focus:shadow-lg"
-                >
-                  <option value="">Select department</option>
-                  <option value="mathematics">Mathematics</option>
-                  <option value="physics">Physics</option>
-                  <option value="chemistry">Chemistry</option>
-                  <option value="computer-science">Computer Science</option>
-                </select>
+                  placeholder="Enter Department"
+                />
+                
               </div>
               <div>
                 <label className="block text-[#6A707C] text-sm mb-2">Role</label>
-                <select
+                <input
                   className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                            transition-all duration-300 
                            hover:shadow-md hover:border-gray-400 
                            focus:outline-none focus:border-[#000000] focus:shadow-lg"
-                >
-                  <option value="">Select role</option>
-                  <option value="professor">Professor</option>
-                  <option value="assistant-professor">Assistant Professor</option>
-                  <option value="associate-professor">Associate Professor</option>
-                </select>
+                  placeholder="Enter Role"
+                />
+                
               </div>
             </div>
 
@@ -156,15 +149,18 @@ const AddTeacher = () => {
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="px-6 py-3 bg-black text-white rounded-[8px] 
-                         transition-all duration-300
-                         hover:bg-gray-800 hover:scale-[1.02]
-                         active:scale-[0.98]"
-              >
-                Add Teacher
-              </button>
+              <Link to='/admin/added-teacher-success'>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-black text-white rounded-[8px] 
+                          transition-all duration-300
+                          hover:bg-gray-800 hover:scale-[1.02]
+                          active:scale-[0.98]"
+                >
+                  Add Teacher
+                </button>
+              </Link>
+              
             </div>
           </form>
         </div>
@@ -173,4 +169,4 @@ const AddTeacher = () => {
   )
 }
 
-export default AddTeacher
+export default RegisterCardTeacher
