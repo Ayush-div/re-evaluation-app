@@ -1,6 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react';
+import ReviewModal from './ReviewModal';
 
-const TeacherDashboard = () => {
+function TeacherDashboard() {
+  const [isDoubtModalOpen, setIsDoubtModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedDoubt, setSelectedDoubt] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [reviewData, setReviewData] = useState({
+    marks: '',
+    comments: '',
+    status: 'pending'
+  });
+
+  // Sample data
+  const doubts = [
+    {
+      id: 1,
+      questionNumber: 5,
+      subject: 'Mathematics',
+      topic: 'Integration by Parts',
+      studentName: 'John Doe',
+      rollNumber: '2021CS01',
+      doubtCount: 8,
+      status: 'pending',
+      description: 'I have a doubt regarding the integration method used in part (b)',
+      attachments: ['doubt1.jpg', 'workings.pdf'],
+      timestamp: '2024-01-20T10:30:00',
+    },
+    // ... add more sample doubts
+  ];
+
   // Sample data for statistics
   const stats = {
     pendingReviews: 15,
@@ -9,14 +39,36 @@ const TeacherDashboard = () => {
     questionsWithDoubts: 23
   }
 
+  const handleViewDoubt = (doubt) => {
+    setSelectedDoubt(doubt);
+    setIsReviewModalOpen(true);
+    // Reset review data
+    setReviewData({
+      marks: '',
+      comments: '',
+      status: 'pending'
+    });
+  };
+
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
+      {/* Enhanced Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
-            <div className="text-xl font-bold text-[#1E232C]">
-              Teacher Dashboard
+            <div className="flex items-center gap-8">
+              <div className="text-xl font-bold text-[#1E232C]">
+                Teacher Dashboard
+              </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search doubts, students..."
+                  className="w-64 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-black"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
             <div className="flex items-center space-x-6">
               <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Profile</button>
@@ -38,7 +90,7 @@ const TeacherDashboard = () => {
           </p>
         </div>
 
-        {/* Stats Section */}
+        {/* Enhanced Stats Section with Icons and Trends */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-[12px] border border-[#DADADA] hover:shadow-md transition-all">
             <p className="text-[#6A707C] text-sm">Pending Reviews</p>
@@ -58,37 +110,144 @@ const TeacherDashboard = () => {
           </div>
         </div>
 
-        {/* Question Analysis Section */}
+        {/* Enhanced Question Analysis Section */}
         <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
-          <h2 className="text-lg font-bold text-[#1E232C] mb-4">Questions Requiring Attention</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-bold text-[#1E232C]">Questions Requiring Attention</h2>
+            <div className="flex gap-3">
+              <select 
+                className="px-3 py-1 border rounded-md focus:outline-none focus:border-black"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+
           <div className="space-y-4">
-            <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-[#1E232C]">Question #5 - Mathematics</h3>
-                  <p className="text-[#6A707C] text-sm">Integration by Parts</p>
+            {doubts.map((doubt) => (
+              <div key={doubt.id} className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h3 className="font-semibold text-[#1E232C]">
+                      Question #{doubt.questionNumber} - {doubt.subject}
+                    </h3>
+                    <p className="text-[#6A707C] text-sm">{doubt.topic}</p>
+                    <p className="text-[#6A707C] text-sm mt-1">
+                      Student: {doubt.studentName} ({doubt.rollNumber})
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
+                      {doubt.doubtCount} doubts
+                    </span>
+                    <span className="text-[#6A707C] text-xs">
+                      {new Date(doubt.timestamp).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-                <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
-                  8 doubts
-                </span>
+                <div className="flex gap-2 mt-3">
+                  <button 
+                    onClick={() => handleViewDoubt(doubt)}
+                    className="text-sm px-4 py-2 bg-black text-white rounded-[6px] hover:bg-gray-800"
+                  >
+                    View Details
+                  </button>
+                  <button 
+                    className="text-sm px-4 py-2 border border-[#DADADA] rounded-[6px] hover:border-black"
+                  >
+                    Mark as Resolved
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-2 mt-2">
-                <button 
-                  onClick={() => console.log('Review Paper clicked')}
-                  className="text-sm px-3 py-1 bg-black text-white rounded-[6px] hover:bg-gray-800"
-                >
-                  Review Paper
-                </button>
-                <button 
-                  onClick={() => console.log('View Doubts clicked')}
-                  className="text-sm px-3 py-1 border border-[#DADADA] rounded-[6px] hover:border-black"
-                >
-                  View Doubts
-                </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Doubt Detail Modal */}
+        {isDoubtModalOpen && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="fixed inset-0 bg-black opacity-30" onClick={() => setIsDoubtModalOpen(false)}></div>
+            <div className="flex items-center justify-center min-h-screen px-4">
+              <div className="relative bg-white rounded-lg max-w-3xl w-full mx-4 p-6 z-50">
+                {selectedDoubt && (
+                  <>
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-[#1E232C]">
+                          Doubt Details
+                        </h3>
+                        <p className="text-[#6A707C] mt-1">
+                          Question #{selectedDoubt.questionNumber} - {selectedDoubt.subject}
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => setIsDoubtModalOpen(false)}
+                        className="text-gray-500 hover:text-black"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-50 p-3 rounded">
+                          <p className="text-sm text-gray-600">Student Name</p>
+                          <p className="font-medium">{selectedDoubt.studentName}</p>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded">
+                          <p className="text-sm text-gray-600">Roll Number</p>
+                          <p className="font-medium">{selectedDoubt.rollNumber}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-50 p-3 rounded">
+                        <p className="text-sm text-gray-600">Doubt Description</p>
+                        <p className="mt-1">{selectedDoubt.description}</p>
+                      </div>
+
+                      <div className="bg-gray-50 p-3 rounded">
+                        <p className="text-sm text-gray-600 mb-2">Attachments</p>
+                        <div className="flex gap-2">
+                          {selectedDoubt.attachments.map((file, index) => (
+                            <button
+                              key={index}
+                              className="px-3 py-1 text-sm border rounded-md hover:border-black"
+                            >
+                              View {file}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 mt-6">
+                        <button 
+                          className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
+                          onClick={() => {
+                            setIsDoubtModalOpen(false);
+                            setIsReviewModalOpen(true);
+                          }}
+                        >
+                          Review Paper
+                        </button>
+                        <button 
+                          className="px-4 py-2 border border-gray-300 rounded-md hover:border-black"
+                          onClick={() => setIsDoubtModalOpen(false)}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Video Upload Section */}
         <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
@@ -191,8 +350,15 @@ const TeacherDashboard = () => {
           </div>
         </div>
       </div>
+      <ReviewModal 
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        selectedDoubt={selectedDoubt}
+        reviewData={reviewData}
+        setReviewData={setReviewData}
+      />
     </div>
-  )
+  );
 }
 
-export default TeacherDashboard
+export default TeacherDashboard;

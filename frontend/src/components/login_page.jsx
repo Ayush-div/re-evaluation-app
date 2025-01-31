@@ -3,12 +3,16 @@ import FluentEyeIcon from '../../public/icons/eye';
 import FacebookIcon from '../../public/icons/facebook_ic';
 import GoogleIcon from '../../public/icons/google_ic';
 import AppleIcon from '../../public/icons/cib_apple';
-import {  useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Link, useNavigate } from 'react-router-dom';
+import FluentEyeClosedIcon from '../../public/icons/eye-closed';
+
 import axios from 'axios';
 
 const LoginCard = () => {
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -41,6 +45,11 @@ const LoginCard = () => {
         }));
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -50,9 +59,9 @@ const LoginCard = () => {
                 password: formData.password,
             });
             console.log('Login successful:', response.data);
-            if (response.data.message==='Logged In successfully') {
+            if (response.data.message === 'Logged In successfully') {
                 navigate('/student');
-              }
+            }
         } catch (error) {
             console.error('Error logging in:', error);
         }
@@ -80,7 +89,7 @@ const LoginCard = () => {
                     />
                 </div>
 
-                <div className='flex justify-center mt-[15px]'>
+                <div className='flex justify-center '>
                     <input
                         type="text"
                         name="mobileNumber"
@@ -95,9 +104,9 @@ const LoginCard = () => {
                     />
                 </div>
 
-                <div className='flex justify-center mt-[15px] relative'>
+                <div className='flex justify-center relative'>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
@@ -108,17 +117,22 @@ const LoginCard = () => {
                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
                         placeholder:text-gray-400"
                     />
-                    <div className="absolute inset-y-0 right-10 flex items-center pr-12">
-                        <FluentEyeIcon />
-                    </div>
+                    <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute right-33 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-70 transition-opacity"
+                    >
+                        {showPassword ? <FluentEyeIcon /> : <FluentEyeClosedIcon />}
+
+                    </button>
                     <Link to='/forgot-password'>
-                    <div className='absolute left-[300px] top-[55px] text-[#6A707C] text-[14px] cursor-pointer'>
-                        Forgot Password?
-                    </div>
+                        <div className='absolute left-[300px] top-[55px] text-[#6A707C] text-[14px] cursor-pointer'>
+                            Forgot Password?
+                        </div>
                     </Link>
                 </div>
 
-                <div className='flex justify-center mt-[55px]'>
+                <div className='flex justify-center mt-[35px]'>
                     <button
                         type="submit"
                         className="w-[300px] h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
@@ -138,20 +152,16 @@ const LoginCard = () => {
                         <div className="flex-1 h-[1px] bg-[#E8ECF4]"></div>
                     </div>
                     <div className='flex flex-col'>
-                        <div className="flex justify-center gap-8 mt-4">
-                            <div className="w-[70px] h-[46px] rounded-[8px] flex border items-center justify-center transition-all duration-300 hover:bg-blue-100 hover:border-blue-400 cursor-pointer hover:scale-105">
-                                <FacebookIcon className="transition-colors duration-300 hover:text-blue-600" />
-                            </div>
+                        <div className="flex justify-center gap-4 mt-4">
 
-                            <div className="w-[70px] h-[46px] rounded-[8px] flex border items-center justify-center transition-all duration-300 hover:bg-red-50 hover:border-red-400 cursor-pointer hover:scale-105">
-                                <div className="relative w-[24px] h-[24px] " onClick={login}>
+
+                            <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around items-center transition-all duration-300 hover:border-black hover:bg-[#F7F8F9] cursor-pointer hover:scale-105">
+                                <div className="relative w-[24px] h-[24px] flex " onClick={login}>
                                     <GoogleIcon className="transition-colors duration-300 hover:text-red-500" />
                                 </div>
+                                Login With Google
                             </div>
 
-                            <div className="w-[70px] h-[46px] rounded-[8px] border flex items-center justify-center transition-all duration-300 hover:bg-gray-100 hover:border-gray-600 cursor-pointer hover:scale-105">
-                                <AppleIcon className="transition-colors duration-300 hover:text-gray-800" />
-                            </div>
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Don't have an account? </div>
@@ -188,9 +198,9 @@ export default LoginCard;
 //                     <input
 //                         type="text"
 //                         placeholder='Enter Your Roll Number'
-//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-//                         transition-all duration-300 
-//                         hover:shadow-md hover:border-gray-400 
+//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px]
+//                         transition-all duration-300
+//                         hover:shadow-md hover:border-gray-400
 //                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
 //                         placeholder:text-gray-400"
 //                     />
@@ -199,9 +209,9 @@ export default LoginCard;
 //                     <input
 //                         type="text"
 //                         placeholder='Enter Your Phone Number'
-//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-//                         transition-all duration-300 
-//                         hover:shadow-md hover:border-gray-400 
+//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px]
+//                         transition-all duration-300
+//                         hover:shadow-md hover:border-gray-400
 //                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
 //                         placeholder:text-gray-400"
 //                     />
@@ -210,9 +220,9 @@ export default LoginCard;
 //                     <input
 //                         type="password"
 //                         placeholder='Enter Your Password'
-//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] pr-10 
-//                         transition-all duration-300 
-//                         hover:shadow-md hover:border-gray-400 
+//                         className="w-[300px] h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] pr-10
+//                         transition-all duration-300
+//                         hover:shadow-md hover:border-gray-400
 //                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
 //                         placeholder:text-gray-400"
 //                     />
@@ -225,9 +235,9 @@ export default LoginCard;
 //                 </div>
 //                 <div className='flex justify-center mt-[55px]'>
 //                     <button
-//                         className="w-[300px] h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
-//                         transition-all duration-300 
-//                         hover:bg-gray-800 hover:shadow-lg hover:scale-[1.02]    
+//                         className="w-[300px] h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px]
+//                         transition-all duration-300
+//                         hover:bg-gray-800 hover:shadow-lg hover:scale-[1.02]
 //                         active:scale-95 active:bg-gray-900
 //                         focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
 //                     >
