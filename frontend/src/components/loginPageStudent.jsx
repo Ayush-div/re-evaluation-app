@@ -27,6 +27,7 @@ const LoginCardStudent = () => {
         onError: (error) => console.error('Login Failed:', error),
         scope: 'email profile', // Add this line to request email access
     });
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         rollNumber: '',
         email: '',
@@ -49,12 +50,18 @@ const LoginCardStudent = () => {
                 rollNumber: formData.rollNumber,
                 password: formData.password,
             });
-            console.log('Login successful:', response.data);
+            console.log('Login successful:', response.data.message);
             if (response.data.message==='Logged In successfully') {
+                setErrorMessage('');
                 navigate('/student');
-              }
+            }
+            else{
+                // show response.data.message into frontend UI 
+                setErrorMessage(response.data.message);
+            }
         } catch (error) {
             console.error('Error logging in:', error);
+            setErrorMessage('Something went wrong. Please try again later.');
         }
     };
 
@@ -64,7 +71,11 @@ const LoginCardStudent = () => {
                 <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words pt-[40px] pl-[21px]">
                     Welcome back! Glad to see you, Again!
                 </div>
-
+                {errorMessage && (
+                    <div className="text-red-600 text-center mt-2">
+                        {errorMessage} {/* Display the error message */}
+                    </div>
+                )}
                 <div className='flex justify-center mt-[57px]'>
                     <input
                         type="text"

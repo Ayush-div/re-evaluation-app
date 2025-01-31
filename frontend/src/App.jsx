@@ -63,7 +63,8 @@ function App() {
           <Route path='/admin/added-student-success' element={<AddedStudentSuccessful />} />
           <Route path='/student/forgot-password' element={<ForgotPasswordEmailPage />} />
           <Route path='/teacher/forgot-password' element={<ForgotPasswordEmailPage />} />
-          <Route path='/forgot' element={<CreateNewPasswordPage />} />
+          <Route path='/student/forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+          <Route path='/teacher/forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
           <Route path='/student/forgot-password/verify-otp' element={<VerifyOtp />} />
           <Route path='/teacher/forget-password/verify-otp' element={<VerifyOtp />} />
           <Route path='/student/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />

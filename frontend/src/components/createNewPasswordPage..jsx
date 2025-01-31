@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const CreateNewPasswordPage = () => {
     const [formData, setFormData] = useState({
@@ -7,7 +8,7 @@ const CreateNewPasswordPage = () => {
     });
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.password || !formData.confirmPassword) {
             setError('Please fill all fields');
@@ -18,6 +19,25 @@ const CreateNewPasswordPage = () => {
             return;
         }
         setError('');
+        try {
+            const response = await axios.post('/api/students/resetNewPasswordStudent', {
+                email: formData.email,
+                rollNumber: formData.rollNumber,
+                password: formData.password,
+            });
+            console.log('Login successful:', response.data.message);
+            if (response.data.message==='Logged In successfully') {
+                setErrorMessage('');
+                navigate('/student');
+            }
+            else{
+                // show response.data.message into frontend UI 
+                setErrorMessage(response.data.message);
+            }
+        } catch (error) {
+            console.error('Error logging in:', error);
+            setErrorMessage('Something went wrong. Please try again later.');
+        }
     };
 
     return (

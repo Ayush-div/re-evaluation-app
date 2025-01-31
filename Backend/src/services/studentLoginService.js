@@ -15,12 +15,12 @@ const jwt = require('jsonwebtoken');
             console.log(studentDetails.rollNumber)
             // 1.  we need to check if the student with given details existes or not
             if(!student){ // we found student
-                throw {reason : "student does not exists", statuscode : 400}
+                throw {reason : "student with given rollno/Email does not exists", statuscode : 400}
             }
             const isPasswordValidated = await bcrypt.compare(plainPassword, student.password);
             
             if(!isPasswordValidated){
-                throw { message : "Invalid Password, please try again", statusCode: 401};
+                throw { reason : "Invalid Password, please try again", statusCode: 401};
             }
 
             //  if the password is validated, create a token and return it

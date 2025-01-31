@@ -13,6 +13,7 @@ studentRouter.post('/verifyOtp',verifyOtp)
 studentRouter.post('/register',createStudent)
 studentRouter.post('/login',LoginStudent)
 studentRouter.post('/question-paper',questionPaperStudent)
+studentRouter.post('/resetNewPasswordStudent',)
 
 studentRouter.post('/',(req,res)=>{
     res.send("registered in");
