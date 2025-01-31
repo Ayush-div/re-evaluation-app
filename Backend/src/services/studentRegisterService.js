@@ -4,12 +4,12 @@ const {findStudent, createStudent} = require("../repositories/studentRepository"
             console.log("register service : ",studentDetails)
             const student = await findStudent({
                 rollNumber : studentDetails.rollNumber,
-                mobileNumber: studentDetails.mobileNumber
+                email: studentDetails.email
             });
             
             // 1.  we need to check if the student with this rollNumber or mobileNumber existes or not
             if(!student){ // we found user
-                throw {reason : "Please check your mobileNumber or RollNumber ", statuscode : 400}
+                throw {reason : "Please check your email or RollNumber ", statuscode : 400}
             }
 
             // 2. if not then create the user into the database
@@ -21,8 +21,8 @@ const {findStudent, createStudent} = require("../repositories/studentRepository"
                 password: studentDetails.password
             })
             console.log("Hii there : ",newStudent);
-            if(newStudent.Field=='mobileNumber'){
-                throw {reason : "Please enter correct mobileNumber", statusCode : 500}
+            if(newStudent.Field=='email'){
+                throw {reason : "Please enter correct email", statusCode : 500}
             }
             else if(newStudent.Field=='rollNumber'){
                 throw {reason : "Please enter correct rollNumber", statusCode : 500}

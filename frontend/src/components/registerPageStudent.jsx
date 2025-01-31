@@ -54,7 +54,7 @@ export default function RegisterCardStudent() {
       });
       console.log("Response is : ",response.data.message);
       if (response.data.message==='successfully resistered the user') {
-        navigate('/register-success');
+        navigate('/student/registration-successful');
       }
 
     } catch (error) {

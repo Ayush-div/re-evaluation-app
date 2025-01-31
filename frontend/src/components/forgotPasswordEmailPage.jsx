@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useLocation } from "react-router-dom";
 
-export default function ForgotPasswordEmail() {
+export default function ForgotPasswordEmailPage() {
+  const location = useLocation();
   const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -13,12 +16,22 @@ export default function ForgotPasswordEmail() {
       const response = await axios.post('/api/students/createOtp', {
           email: email,
       });
+      const path = location.pathname;
       console.log('created successfully:', response.data);
+      console.log("path is: ",path)
+      const fullUrl = `${window.location.origin}${location.pathname}`;
+      console.log("full url is: ",fullUrl)
       if (response.data.message==='Otp sent successfully') {
-        navigate('/verify-otp', { state: { email } });
+        setErrorMessage('');
+        navigate(`${location.pathname}/verify-otp`, { state: { email } });
+      }
+      else{
+        // print "user with the given email doesnot exists" into UI how to do that
+        setErrorMessage('User with the given email does not exist');
       }
   } catch (error) {
       console.error('Error in verifying otp :', error);
+      setErrorMessage('An error occurred. Please try again.');
   }
     
   };
@@ -42,6 +55,11 @@ export default function ForgotPasswordEmail() {
           placeholder:text-gray-400"
           required
         />
+        {errorMessage && (
+          <div className="text-red-500 text-center text-[14px]">
+            {errorMessage}
+          </div>
+        )}
         <button
           type="submit"
           className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 

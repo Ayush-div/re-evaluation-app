@@ -111,7 +111,7 @@ const LoginCardStudent = () => {
                     <div className="absolute inset-y-0 right-10 flex items-center pr-12">
                         <FluentEyeIcon />
                     </div>
-                    <Link to='/forgot-password'>
+                    <Link to='/student/forgot-password'>
                     <div className='absolute left-[300px] top-[55px] text-[#6A707C] text-[14px] cursor-pointer'>
                         Forgot Password?
                     </div>
@@ -155,7 +155,7 @@ const LoginCardStudent = () => {
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Don't have an account? </div>
-                            <Link to='/register'>
+                            <Link to='/student/register'>
                                 <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Register Now</div>
                             </Link>
                         </div>

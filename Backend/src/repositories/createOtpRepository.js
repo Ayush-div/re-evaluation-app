@@ -3,9 +3,9 @@ const Student = require("../schema/studentSchema");
 
     async function findStudentEmail({email}){
         try{
-            console.log("email is : ",email)
+            // console.log("email is : ",email)
             const response = await Student.findOne({email});
-            console.log(response)
+            // console.log(response)
             return response;
         } catch(error) {
             console.log("Error is : ",error)

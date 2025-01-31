@@ -1,11 +1,10 @@
 const Student = require("../schema/studentSchema");
 // const adminStudent = require('../schema/addStudentAdminSchema')
 
-    async function findStudent({rollNumber, mobileNumber}){
+    async function findStudent({rollNumber, email}){
         try{
             console.log("roll is : ",rollNumber)
-            console.log("phone number is : ", mobileNumber)
-            const response = await Student.findOne({rollNumber, mobileNumber});
+            const response = await Student.findOne({rollNumber, email});
             console.log(response)
             return response;
         } catch(error) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const ForgotPassword = () => {
+const CreateNewPasswordPage = () => {
     const [formData, setFormData] = useState({
         password: '',
         confirmPassword: ''
@@ -80,4 +80,4 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword
+export default CreateNewPasswordPage

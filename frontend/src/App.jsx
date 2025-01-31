@@ -23,11 +23,10 @@ import RegisterCardTeacher from './components/registerPageTeacher.jsx.jsx'
 import LoginCardTeacher from './components/loginPageTeacher.jsx'
 import LoginCardStudent from './components/loginPageStudent.jsx'
 import { googleLogout, GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
-import ForgotPasswordEmail from './components/ForgotPasswordEmail';
-import VerifyOtp from './components/VerifyOtp';
-import ResetPassword from './components/ResetPassword';
-import OtpCard from './components/otp_page.jsx'
-import ForgotPassword from './components/forgot_password.jsx'
+import ForgotPasswordEmailPage from './components/forgotPasswordEmailPage.jsx';
+import VerifyOtp from './components/VerifyOtp.jsx'
+import ResetNewPassword from './components/resetNewPassword.jsx';
+import CreateNewPasswordPage from './components/createNewPasswordPage..jsx'
 import AddedTeacherSuccessful from './components/addTeacherSuccessful.jsx'
 import AddedStudentSuccessful from './components/addStudentSuccessful.jsx'
 import AddStudentAdmin from './components/addStudentAdmin.jsx'
@@ -59,13 +58,16 @@ function App() {
           <Route path='/teacher/register' element={<RegisterCardTeacher />} />
           <Route path='/student/login' element={<LoginCardStudent />} />
           <Route path='/teacher/login' element={<LoginCardTeacher />} />
-          {/* <Route path='/student/register-success' element={<RegisterSuccess />} /> */}
+          <Route path='/student/registration-successful' element={<RegisterSuccess />} />
           <Route path='/admin/added-teacher-success' element={<AddedTeacherSuccessful />} />
           <Route path='/admin/added-student-success' element={<AddedStudentSuccessful />} />
-          <Route path='/forgot-password' element={<ForgotPasswordEmail />} />
-          <Route path='/forgot' element={<ForgotPassword />} />
-          <Route path='/verify-otp' element={<VerifyOtp />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='/student/forgot-password' element={<ForgotPasswordEmailPage />} />
+          <Route path='/teacher/forgot-password' element={<ForgotPasswordEmailPage />} />
+          <Route path='/forgot' element={<CreateNewPasswordPage />} />
+          <Route path='/student/forgot-password/verify-otp' element={<VerifyOtp />} />
+          <Route path='/teacher/forget-password/verify-otp' element={<VerifyOtp />} />
+          <Route path='/student/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+          <Route path='/teacher/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
         </Routes>
       </BrowserRouter>
       {/* <ResetPassword/> */}
