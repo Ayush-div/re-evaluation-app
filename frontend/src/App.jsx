@@ -25,16 +25,13 @@ import RegisterCardTeacher from './components/teacher_portal/registerPageTeacher
 import LoginCardTeacher from './components/teacher_portal/loginPageTeacher.jsx'
 import LoginCardStudent from './components/student_portal/loginPageStudent.jsx'
 import LoginCard from './components/student_portal/loginPageStudent.jsx'
-
-// import OtpCard from './components/otp_page.jsx'
-// import ForgotPassword from './components/forgot_password.jsx'
 import SearchOrganization from './components/SearchOrganization.jsx';
 import ReviewModal from './components/teacher_portal/ReviewModal.jsx'
 import AddedTeacherSuccessful from './components/addTeacherSuccessful.jsx'
 import AddedStudentSuccessful from './components/addStudentSuccessful.jsx'
 import AddStudentAdmin from './components/admin_portal/addStudentAdmin.jsx'
 import AddTeacherAdmin from './components/admin_portal/addTeacherAdmin.jsx'
-
+import RegisterOrganization from './components/admin_portal/registerOrganization.jsx'
 
 function App() {
   return (
@@ -72,6 +69,7 @@ function App() {
         <Route path='/teacher/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
         <Route path='/search-organisation' element={<SearchOrganization />} />
         <Route path='/modal' element={<ReviewModal />} />
+        <Route path='/admin/register-organization' element={<RegisterOrganization />} />
         {/* <Route path='/forgot' element={<ForgotPassword />} /> */}
       </Routes>
       <Routes>
