@@ -16,16 +16,18 @@ import QuestionPaperViewer from './components/student_portal/QuestionPaperViewer
 import VideoSolutions from './components/student_portal/VideoSolutions.jsx'
 import AnswerSheets from './components/student_portal/AnswerSheets.jsx'
 import RegisterSuccess from './components/RegisterSuccess.jsx'
+import ForgotPasswordEmailPage from './components/forgotPasswordEmailPage.jsx';
+import VerifyOtp from './components/VerifyOtp.jsx'
+import ResetNewPassword from './components/resetNewPassword.jsx';
+import CreateNewPasswordPage from './components/createNewPasswordPage..jsx'
 import RegisterCardStudent from './components/student_portal/registerPageStudent.jsx'
 import RegisterCardTeacher from './components/teacher_portal/registerPageTeacher.jsx.jsx'
 import LoginCardTeacher from './components/teacher_portal/loginPageTeacher.jsx'
 import LoginCardStudent from './components/student_portal/loginPageStudent.jsx'
 import LoginCard from './components/student_portal/loginPageStudent.jsx'
-import ForgotPasswordEmail from './components/ForgotPasswordEmail';
-import VerifyOtp from './components/VerifyOtp';
-import ResetPassword from './components/ResetPassword';
-import OtpCard from './components/otp_page.jsx'
-import ForgotPassword from './components/forgot_password.jsx'
+
+// import OtpCard from './components/otp_page.jsx'
+// import ForgotPassword from './components/forgot_password.jsx'
 import SearchOrganization from './components/SearchOrganization.jsx';
 import ReviewModal from './components/teacher_portal/ReviewModal.jsx'
 import AddedTeacherSuccessful from './components/addTeacherSuccessful.jsx'
@@ -38,10 +40,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/search-organisation' element={<SearchOrganization />} />
-        <Route path='/modal' element={<ReviewModal />} />
-
-
         <Route path='/' element={<LandingPage />} />
         <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/teacher' element={<TeacherDashboard />} />
@@ -61,13 +59,22 @@ function App() {
         <Route path='/teacher/register' element={<RegisterCardTeacher />} />
         <Route path='/student/login' element={<LoginCardStudent />} />
         <Route path='/teacher/login' element={<LoginCardTeacher />} />
-        {/* <Route path='/student/register-success' element={<RegisterSuccess />} /> */}
+        <Route path='/student/registration-successful' element={<RegisterSuccess />} />
         <Route path='/admin/added-teacher-success' element={<AddedTeacherSuccessful />} />
         <Route path='/admin/added-student-success' element={<AddedStudentSuccessful />} />
-        <Route path='/forgot-password' element={<ForgotPasswordEmail />} />
-        <Route path='/forgot' element={<ForgotPassword />} />
-        <Route path='/verify-otp' element={<VerifyOtp />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
+        <Route path='/student/forgot-password' element={<ForgotPasswordEmailPage />} />
+        <Route path='/teacher/forgot-password' element={<ForgotPasswordEmailPage />} />
+        <Route path='/student/forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+        <Route path='/teacher/forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+        <Route path='/student/forgot-password/verify-otp' element={<VerifyOtp />} />
+        <Route path='/teacher/forget-password/verify-otp' element={<VerifyOtp />} />
+        <Route path='/student/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+        <Route path='/teacher/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+        <Route path='/search-organisation' element={<SearchOrganization />} />
+        <Route path='/modal' element={<ReviewModal />} />
+        {/* <Route path='/forgot' element={<ForgotPassword />} /> */}
+      </Routes>
+      <Routes>
       </Routes>
     </BrowserRouter>
 

@@ -168,24 +168,7 @@ export default function RegisterCardStudent() {
 
         {/* Social Login Section */}
         <div className="w-full ">
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex-1 h-[1px] bg-[#E8ECF4]"></div>
-            <span className="text-[#6A707C] text-[14px] font-semibold">Or Register with</span>
-            <div className="flex-1 h-[1px] bg-[#E8ECF4]"></div>
-          </div>
-          <div className="flex justify-center gap-4">
-            <div className="flex justify-center gap-8 mt-4  " onClick={login}>
-              <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around items-center transition-all duration-300 hover:bg-[#F7F8F9] hover:border-black cursor-pointer hover:scale-105">
-                <div className="relative w-[24px] h-[24px]" >
-                  <GoogleIcon className="transition-colors duration-300 hover:text-red-500" />
-                </div>
-                <div className=''>
-                  Login With Google
-                </div>
-              </div>
-
-            </div>
-          </div>
+        
           <div className="flex justify-center items-center mt-6 mb-4">
             <div className="text-[#1E232C] text-[15px]">Already have an account? </div>
             <Link to='/student/login'>

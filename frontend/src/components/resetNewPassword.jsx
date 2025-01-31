@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function ResetPassword() {
+export default function ResetNewPassword() {
+  
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ export default function ResetPassword() {
     }
     // Add logic to reset the password
     console.log('Resetting password for:', email);
-    navigate('/login');
+    const path = location.pathname; 
+    console.log("Path is  : ", path )
+    navigate(`/student/login`);
   };
 
   return (

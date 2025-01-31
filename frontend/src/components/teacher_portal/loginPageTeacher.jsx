@@ -55,7 +55,7 @@ const LoginCardTeacher = () => {
             });
             console.log('Login successful:', response.data);
             if (response.data.message === 'Logged In successfully') {
-                navigate('/student');
+                navigate('/teacher');
             }
         } catch (error) {
             console.error('Error logging in:', error);
@@ -104,7 +104,7 @@ const LoginCardTeacher = () => {
                     </button>
                 </div>
 
-                <Link to='/forgot-password' className="text-right">
+                <Link to='/teacher/forgot-password' className="text-right">
                     <span className="text-[#6A707C] text-[14px] cursor-pointer hover:text-black">
                         Forgot Password?
                     </span>

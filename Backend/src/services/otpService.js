@@ -20,10 +20,10 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 async function CreateOtp(studentDetails) {
   const email = studentDetails.email;
   // check if there is registered student with the given email or not
-    // console.log(email)
+  // console.log("Email is : ",email)
   const student = await findStudentEmail({ email });
-//   console.log("Service login : ", student);
-//   console.log(email);
+  // console.log("Service login : ", student);
+  // console.log(email);
   // 1.  we need to check if the student with given details existes or not
   if (!student) {
     throw {
@@ -34,7 +34,7 @@ async function CreateOtp(studentDetails) {
   
   const otp = generateOTP();
   otpStore[email] = otp;
-//   console.log("Otp store : ",otpStore)
+  // console.log("Otp store : ",otpStore)
   const mailOptions = {
     from: OTPEMAIL,
     to: email,
@@ -44,27 +44,37 @@ async function CreateOtp(studentDetails) {
 //   console.log(mailOptions)
 //   console.log(otp);
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-        console.log("Error : ",error);
-        throw {message : "Failed to send OTP", status: 500}
-    }
+// return new Promise((resolve, reject) => {
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.log("Error : ", error);
+//       reject({ message: "Failed to send OTP", status: 500 });
+//     } else {
+//       resolve({ status: 201, message: "OTP sent successfully" });
+//     }
+//   });
+// });
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log("Error : ", error);
+    throw { message: "Failed to send OTP", status: 500 }; // Problem here
+  }
 
-    throw {status: 201,message: "OTP sent successfully"}
-  
-  });
-  throw {status: 201,message: "OTP sent successfully"}
+  throw { status: 201, message: "OTP sent successfully" }; // Problem here
+});
+  // throw {status: 201,message: "OTP sent successfully"}
 }
 
 async function VerifyOtp(studentOtpDetails) {
 
-    // console.log(studentOtpDetails)
-    // console.log(otpStore)
-    // console.log("Keys are : ",Object.keys(otpStore)[0])
-    // console.log(Object.keys(otpStore)[0]===studentOtpDetails.email && Object.values(otpStore)[0]===studentOtpDetails.otp)
+    console.log(studentOtpDetails)
+    console.log("Otp store is : ",otpStore)
+    console.log("Keys are : ",Object.keys(otpStore)[0])
+    console.log(Object.keys(otpStore)[0]===studentOtpDetails.email && Object.values(otpStore)[0]===studentOtpDetails.otp)
     if(Object.keys(otpStore)[0]===studentOtpDetails.email && Object.values(otpStore)[0]===studentOtpDetails.otp){
         console.log("Hello world!!")
-        delete otpStore[email];
+        delete otpStore[studentOtpDetails.email];
+        return {message: "OTP verified successfully"}
         throw { message: "OTP verified successfully"}
     }
     else{

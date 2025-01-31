@@ -26,6 +26,7 @@ const LoginCardStudent = () => {
         onError: (error) => console.error('Login Failed:', error),
         scope: 'email profile', // Add this line to request email access
     });
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         rollNumber: '',
         email: '',
@@ -54,12 +55,18 @@ const LoginCardStudent = () => {
                 rollNumber: formData.rollNumber,
                 password: formData.password,
             });
-            console.log('Login successful:', response.data);
-            if (response.data.message === 'Logged In successfully') {
+            console.log('Login successful:', response.data.message);
+            if (response.data.message==='Logged In successfully') {
+                setErrorMessage('');
                 navigate('/student');
+            }
+            else{
+                // show response.data.message into frontend UI 
+                setErrorMessage(response.data.message);
             }
         } catch (error) {
             console.error('Error logging in:', error);
+            setErrorMessage('Something went wrong. Please try again later.');
         }
     };
 
@@ -69,7 +76,11 @@ const LoginCardStudent = () => {
                 <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words pt-[40px] pl-[21px]">
                     Welcome back! Glad to see you, Again!
                 </div>
-
+                {errorMessage && (
+                    <div className="text-red-600 text-center mt-2">
+                        {errorMessage} {/* Display the error message */}
+                    </div>
+                )}
                 <div className='flex justify-center mt-[57px]'>
                     <input
                         type="text"
@@ -122,7 +133,7 @@ const LoginCardStudent = () => {
                     </button>
                 </div>
 
-                <Link to='/forgot-password'>
+                <Link to='/student/forgot-password'>
                     <div className='relative left-[300px]  text-[#6A707C] text-[14px] cursor-pointer'>
                         Forgot Password?
                     </div>
@@ -151,8 +162,8 @@ const LoginCardStudent = () => {
                         <div className="flex justify-center gap-8 mt-4 ">
 
 
-                            <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around items-center transition-all duration-300 hover:bg-[#F7F8F9] hover:border-black cursor-pointer hover:scale-105">
-                                <div className="relative w-[24px] h-[24px]" onClick={login}>
+                            <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around items-center transition-all duration-300 hover:bg-[#F7F8F9] hover:border-black cursor-pointer hover:scale-105 " onClick={login}>
+                                <div className="relative w-[24px] h-[24px]" >
                                     <GoogleIcon className="transition-colors duration-300 hover:text-red-500" />
                                 </div>
                                 <div className=''>

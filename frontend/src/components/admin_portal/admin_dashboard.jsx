@@ -169,16 +169,7 @@ const AdminDashboard = () => {
             <button className="text-sm text-[#6A707C] hover:text-black">View All</button>
           </div>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-[#F7F8F9] rounded-[8px]">
-              <div className="flex items-center gap-4">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                <div>
-                  <p className="text-[#1E232C] font-medium">New Teacher Verified</p>
-                  <p className="text-[#6A707C] text-sm">Prof. Sarah Johnson - Physics Department</p>
-                </div>
-              </div>
-              <span className="text-[#6A707C] text-sm">2 hours ago</span>
-            </div>
+           
             <div className="flex items-center justify-between p-3 bg-[#F7F8F9] rounded-[8px]">
               <div className="flex items-center gap-4">
                 <div className="w-2 h-2 rounded-full bg-blue-500"></div>
