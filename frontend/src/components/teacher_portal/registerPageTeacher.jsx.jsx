@@ -8,7 +8,7 @@ const RegisterCardTeacher = () => {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="text-xl font-bold text-[#1E232C]">
-              Add New Teacher
+              Register As Teacher
             </div>
             <div className="flex space-x-6">
               <button 
@@ -25,7 +25,7 @@ const RegisterCardTeacher = () => {
       <div className="max-w-[1440px] mx-auto px-6 py-8">
         {/* Form Container */}
         <div className="max-w-2xl mx-auto bg-white rounded-[12px] border border-[#DADADA] p-6">
-          <h2 className="text-xl font-bold text-[#1E232C] mb-6">Teacher Information</h2>
+          <h2 className="text-xl font-bold text-[#1E232C] mb-6">Enter Your Information</h2>
           
           <form className="space-y-6">
             {/* Basic Information */}
@@ -157,7 +157,7 @@ const RegisterCardTeacher = () => {
                           hover:bg-gray-800 hover:scale-[1.02]
                           active:scale-[0.98]"
                 >
-                  Add Teacher
+                  Register
                 </button>
               </Link>
               

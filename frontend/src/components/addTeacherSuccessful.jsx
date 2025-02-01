@@ -42,7 +42,7 @@ const AddedTeacherSuccess = () => {
           transition={{ delay: 0.3 }}
           className="text-[30px] font-bold text-[#1E232C] mb-3 text-center"
         >
-          Added Successfully!
+          Registered Successfully!
         </motion.h2>
         
         <motion.p 
@@ -51,7 +51,7 @@ const AddedTeacherSuccess = () => {
           transition={{ delay: 0.4 }}
           className="text-[#6A707C] text-center mb-8"
         >
-          Teacher has been added successfully.
+          You have been added successfully.
         </motion.p>
 
         {/* Login Button */}
@@ -61,13 +61,13 @@ const AddedTeacherSuccess = () => {
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/admin')}
+          onClick={() => navigate('/teacher')}
           className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
                     transition-all duration-300 
                     hover:bg-gray-800 hover:shadow-lg
                     focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
         >
-          Go to Admin page
+          Go to Teacher's Dashboard
         </motion.button>
       </motion.div>
     </div>

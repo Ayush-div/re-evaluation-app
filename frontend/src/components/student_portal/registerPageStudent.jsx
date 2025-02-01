@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import GoogleIcon from '../../../public/icons/google_ic';
-import FacebookIcon from '../../../public/icons/facebook_ic';
-import AppleIcon from '../../../public/icons/cib_apple';
 import FluentEyeIcon from '../../../public/icons/eye';
 import FluentEyeClosedIcon from '../../../public/icons/eye-closed';
 import axios from 'axios';
@@ -62,7 +59,7 @@ export default function RegisterCardStudent() {
       });
       console.log("Response is : ", response.data.message);
       if (response.data.message === 'successfully resistered the user') {
-        navigate('/register-success');
+        navigate('/student/registration-successful');
       }
 
     } catch (error) {

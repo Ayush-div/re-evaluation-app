@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FluentEyeIcon from '../../../public/icons/eye';
 import GoogleIcon from '../../../public/icons/google_ic';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -18,6 +18,9 @@ const LoginCardStudent = () => {
                     }
                 );
                 console.log('Full Google Response:', userInfo.data);
+                console.log(userInfo.data.email);
+                console.log(userInfo.data.name);
+
                 // userInfo.data will now contain: email, name, picture, given_name, family_name, etc.
             } catch (error) {
                 console.error('Error fetching user info:', error);
@@ -55,20 +58,81 @@ const LoginCardStudent = () => {
                 rollNumber: formData.rollNumber,
                 password: formData.password,
             });
-            console.log('Login successful:', response.data.message);
-            if (response.data.message==='Logged In successfully') {
+            if (response.data.message === 'Logged In successfully') {
+                console.log('Login successful:', response.data.message);
                 setErrorMessage('');
                 navigate('/student');
             }
-            else{
+            else {
                 // show response.data.message into frontend UI 
+                console.log("Login Unsuccessful")
                 setErrorMessage(response.data.message);
             }
+            // if (response.data.success && response.data.accessToken && response.data.refreshToken) {
+            //     // Store tokens
+            //     localStorage.setItem('accessToken', response.data.accessToken);
+            //     localStorage.setItem('refreshToken', response.data.refreshToken);
+
+            //     // Store user info
+            //     localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            //     // Set default authorization header
+            //     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+
+            //     setErrorMessage('');
+            // } else {
+            //     setErrorMessage(response.data.message || 'Invalid login response');
+            // }
         } catch (error) {
-            console.error('Error logging in:', error);
-            setErrorMessage('Something went wrong. Please try again later.');
+            console.error('Login error:', error.response?.data || error);
+            setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');
         }
     };
+
+    // Add interceptor to handle token refresh
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                const originalRequest = error.config;
+
+                // If error is 401 and we haven't retried yet
+                if (error.response.status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
+
+                    try {
+                        // Attempt to refresh token
+                        const refreshToken = localStorage.getItem('refreshToken');
+                        const response = await axios.post('/api/auth/refresh-token', {
+                            refreshToken
+                        });
+
+                        // Store new tokens
+                        localStorage.setItem('accessToken', response.data.accessToken);
+                        localStorage.setItem('refreshToken', response.data.refreshToken);
+
+                        // Update authorization header
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+
+                        // Retry original request
+                        return axios(originalRequest);
+                    } catch (refreshError) {
+                        // If refresh fails, logout user
+                        localStorage.clear();
+                        navigate('/student/login');
+                        return Promise.reject(refreshError);
+                    }
+                }
+
+                return Promise.reject(error);
+            }
+        );
+
+        // Cleanup interceptor on component unmount
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, [navigate]);
 
     return (
         <div className="h-full flex justify-center font-['Urbanist']">
@@ -174,9 +238,9 @@ const LoginCardStudent = () => {
                         </div>
                         <div className="flex justify-center items-center mt-6">
                             <div className="text-[#1E232C] text-[15px]">Don't have an account? </div>
-                            <Link to='/student/register'>
-                                <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">Register Now</div>
-                            </Link>
+                            {/* <Link to='/search-organization'> */}
+                            <div className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer" onClick={() => navigate('/search-organization', { state: { role: 'student' } })}>Register Now</div>
+                            {/* </Link> */}
                         </div>
                     </div>
                 </div>

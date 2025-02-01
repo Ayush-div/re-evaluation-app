@@ -2,7 +2,7 @@ import './App.css'
 import React from 'react'
 import Dashboard from './components/student_portal/student_page.jsx'
 import TeacherDashboard from './components/teacher_portal/teacher_dashboard.jsx'
-import AdminDashboard from './components/admin_portal/admin_dashboard.jsx'
+import AdminDashboard from './components/admin_portal/organization_dashboard.jsx'
 import LandingPage from './components/landing_page.jsx'
 import AddTeacher from './components/teacher_portal/registerPageTeacher.jsx.jsx'
 import GenerateReport from './components/admin_portal/generate_report.jsx'
@@ -32,17 +32,37 @@ import AddedStudentSuccessful from './components/addStudentSuccessful.jsx'
 import AddStudentAdmin from './components/admin_portal/addStudentAdmin.jsx'
 import AddTeacherAdmin from './components/admin_portal/addTeacherAdmin.jsx'
 import RegisterOrganization from './components/admin_portal/registerOrganization.jsx'
+import OrganizationAuth from './components/auth/OrganizationAuth.jsx';
+import TeacherAuth from './components/auth/TeacherAuth.jsx'
+import StudentAuth from './components/auth/StudentAuth.jsx'
+import LoginOrganization from './components/admin_portal/LoginOrganization';
+// import GoogleSignInButton from './components/googleOauth/googleOauth.jsx'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<LandingPage />} />
-        <Route path='/admin' element={<AdminDashboard />} />
-        <Route path='/teacher' element={<TeacherDashboard />} />
+        {/* Landing and Organization Routes */}
+        <Route path="/" element={<LandingPage />} />
+
+        <Route path="/search-organization" element={<SearchOrganization />} />
+        <Route path="/organization/register" element={<RegisterOrganization />} />
+        <Route path="/organization/organization-auth" element={<OrganizationAuth />} />
+        <Route path="/organization/login" element={<LoginOrganization />} />
+
+        {/* Student Routes */}
+        <Route path="/student/login" element={<LoginCardStudent />} />
+        <Route path="/student/register" element={<RegisterCardStudent />} />
+        <Route path="/student/*" element={<Dashboard />} />
+
+        {/* Teacher Routes */}
+        <Route path="/teacher/login" element={<LoginCardTeacher />} />
+        <Route path="/teacher/register" element={<RegisterCardTeacher />} />
+        <Route path="/teacher/*" element={<TeacherDashboard />} />
+
+        <Route path='/organization' element={<AdminDashboard />} />
         <Route path='/student/apply-reevaluation' element={<ReEvaluationForm />} />
         <Route path='/student/check-status' element={<ReEvaluationStatus />} />
-        <Route path='/student' element={<Dashboard />} />
         <Route path='/admin/add-teacher' element={<AddTeacherAdmin />} />
         <Route path='/admin/add-student' element={<AddStudentAdmin />} />
         <Route path='/admin/generate-report' element={<GenerateReport />} />
@@ -52,10 +72,6 @@ function App() {
         <Route path='/student/question-papers' element={<QuestionPaperViewer />} />
         <Route path='/student/video-solutions' element={<VideoSolutions />} />
         <Route path='/student/answer-sheets' element={<AnswerSheets />} />
-        <Route path='/student/register' element={<RegisterCardStudent />} />
-        <Route path='/teacher/register' element={<RegisterCardTeacher />} />
-        <Route path='/student/login' element={<LoginCardStudent />} />
-        <Route path='/teacher/login' element={<LoginCardTeacher />} />
         <Route path='/student/registration-successful' element={<RegisterSuccess />} />
         <Route path='/admin/added-teacher-success' element={<AddedTeacherSuccessful />} />
         <Route path='/admin/added-student-success' element={<AddedStudentSuccessful />} />
@@ -67,10 +83,12 @@ function App() {
         <Route path='/teacher/forget-password/verify-otp' element={<VerifyOtp />} />
         <Route path='/student/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
         <Route path='/teacher/forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
-        <Route path='/search-organisation' element={<SearchOrganization />} />
         <Route path='/modal' element={<ReviewModal />} />
-        <Route path='/admin/register-organization' element={<RegisterOrganization />} />
-        {/* <Route path='/forgot' element={<ForgotPassword />} /> */}
+        <Route path='/teacher/teacher-auth' element={<TeacherAuth />} />
+        <Route path='/student/student-auth' element={<StudentAuth />} />
+
+        {/* <Route path='/google-button' element={<GoogleSignInButton />} /> */}
+
       </Routes>
       <Routes>
       </Routes>

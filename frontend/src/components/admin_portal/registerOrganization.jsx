@@ -341,7 +341,7 @@ const RegisterOrganization = () => {
                                     type="submit"
                                     className="px-6 py-3 bg-black text-white rounded-[8px] 
                             transition-all duration-300 hover:bg-gray-800 hover:scale-[1.02]
-                            active:scale-[0.98]"
+                            active:scale-[0.98]" onClick={()=>{navigate('/admin')}}
                                 >
                                     Register Organization
                                 </button>

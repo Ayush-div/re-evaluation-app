@@ -6,7 +6,8 @@ const serverConfig = require('./serverConfig.js');
 async function connectDB(){
     try{
         // await mongoose.connect(serverConfig.DB_URL);
-        await mongoose.connect("mongodb+srv://Ayush:JNLLuEt3bUVEr3tv@cluster0.v5uie.mongodb.net/");
+        // change this url to your database URL 
+        await mongoose.connect("mongodb+srv://singhvigyat:JKJArZLwz0B72koI@cluster0.meri4.mongodb.net/Student");
         console.log("Successfully connected to the mongodb server...");
     } catch(error){
         console.log("Not able to connect mongodb server...");

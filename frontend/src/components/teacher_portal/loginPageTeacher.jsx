@@ -20,6 +20,7 @@ const LoginCardTeacher = () => {
                     }
                 );
                 console.log('Full Google Response:', userInfo.data);
+                console.log(userInfo.data.email);
                 // userInfo.data will now contain: email, name, picture, given_name, family_name, etc.
             } catch (error) {
                 console.error('Error fetching user info:', error);
@@ -141,11 +142,13 @@ const LoginCardTeacher = () => {
 
                         <div className="flex justify-center items-center mt-6">
                             <span className="text-[#1E232C] text-[15px]">Don't have an account? </span>
-                            <Link to='/teacher/register'>
-                                <span className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer">
+                            {/* <Link to='/teacher/register'> */}
+                                <span className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer" onClick={()=>navigate('/search-organization',{state:{
+                                    role:'teacher'
+                                }})}>
                                     Register Now
                                 </span>
-                            </Link>
+                            {/* </Link> */}
                         </div>
                     </div>
                 </div>

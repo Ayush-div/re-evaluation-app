@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { div } from 'framer-motion/client';
 
 const SearchOrganization = () => {
@@ -12,6 +12,9 @@ const SearchOrganization = () => {
     const [recentSearches, setRecentSearches] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const role = location.state?.role ; 
+    console.log('Current role:', role); // For debugging
 
     // Simplified default org data
     const defaultOrgs = [{
@@ -58,19 +61,28 @@ const SearchOrganization = () => {
     };
 
     const handleSelectOrganization = (orgId) => {
-        // Check if user already has an account
-        const hasAccount = false; // This should be determined by your authentication logic
-
         if (orgId === 'iiitpune') {
-            if (hasAccount) {
-                navigate('/student/login');
-            } else {
-                navigate('/student/register', {
-                    state: {
-                        organization: 'Indian Institute of Information Technology, Pune',
-                        orgId: 'iiitpune'
-                    }
-                });
+            const orgData = {
+                id: orgId,
+                name: 'Indian Institute of Information Technology, Pune'
+            };
+            
+            // Store in localStorage
+            localStorage.setItem('selectedOrg', JSON.stringify(orgData));
+            
+            // Navigate with org data in state
+            switch(role) {
+                case 'teacher':
+                    navigate('/teacher/register', { state: { organization: orgData } });
+                    break;
+                case 'student':
+                    navigate('/student/register', { state: { organization: orgData } });
+                    break;
+                case 'organization':
+                    navigate('/organization/register', { state: { organization: orgData } });
+                    break;
+                default:
+                    console.log('No role specified');
             }
         }
     };

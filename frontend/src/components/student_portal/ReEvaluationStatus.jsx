@@ -15,7 +15,7 @@ const ReEvaluationStatus = () => {
         { name: "Applied", date: "2023-12-01", completed: true },
         { name: "Document Verification", date: "2023-12-02", completed: true },
         { name: "With Organization", date: "2023-12-03", completed: true },
-        { name: "Under Teacher Review", date: "2023-12-05", completed: false },
+        { name: "Under Teacher Review", date: "2023-12-05", completed: true    },
         { name: "Final Assessment", date: null, completed: false },
         { name: "Completed", date: null, completed: false }
       ],
@@ -58,16 +58,15 @@ const ReEvaluationStatus = () => {
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold text-[#1E232C] mb-6">Re-evaluation Status</h1>
-        
+
         {/* Applications Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {applications.map(app => (
             <div
               key={app.id}
               onClick={() => setSelectedApp(app.id === selectedApp ? null : app.id)}
-              className={`bg-white rounded-[12px] border ${
-                app.id === selectedApp ? 'border-black' : 'border-[#DADADA]'
-              } p-6 cursor-pointer hover:shadow-md transition-all duration-300`}
+              className={`bg-white rounded-[12px] border ${app.id === selectedApp ? 'border-black' : 'border-[#DADADA]'
+                } p-6 cursor-pointer hover:shadow-md transition-all duration-300`}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -91,18 +90,16 @@ const ReEvaluationStatus = () => {
               </div>
 
               {/* Progress Timeline */}
-              <div className={`transition-all duration-300 overflow-hidden ${
-                app.id === selectedApp ? 'max-h-96' : 'max-h-0'
-              }`}>
+              <div className={`transition-all duration-300 overflow-hidden ${app.id === selectedApp ? 'max-h-96' : 'max-h-0'
+                }`}>
                 <div className="relative mt-4">
                   <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
                   {app.stages.map((stage, index) => (
                     <div key={index} className="flex items-start mb-4 relative">
-                      <div className={`w-8 h-8 rounded-full border-2 ${
-                        stage.completed 
-                          ? 'bg-black border-black' 
+                      <div className={`w-8 h-8 rounded-full border-2 ${stage.completed
+                          ? 'bg-black border-black'
                           : 'bg-white border-gray-300'
-                      } flex items-center justify-center relative z-10`}>
+                        } flex items-center justify-center relative z-10`}>
                         {stage.completed && (
                           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
