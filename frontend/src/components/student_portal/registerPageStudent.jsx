@@ -33,6 +33,8 @@ export default function RegisterCardStudent() {
     studentName: '',
     email: '',
     password: '',
+    department: '', // Add department
+    semester: ''    // Add semester
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -75,81 +77,119 @@ export default function RegisterCardStudent() {
         <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words pt-[40px] text-center">
           Hello! Register to get started
         </div>
+        <div>
+          
+        </div>
+        <div className='flex flex-col gap-2'>
 
-        <input
-          type="text"
-          name="rollNumber"
-          value={formData.rollNumber}
-          onChange={handleChange}
-          placeholder="Enter Your Roll Number"
-          className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-          transition-all duration-300 
-          hover:shadow-md hover:border-gray-400 
-          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
-          placeholder:text-gray-400"
-          required
-        />
-
-        <input
-          type="tel"
-          name="mobileNumber"
-          value={formData.mobileNumber}
-          onChange={handleChange}
-          placeholder="Enter Your Phone Number"
-          className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-          transition-all duration-300 
-          hover:shadow-md hover:border-gray-400 
-          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
-          placeholder:text-gray-400"
-          required
-        />
-
-        <input
-          type="text"
-          name="studentName"
-          value={formData.studentName}
-          onChange={handleChange}
-          placeholder="Enter Your Name"
-          className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-          transition-all duration-300 
-          hover:shadow-md hover:border-gray-400 
-          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
-          placeholder:text-gray-400"
-        />
-
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Enter Your Email"
-          className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
-          transition-all duration-300 
-          hover:shadow-md hover:border-gray-400 
-          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
-          placeholder:text-gray-400"
-        />
-
-        <div className="relative">
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={formData.password}
+            type="text"
+            name="rollNumber"
+            value={formData.rollNumber}
             onChange={handleChange}
-            placeholder="Enter Your Password"
+            placeholder="Enter Your Roll Number"
             className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+          transition-all duration-300 
+          hover:shadow-md hover:border-gray-400 
+          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+          placeholder:text-gray-400"
+            required
+          />
+
+          <input
+            type="tel"
+            name="mobileNumber"
+            value={formData.mobileNumber}
+            onChange={handleChange}
+            placeholder="Enter Your Phone Number"
+            className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+          transition-all duration-300 
+          hover:shadow-md hover:border-gray-400 
+          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+          placeholder:text-gray-400"
+            required
+          />
+
+          <input
+            type="text"
+            name="studentName"
+            value={formData.studentName}
+            onChange={handleChange}
+            placeholder="Enter Your Name"
+            className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+          transition-all duration-300 
+          hover:shadow-md hover:border-gray-400 
+          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+          placeholder:text-gray-400"
+          />
+
+          {/* Add department and semester inputs */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              placeholder="Department"
+              className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
               transition-all duration-300 
               hover:shadow-md hover:border-gray-400 
               focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
               placeholder:text-gray-400"
+            />
+            <input
+              type="number"
+              name="semester"
+              value={formData.semester}
+              onChange={handleChange}
+              placeholder="Semester"
+              className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+              transition-all duration-300 
+              hover:shadow-md hover:border-gray-400 
+              focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+              placeholder:text-gray-400"
+            />
+          </div>
+
+        </div>
+        <div className='flex flex-col gap-2'>
+
+
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter Your Email"
+            className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+          transition-all duration-300 
+          hover:shadow-md hover:border-gray-400 
+          focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+          placeholder:text-gray-400"
           />
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-          >
-            {showPassword ? <FluentEyeIcon /> : <FluentEyeClosedIcon />}
-          </button>
+
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter Your Password"
+              className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+              transition-all duration-300 
+              hover:shadow-md hover:border-gray-400 
+              focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
+              placeholder:text-gray-400"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            >
+              {showPassword ? <FluentEyeIcon /> : <FluentEyeClosedIcon />}
+            </button>
+          </div>
+
         </div>
 
         <button
@@ -165,7 +205,7 @@ export default function RegisterCardStudent() {
 
         {/* Social Login Section */}
         <div className="w-full ">
-        
+
           <div className="flex justify-center items-center mt-6 mb-4">
             <div className="text-[#1E232C] text-[15px]">Already have an account? </div>
             <Link to='/student/login'>

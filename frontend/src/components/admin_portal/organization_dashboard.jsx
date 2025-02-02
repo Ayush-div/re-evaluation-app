@@ -318,6 +318,20 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </Link>
+
+              <Link to='/organization/add-question-paper '>
+                <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group mt-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-[#1E232C] group-hover:text-black">Add Question Paper</p>
+                      <p className="text-sm text-[#6A707C]">Create new question paper template</p>
+                    </div>
+                    <svg className="w-6 h-6 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
 
@@ -463,11 +477,11 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 w-full h-full w-[50vw]">
-            <h2 className="text-lg font-bold text-[#1E232C] mb-4">Subject Analytics</h2>
+          <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 w-full h-full">
+            <h2 className="text-lg font-bold text-[#1E232C] mb-4 ">Subject Analytics</h2>
             <div className="space-y-4">
               {subjectAnalytics.map((subject, index) => (
-                <div key={index} className="p-4 bg-[#F7F8F9] rounded-[8px]">
+                <div key={index} className="p-4 bg-[#F7F8F9] rounded-[8px] ">
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="font-semibold text-[#1E232C]">{subject.subject}</h3>
                     <span className="text-sm text-[#6A707C]">{subject.requests} requests</span>

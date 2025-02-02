@@ -102,7 +102,7 @@ const RegisterOrganization = () => {
     return (
         <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
             <nav className="bg-white shadow-md w-full sticky top-0 z-10">
-                <div className="max-w-[1440px] mx-auto px-6">
+                <div className="max-w-[1440px] mx-auto px-6">   
                     <div className="flex justify-between items-center h-16">
                         <div className="text-xl font-bold text-[#1E232C]">Register Organization</div>
                         <button
@@ -341,7 +341,7 @@ const RegisterOrganization = () => {
                                     type="submit"
                                     className="px-6 py-3 bg-black text-white rounded-[8px] 
                             transition-all duration-300 hover:bg-gray-800 hover:scale-[1.02]
-                            active:scale-[0.98]" onClick={()=>{navigate('/admin')}}
+                            active:scale-[0.98]" onClick={()=>{navigate('/organization')}}
                                 >
                                     Register Organization
                                 </button>

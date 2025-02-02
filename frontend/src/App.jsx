@@ -36,6 +36,9 @@ import OrganizationAuth from './components/auth/OrganizationAuth.jsx';
 import TeacherAuth from './components/auth/TeacherAuth.jsx'
 import StudentAuth from './components/auth/StudentAuth.jsx'
 import LoginOrganization from './components/admin_portal/LoginOrganization';
+import QuestionPaperBuilder from './components/admin_portal/createQuestionPaper.jsx';
+import CreateQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
+import AddQuestionPaper from './components/admin_portal/addQuestionPaper.jsx'
 // import GoogleSignInButton from './components/googleOauth/googleOauth.jsx'
 
 function App() {
@@ -86,6 +89,8 @@ function App() {
         <Route path='/modal' element={<ReviewModal />} />
         <Route path='/teacher/teacher-auth' element={<TeacherAuth />} />
         <Route path='/student/student-auth' element={<StudentAuth />} />
+        <Route path="/organization/add-question-paper" element={<AddQuestionPaper />} />
+        <Route path="/organization/create-question-paper" element={<CreateQuestionPaper />} />
 
         {/* <Route path='/google-button' element={<GoogleSignInButton />} /> */}
 

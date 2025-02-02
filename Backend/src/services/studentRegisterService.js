@@ -18,7 +18,9 @@ async function registerStudent(studentDetails) {
         rollNumber: studentDetails.rollNumber,
         studentName: studentDetails.studentName,
         email: studentDetails.email,
-        password: studentDetails.password
+        password: studentDetails.password,
+        department:studentDetails.department,
+        semester:studentDetails.semester
     })
 
     console.log("Hii there : ", newStudent);
