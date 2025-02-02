@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CreateQuestionPaper = () => {
+const AddQuestionPaper = () => {
     const navigate = useNavigate();
     const [examDetails, setExamDetails] = useState({
         subject: '',
@@ -460,4 +460,4 @@ const CreateQuestionPaper = () => {
     );
 };
 
-export default CreateQuestionPaper;
+export default AddQuestionPaper;

@@ -15,9 +15,9 @@ app.use(express.text());
 app.use(express.urlencoded({ extended : true }));
 
 const studentRouter = require('./routes/studentRoute.js');
-const adminAddStudentRouter = require('./routes/adminAddStudentRoute.js');
+const adminRouter = require('./routes/adminRoute.js');
 app.use('/api/students',studentRouter)
-app.use('/api/admin/addStudent',adminAddStudentRouter) 
+app.use('/api/admin',adminRouter) 
 app.get('/api/test',isLoggedIn,(req,res)=>{
     res.json({message : 'OK'});
 })

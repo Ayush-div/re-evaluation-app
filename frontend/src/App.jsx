@@ -36,7 +36,7 @@ import OrganizationAuth from './components/auth/OrganizationAuth.jsx';
 import TeacherAuth from './components/auth/TeacherAuth.jsx'
 import StudentAuth from './components/auth/StudentAuth.jsx'
 import LoginOrganization from './components/admin_portal/LoginOrganization';
-import CreateQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
+import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
 import QuestionPapersPage from './components/admin_portal/QuestionPapersPage.jsx'
 
 function App() {
@@ -89,8 +89,7 @@ function App() {
         <Route path='/student/student-auth' element={<StudentAuth />} />
 
         <Route path="/organization/question-papers" element={<QuestionPapersPage />} />
-        <Route path="/organization/create-question-paper" element={<CreateQuestionPaper />} />
-
+        <Route path="/organization/create-question-paper" element={<AddQuestionPaper />} />
 
       </Routes>
       <Routes>
