@@ -319,15 +319,15 @@ const AdminDashboard = () => {
                 </div>
               </Link>
 
-              <Link to='/organization/add-question-paper '>
+              <Link to='/organization/question-papers'>
                 <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group mt-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium text-[#1E232C] group-hover:text-black">Add Question Paper</p>
-                      <p className="text-sm text-[#6A707C]">Create new question paper template</p>
+                      <p className="font-medium text-[#1E232C] group-hover:text-black">Question Papers</p>
+                      <p className="text-sm text-[#6A707C]">Manage question papers</p>
                     </div>
                     <svg className="w-6 h-6 text-gray-400 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
                 </div>
