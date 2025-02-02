@@ -141,60 +141,6 @@ const AdminDashboard = () => {
     setSelectedAssignment({ requestId: null, teacherId: null, teacherName: null });
   };
 
-  // Enhanced subject analytics card render
-  // const renderSubjectAnalytics = () => (
-  //   <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 ">
-  //     <h2 className="text-lg font-bold text-[#1E232C] mb-4">Subject Analytics</h2>
-  //     <div className="space-4 gap-4 grid grid-cols-1 ">
-  //       {subjectAnalytics.map((subject, index) => (
-  //         <div key={index} className="p-4 bg-[#F7F8F9] rounded-[8px] ">
-  //           <div className="flex justify-between items-start mb-3">
-  //             <h3 className="font-semibold text-[#1E232C]">{subject.subject}</h3>
-  //             <span className="text-sm text-[#6A707C]">{subject.requests} requests</span>
-  //           </div>
-
-  //           { /* Progress bar */}
-  //           <div className='flex justify-center flex-col items-center'>
-
-  //             <div className="flex items-center gap-2 mb-3 ">
-  //               <div className="flex-1 h-2 bg-gray-200 rounded-full">
-  //                 <div
-  //                   className="h-2 bg-black rounded-full"
-  //                   style={{ width: `${(subject.requests / stats.totalReEvaluations) * 100}%` }}
-  //                 />
-  //               </div>
-  //               <span className="text-xs text-green-600">
-  //                 Avg. +{subject.avgMarksChange} marks
-  //               </span>
-  //             </div>
-
-  //             {/* Issue breakdown */}
-  //             <div className="grid grid-cols-3 gap-2 text-xs mb-3 ">
-  //               {Object.entries(subject.issueBreakdown).map(([issue, count]) => (
-  //                 <div key={issue} className="text-center">
-  //                   <div className={`${ISSUE_TYPES[issue].bgColor} ${ISSUE_TYPES[issue].textColor} p-1 rounded-md`}>
-  //                     {count}
-  //                   </div>
-  //                   <p className="text-[#6A707C] mt-1 text-[10px]">
-  //                     {ISSUE_TYPES[issue].label}
-  //                   </p>
-  //                 </div>
-  //               ))}
-  //             </div>
-
-  //           </div>
-  //           {/* Additional metrics */}
-  //           <div className="flex justify-between text-xs text-[#6A707C] pt-2 border-t border-gray-200">
-  //             <span>Success Rate: {subject.successRate}%</span>
-  //             <span>Avg Response: {subject.averageResponseTime}</span>
-  //             <span>Pending: {subject.pendingRequests}</span>
-  //           </div>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </div>
-  // );
-
   const renderConfirmationModal = () => {
     if (!showConfirmModal) return null;
 
@@ -254,7 +200,7 @@ const AdminDashboard = () => {
             </p>
           </div>
           <div className="flex gap-4 cursor-pointer">
-            <Link to='/admin/generate-report'>
+            <Link to='/organization/generate-report'>
               <button className="cursor-pointer px-4 py-2 border border-[#DADADA] rounded-[8px] hover:border-black transition-all">
                 Generate Report
               </button>
@@ -291,7 +237,7 @@ const AdminDashboard = () => {
               <ArrowIcon />
             </div>
             <div className="space-y-3">
-              <Link to='/admin/add-teacher'>
+              <Link to='/organization/add-teacher'>
                 <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group ">
                   <div className="flex justify-between items-center">
                     <div>
@@ -305,7 +251,7 @@ const AdminDashboard = () => {
                 </div>
               </Link>
 
-              <Link to='/admin/add-student'>
+              <Link to='/organization/add-student'>
                 <div className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-sm transition-all cursor-pointer group mt-4">
                   <div className="flex justify-between items-center">
                     <div>

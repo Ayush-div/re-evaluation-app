@@ -14,7 +14,7 @@ const AddStudentAdmin = () => {
     try {
       const response = await axios.post('/api/admin/addStudent', formData);
       if (response.data.success) {
-        navigate('/admin/added-student-success');
+        navigate('/organization/added-student-success');
       }
     } catch (error) {
       console.error('Error adding student:', error);

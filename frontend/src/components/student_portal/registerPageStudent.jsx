@@ -78,9 +78,9 @@ export default function RegisterCardStudent() {
           Hello! Register to get started
         </div>
         <div>
-          
+
         </div>
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 '>
 
           <input
             type="text"
@@ -124,37 +124,35 @@ export default function RegisterCardStudent() {
           />
 
           {/* Add department and semester inputs */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              placeholder="Department"
-              className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+          <div className='flex flex-col gap-2'>
+            <div className="gap-2 flex">
+              <input
+                type="text"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                placeholder="Department"
+                className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
               transition-all duration-300 
               hover:shadow-md hover:border-gray-400 
               focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
               placeholder:text-gray-400"
-            />
-            <input
-              type="number"
-              name="semester"
-              value={formData.semester}
-              onChange={handleChange}
-              placeholder="Semester"
-              className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
+              />
+              <input
+                type="number"
+                name="semester"
+                value={formData.semester}
+                onChange={handleChange}
+                placeholder="Semester"
+                className="w-1/2 h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
               transition-all duration-300 
               hover:shadow-md hover:border-gray-400 
               focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
               placeholder:text-gray-400"
-            />
+              />
+            </div>
+
           </div>
-
-        </div>
-        <div className='flex flex-col gap-2'>
-
-
           <input
             type="email"
             name="email"

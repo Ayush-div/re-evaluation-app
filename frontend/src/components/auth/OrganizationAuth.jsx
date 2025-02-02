@@ -14,7 +14,8 @@ const OrganizationAuth = () => {
     // Redirect if no organization is selected
     if (!orgData) {
       console.log('No organization selected, redirecting...');
-      navigate('/search-organisation', { 
+      // console.log("hello there: ",orgData)
+      navigate('/search-organization', { 
         state: { role: 'organization' } 
       });
     } else {
