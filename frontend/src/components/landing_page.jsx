@@ -6,6 +6,7 @@ const LandingPage = () => {
 
   const handleRoleSelect = (roleType) => {
     // When user clicks a role card, we pass the role type via navigation state
+    console.log(`${roleType}/${roleType}-auth`)
     navigate(`${roleType}/${roleType}-auth`, { 
       state: { role: roleType } // This is where the role is initially set
     });

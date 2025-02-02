@@ -17,6 +17,8 @@ const AddQuestionPaper = () => {
     const [totalQuestions, setTotalQuestions] = useState('');
     const [questions, setQuestions] = useState([]);
     const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     // Add a new question
     const generateQuestions = (total) => {
@@ -105,6 +107,156 @@ const AddQuestionPaper = () => {
 
     // Add console log to debug state
     console.log('showQuestionBuilder:', showQuestionBuilder);
+
+    const handleFileSelect = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            validateAndSetFile(file);
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            validateAndSetFile(file);
+        }
+    };
+
+    const validateAndSetFile = (file) => {
+        const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (validTypes.includes(file.type)) {
+            setSelectedFile(file);
+        } else {
+            alert('Please upload a PDF or Word document');
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            alert('Please select a file first');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('questionPaper', selectedFile);
+        formData.append('examDetails', JSON.stringify(examDetails));
+
+        try {
+            const response = await axios.post('/api/upload-question-paper', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.data.success) {
+                alert('Question paper uploaded successfully!');
+                navigate('/organization/question-papers');
+            }
+        } catch (error) {
+            console.error('Upload failed:', error);
+            alert('Failed to upload question paper');
+        }
+    };
+
+    const handleFinalSubmit = async () => {
+        try {
+            const questionPaperData = {
+                examDetails,
+                questions,
+                file: selectedFile // Include file if it exists
+            };
+
+            const response = await axios.post('/api/organization/submit-question-paper', questionPaperData);
+            if (response.data.success) {
+                alert('Question paper submitted successfully!');
+                navigate('/organization/question-papers');
+            }
+        } catch (error) {
+            console.error('Submission failed:', error);
+            alert('Failed to submit question paper');
+        }
+    };
+
+    // Update the render upload section to include both upload and submit buttons
+    const renderUploadSection = () => (
+        <div className="mt-6 space-y-6">
+            <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors
+                    ${isDragging ? 'border-black bg-gray-50' : 'border-gray-300'}
+                    ${selectedFile ? 'bg-green-50' : ''}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
+                <div className="flex flex-col items-center gap-4">
+                    <svg 
+                        className={`w-12 h-12 ${selectedFile ? 'text-green-500' : 'text-gray-400'}`}
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    
+                    <div className="text-sm text-gray-600">
+                        {selectedFile ? (
+                            <p className="text-green-600">Selected: {selectedFile.name}</p>
+                        ) : (
+                            <>
+                                <p className="font-medium mb-2">Drag and drop your file here</p>
+                                <p className="text-gray-500 mb-4">or</p>
+                                <button
+                                    onClick={() => document.getElementById('fileInput').click()}
+                                    className="px-4 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all"
+                                >
+                                    Browse Files
+                                </button>
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    className="hidden"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={handleFileSelect}
+                                />
+                            </>
+                        )}
+                    </div>
+                    
+                    <p className="text-xs text-gray-500">
+                        Supported formats: PDF, DOC, DOCX
+                    </p>
+                </div>
+            </div>
+
+            <div className="flex justify-end gap-4">
+                {selectedFile && (
+                    <button
+                        onClick={() => setSelectedFile(null)}
+                        className="px-6 py-2 border border-gray-300 text-gray-600 rounded-[8px] hover:bg-gray-100 transition-all"
+                    >
+                        Clear File
+                    </button>
+                )}
+                <button
+                    onClick={handleFinalSubmit}
+                    className="px-6 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all"
+                >
+                    Final Submit
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
@@ -442,17 +594,8 @@ const AddQuestionPaper = () => {
                             </motion.div>
                         ))}
 
-                        {/* Save Button */}
-                        {questions.length > 0 && (
-                            <div className="mt-6 flex justify-end">
-                                <button
-                                    onClick={() => {/* Add save functionality */}}
-                                    className="px-6 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all"
-                                >
-                                    Save Question Paper
-                                </button>
-                            </div>
-                        )}
+
+                        {questions.length > 0 && renderUploadSection()}
                     </div>
                 )}
             </div>

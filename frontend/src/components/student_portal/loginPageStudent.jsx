@@ -136,7 +136,7 @@ const LoginCardStudent = () => {
 
     return (
         <div className="h-full flex justify-center font-['Urbanist']">
-            <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+            <form className="flex flex-col gap-2" onSubmit={onSubmit}>
                 <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words pt-[40px] pl-[21px]">
                     Welcome back! Glad to see you, Again!
                 </div>
