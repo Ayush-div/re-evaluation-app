@@ -12,7 +12,7 @@ const AddQuestionPaper = () => {
         duration: '',
         department: '',
         semester: '',
-        academicYear: ''
+        // academicYear: ''
     });
     const [totalQuestions, setTotalQuestions] = useState('');
     const [questions, setQuestions] = useState([]);
@@ -90,19 +90,18 @@ const AddQuestionPaper = () => {
     const handleSubmitExamDetails = async (e) => {
         e.preventDefault();
         // Temporarily remove API call and just show the question builder
-        setShowQuestionBuilder(true);
+        // setShowQuestionBuilder(true);
+        // //agar api call rakhni hai toh keep this syntax=> 
         
-        //agar api call rakhni hai toh keep this syntax=> 
-        /*
         try {
-            const response = await axios.post('/api/organization/add-question-paper', examDetails);
-            console.log('Response:', response);  // Add this for debugging
+            console.log(e.target.value)
+            // const response = await axios.post('/api/organization/add-question-paper', examDetails);
+            // console.log('Response:', response);  // Add this for debugging
             setShowQuestionBuilder(true);  // Move this inside try block
         } catch (error) {
             console.error('Error saving exam details:', error);
             alert('Failed to save exam details. Please try again.');
         }
-        */
     };
 
     // Add console log to debug state
@@ -142,41 +141,71 @@ const AddQuestionPaper = () => {
         }
     };
 
-    const handleUpload = async () => {
-        if (!selectedFile) {
-            alert('Please select a file first');
-            return;
-        }
+    // const handleUpload = async () => {
+    //     if (!selectedFile) {
+    //         alert('Please select a file first');
+    //         return;
+    //     }
 
-        const formData = new FormData();
-        formData.append('questionPaper', selectedFile);
-        formData.append('examDetails', JSON.stringify(examDetails));
+    //     const formData = new FormData();
+    //     formData.append('questionPaper', selectedFile);
+    //     formData.append('examDetails', JSON.stringify(examDetails));
 
+    //     try {
+    //         const response = await axios.post('/api/upload-question-paper', formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         });
+    //         if (response.data.success) {
+    //             alert('Question paper uploaded successfully!');
+    //             navigate('/organization/question-papers');
+    //         }
+    //     } catch (error) {
+    //         console.error('Upload failed:', error);
+    //         alert('Failed to upload question paper');
+    //     }
+    // };
+
+    // const handleFinalSubmit = async () => {
+    //     try {
+    //         const questionPaperData = {
+    //             examDetails,
+    //             questions,
+    //             file: selectedFile // Include file if it exists
+    //         };
+    //         console.log("Question paper data is : ",questionPaperData)
+    //         const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
+    //         console.log(response.data.message);
+    //         console.log(questionPaperData)
+    //         if (response.data.success) {
+    //             alert('Question paper submitted successfully!');
+    //             navigate('/organization/question-papers');
+    //         }
+    //     } catch (error) {
+    //         console.error('Submission failed:', error);
+    //         alert('Failed to submit question paper');
+    //     }
+    // };
+    const handleFinalSubmit = async () => {
         try {
-            const response = await axios.post('/api/upload-question-paper', formData, {
+            const formData = new FormData();
+            formData.append('examDetails', JSON.stringify(examDetails)); // Convert object to JSON string
+            formData.append('questions', JSON.stringify(questions)); // Convert questions array to JSON string
+    
+            if (selectedFile) {
+                formData.append('file', selectedFile); // Append the selected file
+            }
+    
+            console.log("Submitting question paper data:", formData);
+    
+            const response = await axios.post('/api/organization/add-question-paper', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            if (response.data.success) {
-                alert('Question paper uploaded successfully!');
-                navigate('/organization/question-papers');
-            }
-        } catch (error) {
-            console.error('Upload failed:', error);
-            alert('Failed to upload question paper');
-        }
-    };
-
-    const handleFinalSubmit = async () => {
-        try {
-            const questionPaperData = {
-                examDetails,
-                questions,
-                file: selectedFile // Include file if it exists
-            };
-
-            const response = await axios.post('/api/organization/submit-question-paper', questionPaperData);
+    
+            console.log(response.data.message);
             if (response.data.success) {
                 alert('Question paper submitted successfully!');
                 navigate('/organization/question-papers');
@@ -186,7 +215,7 @@ const AddQuestionPaper = () => {
             alert('Failed to submit question paper');
         }
     };
-
+    
     // Update the render upload section to include both upload and submit buttons
     const renderUploadSection = () => (
         <div className="mt-6 space-y-6">

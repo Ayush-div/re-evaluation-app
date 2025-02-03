@@ -52,7 +52,7 @@ function App() {
           <Route path="login" element={<LoginOrganization />} />
           <Route path="organization-auth" element={<OrganizationAuth />} />
           <Route path="question-papers" element={<QuestionPapersPage />} />
-          <Route path="create-question-paper" element={<CreateQuestionPaper />} />
+          <Route path="create-question-paper" element={<AddQuestionPaper />} />
           <Route path='add-teacher' element={<AddTeacherAdmin />} />
           <Route path='add-student' element={<AddStudentAdmin />} />
           <Route path='generate-report' element={<GenerateReport />} />

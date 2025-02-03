@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-
+const mongoose = require('mongoose');
 
 const subpartOfSubpartSchema = new mongoose.Schema({
     text: {
@@ -64,7 +63,13 @@ const questionPaperSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    questions: [questionSchema] 
+    questions: [questionSchema],
+
+    questionPdfPath: {
+        type: String,
+        required: true
+    }
 }, { timestamps: true });
 
-export const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);
+const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);
+module.export = QuestionPaper; 
