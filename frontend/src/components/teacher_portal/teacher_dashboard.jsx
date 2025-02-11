@@ -13,7 +13,6 @@ function TeacherDashboard() {
     status: 'pending'
   });
 
-  // Sample data
   const doubts = [
     {
       id: 1,
@@ -31,7 +30,6 @@ function TeacherDashboard() {
     // ... add more sample doubts
   ];
 
-  // Sample data for statistics
   const stats = {
     pendingReviews: 15,
     papersReviewed: 47,
@@ -42,7 +40,6 @@ function TeacherDashboard() {
   const handleViewDoubt = (doubt) => {
     setSelectedDoubt(doubt);
     setIsReviewModalOpen(true);
-    // Reset review data
     setReviewData({
       marks: '',
       comments: '',
@@ -52,7 +49,6 @@ function TeacherDashboard() {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Enhanced Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
@@ -80,7 +76,6 @@ function TeacherDashboard() {
       </nav>
 
       <div className="max-w-[1440px] mx-auto px-6">
-        {/* Greeting Section */}
         <div className="pt-8 pb-6">
           <h1 className="text-2xl font-bold text-[#1E232C]">
             Welcome back, Professor! 👋
@@ -90,7 +85,6 @@ function TeacherDashboard() {
           </p>
         </div>
 
-        {/* Enhanced Stats Section with Icons and Trends */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-[12px] border border-[#DADADA] hover:shadow-md transition-all">
             <p className="text-[#6A707C] text-sm">Pending Reviews</p>
@@ -110,7 +104,6 @@ function TeacherDashboard() {
           </div>
         </div>
 
-        {/* Enhanced Question Analysis Section */}
         <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-[#1E232C]">Questions Requiring Attention</h2>
@@ -168,7 +161,6 @@ function TeacherDashboard() {
           </div>
         </div>
 
-        {/* Doubt Detail Modal */}
         {isDoubtModalOpen && (
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="fixed inset-0 bg-black opacity-30" onClick={() => setIsDoubtModalOpen(false)}></div>
@@ -249,7 +241,6 @@ function TeacherDashboard() {
           </div>
         )}
 
-        {/* Video Upload Section */}
         <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-[#1E232C]">Upload Solution Video</h2>
@@ -257,7 +248,6 @@ function TeacherDashboard() {
           </div>
           
           <div className="space-y-4">
-            {/* Upload Area */}
             <div className="border-2 border-dashed border-[#DADADA] rounded-[12px] p-8
                           hover:border-black transition-colors duration-300 cursor-pointer">
               <div className="flex flex-col items-center text-center">

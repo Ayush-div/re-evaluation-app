@@ -1,4 +1,4 @@
-const { registerAdminStudent } = require("../services/adminStudentService");
+const { registerAdminStudent } = require("../services/adminStudent.service");
 
 async function addAdminStudent(req,res){
     try{

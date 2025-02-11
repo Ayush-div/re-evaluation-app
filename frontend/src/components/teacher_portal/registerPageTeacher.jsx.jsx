@@ -149,7 +149,7 @@ const RegisterCardTeacher = () => {
               >
                 Cancel
               </button>
-              <Link to='/admin/added-teacher-success'>
+              <Link to='/organization/added-teacher-success'>
                 <button
                   type="submit"
                   className="px-6 py-3 bg-black text-white rounded-[8px] 

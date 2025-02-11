@@ -37,65 +37,64 @@ import TeacherAuth from './components/auth/TeacherAuth.jsx'
 import StudentAuth from './components/auth/StudentAuth.jsx'
 import LoginOrganization from './components/admin_portal/LoginOrganization';
 import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
-import QuestionPapersPage from './components/admin_portal/QuestionPapersPage.jsx'
+import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx'
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
+  return (<>
+    <Routes>
 
-        <Route path="/organization">
-          <Route path="register" element={<RegisterOrganization />} />
-          <Route path="login" element={<LoginOrganization />} />
-          <Route path="organization-auth" element={<OrganizationAuth />} />
-          <Route path="question-papers" element={<QuestionPapersPage />} />
-          <Route path="create-question-paper" element={<AddQuestionPaper />} />
-          <Route path='add-teacher' element={<AddTeacherAdmin />} />
-          <Route path='add-student' element={<AddStudentAdmin />} />
-          <Route path='generate-report' element={<GenerateReport />} />
-          <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
-          <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
-          <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
-          <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
-          <Route path='added-student-success' element={<AddedStudentSuccessful />} />
-          <Route index element={<AdminDashboard />} />
-        </Route>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
 
-        <Route path="/student">
-          <Route path="login" element={<LoginCardStudent />} />
-          <Route path="register" element={<RegisterCardStudent />} />
-          <Route path='student-auth' element={<StudentAuth />} />
-          <Route path='apply-reevaluation' element={<ReEvaluationForm />} />
-          <Route path='check-status' element={<ReEvaluationStatus />} />
-          <Route path='question-papers' element={<QuestionPaperViewer />} />
-          <Route path='video-solutions' element={<VideoSolutions />} />
-          <Route path='answer-sheets' element={<AnswerSheets />} />
-          <Route path='registration-successful' element={<RegisterSuccess />} />
-          <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
-          <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
-          <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
-          <Route path='forgot-password/verify-otp' element={<VerifyOtp />} />
-          <Route index element={<Dashboard />} />
-        </Route>
+      <Route path="/organization">
+        <Route path="register" element={<RegisterOrganization />} />
+        <Route path="login" element={<LoginOrganization />} />
+        <Route path="organization-auth" element={<OrganizationAuth />} />
+        <Route path="question-papers" element={<QuestionPapersPage />} />
+        <Route path="create-question-paper" element={<AddQuestionPaper />} />
+        <Route path='add-teacher' element={<AddTeacherAdmin />} />
+        <Route path='add-student' element={<AddStudentAdmin />} />
+        <Route path='generate-report' element={<GenerateReport />} />
+        <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
+        <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
+        <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
+        <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
+        <Route path='added-student-success' element={<AddedStudentSuccessful />} />
+        <Route index element={<AdminDashboard />} />
+      </Route>
 
-        <Route path="/teacher">
-          <Route path="login" element={<LoginCardTeacher />} />
-          <Route path="register" element={<RegisterCardTeacher />} />
-          <Route path='teacher-auth' element={<TeacherAuth />} />
-          <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
-          <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
-          <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
-          <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
-          <Route index element={<TeacherDashboard />} />
-        </Route>
+      <Route path="/student">
+        <Route path="login" element={<LoginCardStudent />} />
+        <Route path="register" element={<RegisterCardStudent />} />
+        <Route path='student-auth' element={<StudentAuth />} />
+        <Route path='apply-reevaluation' element={<ReEvaluationForm />} />
+        <Route path='check-status' element={<ReEvaluationStatus />} />
+        <Route path='question-papers' element={<QuestionPaperViewer />} />
+        <Route path='video-solutions' element={<VideoSolutions />} />
+        <Route path='answer-sheets' element={<AnswerSheets />} />
+        <Route path='registration-successful' element={<RegisterSuccess />} />
+        <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+        <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
+        <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+        <Route path='forgot-password/verify-otp' element={<VerifyOtp />} />
+        <Route index element={<Dashboard />} />
+      </Route>
 
-      </Routes>
-      <Routes>
-      </Routes>
-    </BrowserRouter>
+      <Route path="/teacher">
+        <Route path="login" element={<LoginCardTeacher />} />
+        <Route path="register" element={<RegisterCardTeacher />} />
+        <Route path='teacher-auth' element={<TeacherAuth />} />
+        <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
+        <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+        <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
+        <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+        <Route index element={<TeacherDashboard />} />
+      </Route>
+
+    </Routes>
+    <Routes>
+    </Routes>
+  </>
 
   );
 }

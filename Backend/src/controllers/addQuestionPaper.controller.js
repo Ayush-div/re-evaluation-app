@@ -1,4 +1,4 @@
-const {AddQuestionPaperService} = require("../services/addQuestionPaperService");
+const {AddQuestionPaperService} = require("../services/addQuestionPaper.service");
 
 async function addQuestionPaperController(req,res){
     try{
