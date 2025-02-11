@@ -1,5 +1,17 @@
 const mongoose = require('mongoose');
 
+const statsSchema = new mongoose.Schema({
+    doubts: {
+        type: Number,
+        default: 0
+    },
+    commonIssues: {
+        type: String,
+        enum: ['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking', 'Others'],
+        default: 'Others'
+    }
+});
+
 const subpartOfSubpartSchema = new mongoose.Schema({
     text: {
         type: String,
@@ -8,9 +20,9 @@ const subpartOfSubpartSchema = new mongoose.Schema({
     marks: {
         type: Number,
         required: true
-    }
+    },
+    stats: statsSchema
 });
-
 
 const subpartSchema = new mongoose.Schema({
     subpartText: {
@@ -21,9 +33,9 @@ const subpartSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    stats: statsSchema,
     subpartOfSubpart: [subpartOfSubpartSchema]
 });
-
 
 const questionSchema = new mongoose.Schema({
     questiontext: {
@@ -34,9 +46,9 @@ const questionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    stats: statsSchema,
     subpart: [subpartSchema]
 });
-
 
 const questionPaperSchema = new mongoose.Schema({
     subjectName: {
@@ -68,8 +80,25 @@ const questionPaperSchema = new mongoose.Schema({
     questionPdfPath: {
         type: String,
         required: true
+    },
+    organizationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Organization',
+        required: true
+    },
+    allowedStudents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'
+    }],
+    reEvaluationDeadline: {
+        type: Date,
+        required: true
     }
 }, { timestamps: true });
 
+questionPaperSchema.methods.canStudentAccess = async function(studentId) {
+    return this.allowedStudents.includes(studentId);
+};
+
 const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);
-module.export = QuestionPaper; 
+module.exports = QuestionPaper;

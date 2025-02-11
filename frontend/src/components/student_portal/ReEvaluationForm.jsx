@@ -10,7 +10,8 @@ const ReEvaluationForm = () => {
     selectedQuestions: [],
     remarks: {},
     doubts: {},
-    issueTypes: {} // Add this to track issue types for each question
+    issueTypes: {},
+    customIssueDescriptions: {}
   });
   const [expandedStats, setExpandedStats] = useState({});
 
@@ -21,93 +22,83 @@ const ReEvaluationForm = () => {
     }));
   };
 
-  // Mock data (replace with actual API data)
   const subjects = [
     { id: 1, name: 'Mathematics', fee: 500, paper: '/path/to/math-paper.pdf' },
     { id: 2, name: 'Physics', fee: 500, paper: '/path/to/physics-paper.pdf' },
-    { id: 3, name: 'Chemistry', fee: 500, paper: '/path/to/chemistry-paper.pdf' }
+    // { id: 3, name: 'Chemistry', fee: 500, paper: '/path/to/chemistry-paper.pdf' }
   ];
 
-  // Update the questions mock data structure
-  const questions = [
-    {
-      number: 1,
-      title: "Calculus Integration",
-      subparts: [
-        { 
-          id: '1a', 
-          text: 'First part of question 1', 
-          marks: 5,
-          stats: {
-            doubts: 12,
-            marksChangeProb: "80%",
-            commonIssues: "Calculation error",
-            avgMarksChange: "+2"
+  const questionsBySubject = {
+    Mathematics: [
+      {
+        number: 1,
+        title: "Calculus Integration",
+        marks: 15,
+        stats: { doubts: 15, commonIssues: "Calculation Errors" },
+        subpart: [
+          {
+            id: '1a',
+            marks: 8,
+            stats: { doubts: 12, commonIssues: "Calculation Errors" },
+            subpartOfSubpart: [
+              { 
+                id: '1a-i', 
+                text: 'Evaluate the integral', 
+                marks: 4,
+                stats: { doubts: 7, commonIssues: "Calculation Errors" }
+              },
+              { 
+                id: '1a-ii', 
+                text: 'Find the area', 
+                marks: 4,
+                stats: { doubts: 5, commonIssues: "Unmarked Answers" }
+              }
+            ]
           }
-        },
-        { 
-          id: '1b', 
-          text: 'Second part of question 1', 
-          marks: 5,
-          stats: {
-            doubts: 8,
-            marksChangeProb: "45%",
-            commonIssues: "Concept misunderstanding",
-            avgMarksChange: "+1"
+        ]
+      }
+    ],
+    Physics: [
+      {
+        number: 1,
+        title: "Kinematics",
+        marks: 10,
+        subpart: [
+          {
+            id: '1a',
+            marks: 5,
+            stats: { doubts: 8, commonIssues: "Incorrect Marking" },
+          },
+          {
+            id: '1b',
+            marks: 5,
+            stats: { doubts: 6, commonIssues: "Calculation Errors" },
           }
-        },
-        { 
-          id: '1c', 
-          text: 'Third part of question 1', 
-          marks: 5,
-          stats: {
-            doubts: 3,
-            marksChangeProb: "30%",
-            commonIssues: "Incomplete answer",
-            avgMarksChange: "+0.5"
-          }
-        }
-      ]
-    },
-    {
-      number: 2,
-      title: "Differential Equations",
-      subparts: [
-        { 
-          id: '2a', 
-          text: 'First part of question 2', 
-          marks: 8,
-          stats: {
-            doubts: 15,
-            marksChangeProb: "65%",
-            commonIssues: "Method selection",
-            avgMarksChange: "+3"
-          }
-        },
-        { 
-          id: '2b', 
-          text: 'Second part of question 2', 
-          marks: 7,
-          stats: {
-            doubts: 20,
-            marksChangeProb: "75%",
-            commonIssues: "Final step error",
-            avgMarksChange: "+2"
-          }
-        }
-      ]
-    }
-  ];
+        ]
+      },
+      {
+        number: 2,
+        title: "Newton's Laws",
+        marks: 5,
+        stats: { doubts: 0, commonIssues: "Unmarked Answers" }
+      }
+    ],
+  };
 
-  // Add issue types constant
   const ISSUE_TYPES = {
     CALCULATION: 'Calculation Errors',
     UNMARKED: 'Unmarked Answers',
-    INCORRECT: 'Incorrect Marking'
+    INCORRECT: 'Incorrect Marking',
+    OTHERS: 'Others'
   };
 
   const handleSubjectSelect = (subject) => {
-    setFormData({ ...formData, subject });
+    setFormData({
+      ...formData,
+      subject,
+      questionPaper: null,
+      selectedQuestions: []
+    });
     setStep(2);
   };
 
@@ -127,7 +118,6 @@ const ReEvaluationForm = () => {
     });
   };
 
-  // Add handler for issue type selection
   const handleIssueTypeSelect = (questionId, issueType) => {
     setFormData(prev => ({
       ...prev,
@@ -138,101 +128,139 @@ const ReEvaluationForm = () => {
     }));
   };
 
+  const handleCustomIssueDescription = (questionId, description) => {
+    setFormData(prev => ({
+      ...prev,
+      customIssueDescriptions: {
+        ...prev.customIssueDescriptions,
+        [questionId]: description
+      }
+    }));
+  };
+
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      navigate(-1); 
+    }
+  };
+
+  const BackButton = () => (
+    <button
+      onClick={handleBack}
+      className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 border border-[#DADADA]"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      <span>Back</span>
+    </button>
+  );
+
+  const renderStats = (stats) => (
+    <div className="mt-4 p-4 bg-[#F7F8F9] rounded-[12px] border border-[#DADADA]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex items-start p-3 bg-white rounded-[8px] shadow-sm">
+          <div className="mr-3">
+            <div className="p-2 bg-blue-100 rounded-full">
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <p className="text-lg font-semibold text-[#1E232C]">{stats.doubts}</p>
+            <p className="text-sm text-[#6A707C]">Students requested re-evaluation</p>
+          </div>
+        </div>
+
+        <div className="flex items-start p-3 bg-white rounded-[8px] shadow-sm">
+          <div className="mr-3">
+            <div className="p-2 bg-yellow-100 rounded-full">
+              <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+          </div>
+          <div>
+            <p className="text-[#1E232C] font-semibold mb-1">Common Issue:</p>
+            <p className="text-sm text-[#6A707C]">{stats.commonIssues}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const StatsToggleButton = ({ id, expanded, onClick }) => (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 text-sm bg-[#F7F8F9] px-4 py-2 rounded-full
+        hover:bg-gray-200 transition-all duration-300"
+    >
+      {expanded ? 'Hide Stats' : 'View Stats'}
+      <svg 
+        className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} 
+        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+  );
+
   const renderSubpart = (subpart) => (
     <div key={subpart.id} className="bg-white rounded-[8px] p-4 border border-[#DADADA]">
       <div className="flex items-start space-x-3">
-        <input
-          type="checkbox"
-          checked={formData.selectedQuestions.includes(subpart.id)}
-          onChange={() => handleQuestionSelect(subpart.id)}
-          className="mt-1"
-        />
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
-            <div>
-              <p className="text-[#1E232C] font-bold">Part {subpart.id.slice(-1)} ({subpart.marks} marks)</p>
-              <p className="text-[#6A707C] text-sm">{subpart.text}</p>
-            </div>
-            <button
-              onClick={() => toggleStats(subpart.id)}
-              className="flex items-center gap-2 text-sm text-[#6A707C] hover:text-[#1E232C] transition-colors px-3 py-1 rounded-md hover:bg-[#F7F8F9]"
-            >
-              View Stats
-              <svg 
-                className={`w-4 h-4 transition-transform ${expandedStats[subpart.id] ? 'rotate-180' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-          
-          {expandedStats[subpart.id] && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2 mt-3">
-              <div className="flex flex-col bg-[#F7F8F9] p-3 rounded-[6px]">
-                <div className="flex items-center mb-1">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
-                  <span className="text-[#1E232C] font-medium">{subpart.stats.doubts} students</span>
-                </div>
-                <p className="text-[#6A707C] text-xs">
-                  have requested re-evaluation (last 30 days)
-                </p>
-              </div>
-              
-              <div className="flex flex-col bg-[#F7F8F9] p-3 rounded-[6px]">
-                <div className="flex items-center mb-1">
-                  <div className={`w-2 h-2 rounded-full ${
-                    parseInt(subpart.stats.marksChangeProb) > 70 
-                      ? 'bg-green-500' 
-                      : parseInt(subpart.stats.marksChangeProb) > 40 
-                        ? 'bg-yellow-500' 
-                        : 'bg-red-500'
-                  } mr-2`}></div>
-                  <span className="text-[#1E232C] font-medium">{subpart.stats.marksChangeProb} success rate</span>
-                </div>
-                <p className="text-[#6A707C] text-xs">
-                  received marks revision
-                </p>
-              </div>
-              
-              <div className="flex flex-col bg-[#F7F8F9] p-3 rounded-[6px]">
-                <p className="text-[#1E232C]  font-medium mb-1">Common Issue:</p>
-                <p className="text-[#6A707C] text-xs">"{subpart.stats.commonIssues}"</p>
-              </div>
-              
-              <div className="flex flex-col bg-[#F7F8F9] p-3 rounded-[6px]">
-                <p className="text-[#1E232C] font-medium mb-1">Avg. Marks Increase:</p>
-                <p className="text-[#6A707C] text-xs">+{subpart.stats.avgMarksChange} marks</p>
+            <div className="flex items-start space-x-3">
+              {(!subpart.subpartOfSubpart || subpart.subpartOfSubpart.length === 0) && (
+                <input
+                  type="checkbox"
+                  checked={formData.selectedQuestions.includes(subpart.id)}
+                  onChange={() => handleQuestionSelect(subpart.id)}
+                  className="mt-1"
+                />
+              )}
+              <div>
+                <p className="text-[#1E232C] font-bold">Part {subpart.id} ({subpart.marks} marks)</p>
               </div>
             </div>
-          )}
-          
-          {formData.selectedQuestions.includes(subpart.id) && (
-            <div className="mt-3 space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(ISSUE_TYPES).map(([key, value]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleIssueTypeSelect(subpart.id, value)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all
-                      ${formData.issueTypes[subpart.id] === value
-                        ? 'bg-black text-white'
-                        : 'bg-[#F7F8F9] text-[#6A707C] hover:bg-gray-200'
-                      }`}
-                  >
-                    {value}
-                  </button>
-                ))}
-              </div>
-              
-              <textarea
-                placeholder="Enter your specific remarks/doubts for this part..."
-                className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
-                onChange={(e) => handleRemarkChange(subpart.id, e.target.value)}
-                value={formData.remarks[subpart.id] || ''}
+            {subpart.stats && (
+              <StatsToggleButton 
+                id={subpart.id}
+                expanded={expandedStats[subpart.id]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleStats(subpart.id);
+                }}
               />
+            )}
+          </div>
+
+          {expandedStats[subpart.id] && subpart.stats && renderStats(subpart.stats)}
+
+          {(!subpart.subpartOfSubpart || subpart.subpartOfSubpart.length === 0) && 
+            formData.selectedQuestions.includes(subpart.id) && (
+              <div className="mt-3">
+                {renderIssueSelectionAndRemarks(subpart.id)}
+              </div>
+          )}
+
+          {subpart.subpartOfSubpart && subpart.subpartOfSubpart.length > 0 && (
+            <div className="ml-4 mt-3 space-y-3">
+              {subpart.subpartOfSubpart.map(renderSubSubpart)}
             </div>
           )}
         </div>
@@ -240,8 +268,197 @@ const ReEvaluationForm = () => {
     </div>
   );
 
+  const renderIssueSelectionAndRemarks = (itemId, stats = null) => (
+    <div className="mt-3 space-y-3">
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="flex items-start p-3 bg-white rounded-[8px] shadow-sm">
+            <div className="mr-3">
+              <div className="p-2 bg-blue-100 rounded-full">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-[#1E232C]">{stats.doubts}</p>
+              <p className="text-sm text-[#6A707C]">Students requested re-evaluation</p>
+            </div>
+          </div>
+
+          <div className="flex items-start p-3 bg-white rounded-[8px] shadow-sm">
+            <div className="mr-3">
+              <div className="p-2 bg-yellow-100 rounded-full">
+                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <p className="text-[#1E232C] font-semibold mb-1">Common Issue:</p>
+              <p className="text-sm text-[#6A707C]">{stats.commonIssues}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(ISSUE_TYPES).map(([key, value]) => (
+          <button
+            key={key}
+            onClick={() => handleIssueTypeSelect(itemId, value)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all
+              ${formData.issueTypes[itemId] === value
+                ? 'bg-black text-white'
+                : 'bg-white text-[#6A707C] hover:bg-gray-100'
+              }`}
+          >
+            {value}
+          </button>
+        ))}
+      </div>
+
+      {formData.issueTypes[itemId] === 'Others' && (
+        <input
+          type="text"
+          placeholder="Please specify the issue..."
+          className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+          onChange={(e) => handleCustomIssueDescription(itemId, e.target.value)}
+          value={formData.customIssueDescriptions[itemId] || ''}
+        />
+      )}
+
+      <textarea
+        placeholder="Enter your specific remarks/doubts for this part..."
+        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+        onChange={(e) => handleRemarkChange(itemId, e.target.value)}
+        value={formData.remarks[itemId] || ''}
+      />
+    </div>
+  );
+
+  const renderQuestion = (question) => (
+    <div key={question.number} className="bg-[#F7F8F9] rounded-[12px] p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h4 className="text-[#1E232C] text-lg font-bold">
+          Question {question.number}: {question.title}
+        </h4>
+        <div className="flex items-center gap-4">
+          <span className="px-3 py-1 bg-black text-white rounded-full text-sm">
+            {question.marks} marks
+          </span>
+          {question.stats && (!question.subpart || question.subpart.length === 0) && (
+            <StatsToggleButton 
+              id={`q${question.number}`}
+              expanded={expandedStats[`q${question.number}`]}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleStats(`q${question.number}`);
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+      {(!question.subpart || question.subpart.length === 0) ? (
+        <div className="flex flex-col bg-white p-4 rounded-[8px]">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start space-x-3">
+              <input
+                type="checkbox"
+                checked={formData.selectedQuestions.includes(`q${question.number}`)}
+                onChange={() => handleQuestionSelect(`q${question.number}`)}
+                className="mt-1"
+              />
+              <div className="flex-1">
+                <p className="text-[#1E232C] font-medium">Select entire question</p>
+              </div>
+            </div>
+          </div>
+
+          {expandedStats[`q${question.number}`] && question.stats && renderStats(question.stats)}
+
+          {formData.selectedQuestions.includes(`q${question.number}`) && (
+            <div className="mt-3 ml-7">
+              {renderIssueSelectionAndRemarks(`q${question.number}`)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {question.subpart.map(renderSubpart)}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderSubSubpart = (subSubpart) => (
+    <div key={subSubpart.id} className="bg-[#F7F8F9] p-3 rounded-[6px]">
+      <div className="flex items-start justify-between">
+        <div className="flex items-start space-x-3">
+          <input
+            type="checkbox"
+            checked={formData.selectedQuestions.includes(subSubpart.id)}
+            onChange={() => handleQuestionSelect(subSubpart.id)}
+            className="mt-1"
+          />
+          <div>
+            <p className="text-[#1E232C] font-medium">Part {subSubpart.id} ({subSubpart.marks} marks)</p>
+            <p className="text-[#6A707C] text-sm">{subSubpart.text}</p>
+          </div>
+        </div>
+        {subSubpart.stats && (
+          <StatsToggleButton 
+            id={subSubpart.id}
+            expanded={expandedStats[subSubpart.id]}
+            onClick={() => toggleStats(subSubpart.id)}
+          />
+        )}
+      </div>
+
+      {expandedStats[subSubpart.id] && subSubpart.stats && renderStats(subSubpart.stats)}
+
+      {formData.selectedQuestions.includes(subSubpart.id) && (
+        <div className="mt-3 ml-7 space-y-3">
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(ISSUE_TYPES).map(([key, value]) => (
+              <button
+                key={key}
+                onClick={() => handleIssueTypeSelect(subSubpart.id, value)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all
+                  ${formData.issueTypes[subSubpart.id] === value
+                    ? 'bg-black text-white'
+                    : 'bg-white text-[#6A707C] hover:bg-gray-100'
+                  }`}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+
+          {formData.issueTypes[subSubpart.id] === 'Others' && (
+            <input
+              type="text"
+              placeholder="Please specify the issue..."
+              className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+              onChange={(e) => handleCustomIssueDescription(subSubpart.id, e.target.value)}
+              value={formData.customIssueDescriptions[subSubpart.id] || ''}
+            />
+          )}
+
+          <textarea
+            placeholder="Enter your specific remarks/doubts for this part..."
+            className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+            onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
+            value={formData.remarks[subSubpart.id] || ''}
+          />
+        </div>
+      )}
+    </div>
+  );
+
   const renderStep = () => {
-    switch(step) {
+    switch (step) {
       case 1:
         return (
           <div className="space-y-4">
@@ -269,22 +486,8 @@ const ReEvaluationForm = () => {
           <div className="space-y-4">
             <h3 className="text-2xl font-bold text-[#1E232C] mb-4">Question Paper Review</h3>
             <div className="bg-white rounded-[12px] border border-[#DADADA] p-6">
-              <div className="bg-[#F7F8F9] p-4 rounded-[12px]">
-                Question Paper Viewer
-              </div>
-              
               <div className="mt-6 space-y-6">
-                {questions.map((question) => (
-                  <div key={question.number} className="bg-[#F7F8F9] rounded-[12px] p-4">
-                    <h4 className="text-[#1E232C] text-lg font-bold mb-4">
-                      Question {question.number}: {question.title}
-                    </h4>
-
-                    <div className="space-y-3">
-                      {question.subparts.map(renderSubpart)}
-                    </div>
-                  </div>
-                ))}
+                {questionsBySubject[formData.subject.name]?.map(renderQuestion)}
               </div>
             </div>
 
@@ -318,7 +521,7 @@ const ReEvaluationForm = () => {
                 <p className="text-[#6A707C]">Fee per Part: ₹{formData.subject.fee}</p>
                 <p className="text-xl font-bold text-[#1E232C]">Total: ₹{formData.selectedQuestions.length * formData.subject.fee}</p>
               </div>
-              
+
               <button
                 className="mt-6 w-full py-2 bg-[#000000] text-white rounded-[8px] 
                   hover:bg-[#FFFFFF] hover:text-black hover:border-[.69px] transition-all duration-300"
@@ -339,15 +542,15 @@ const ReEvaluationForm = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
+      <BackButton />
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <div className="flex justify-between items-center">
             {[1, 2, 3].map(stepNo => (
               <div
                 key={stepNo}
-                className={`w-1/3 h-2 rounded-full ${
-                  step >= stepNo ? 'bg-[#000000]' : 'bg-[#DADADA]'
-                }`}
+                className={`w-1/3 h-2 rounded-full ${step >= stepNo ? 'bg-[#000000]' : 'bg-[#DADADA]'
+                  }`}
               />
             ))}
           </div>
