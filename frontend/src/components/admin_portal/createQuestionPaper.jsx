@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-let Response = {};
 const AddQuestionPaper = () => {
     const navigate = useNavigate();
     const [examDetails, setExamDetails] = useState({
@@ -18,7 +17,7 @@ const AddQuestionPaper = () => {
     });
     const [totalQuestions, setTotalQuestions] = useState('');
     const [questions, setQuestions] = useState([]);
-    const [showQuestionBuilder, setShowQuestionBuilder] = useState(true);
+    const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -49,6 +48,23 @@ const AddQuestionPaper = () => {
             return q;
         }));
     };
+    //Update question marks by addind marks of all subparts and subsubparts
+    const updateQuestionMarks = (questionId) => {
+        let m = 0;
+        for (let i = 0; i < questions[questionId].subparts.length; i++) {
+            m += parseInt(questions[questionId].subparts[i].marks);
+        }
+        // console.log(m);
+        return m;
+    } 
+    const updateSubpartMarks = (questionId, subpartId) => {
+        let m = 0;
+        for (let i = 0; i < questions[questionId].subparts[subpartId].subsubparts.length; i++) {
+            m += parseInt(questions[questionId].subparts[subpartId].subsubparts[i].marks);
+        }
+        // console.log(m);
+        return m;
+    }
 
     // Add sub-subpart to a subpart
     const addSubSubpart = (questionId, subpartId) => {
@@ -176,10 +192,9 @@ const AddQuestionPaper = () => {
             };
             console.log("Question paper data is : ",questionPaperData)
             const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
-            Response = response;
-
-            console.log(response.data.message);
-            console.log(questionPaperData)
+            console.log(response);
+            console.log(response.data);
+            // console.log(questionPaperData)
             if (response.data.success) {
                 alert('Question paper submitted successfully!');
                 navigate('/organization/question-papers');
@@ -504,8 +519,6 @@ const AddQuestionPaper = () => {
                                     </div>
                                     <button
                                         onClick={(e) => {
-                                            document.querySelector(`.marks${qIndex}`).classList.add("hidden");
-                                            document.querySelector(`.marks${qIndex} input`).value = "";
                                             return addSubpart(question.id)
                                         }}
                                         className="px-3 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-all flex items-center justify-center"
@@ -559,6 +572,9 @@ const AddQuestionPaper = () => {
                                                         const newQuestions = [...questions];
                                                         newQuestions[qIndex].subparts[spIndex].marks = e.target.value;
                                                         setQuestions(newQuestions);
+                                                        const nq = [...questions];
+                                                        nq[qIndex].marks = updateQuestionMarks(qIndex);
+                                                        setQuestions(nq);                               
                                                     }}
                                                     className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                     placeholder="Marks"
@@ -567,8 +583,6 @@ const AddQuestionPaper = () => {
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => {
-                                                        document.querySelector(`.Marks${qIndex + 1}_${spIndex + 1}`).classList.add("hidden");
-                                                        document.querySelector(`.Marks${qIndex + 1}_${spIndex + 1} input`).value = "";
                                                         return addSubSubpart(question.id, subpart.id)}
                                                     }
                                                     className="px-3 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-all flex items-center justify-center"
@@ -591,7 +605,7 @@ const AddQuestionPaper = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => {
-                                                        document.querySelector(`.marks${qIndex}`).classList.remove("hidden");
+                                                        // document.querySelector(`.marks${qIndex}`).classList.remove("hidden");
                                                         return removeSubpart(question.id, subpart.id)}
                                                     }
                                                     className="px-3 py-3 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-all flex items-center justify-center"
@@ -644,6 +658,9 @@ const AddQuestionPaper = () => {
                                                                     const newQuestions = [...questions];
                                                                     newQuestions[qIndex].subparts[spIndex].subsubparts[sspIndex].marks = e.target.value;
                                                                     setQuestions(newQuestions);
+                                                                    const nq = [...questions];
+                                                                    nq[qIndex].subparts[spIndex].marks = updateSubpartMarks(qIndex,spIndex);
+                                                                    setQuestions(nq);
                                                                 }}
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                                 placeholder="Marks"
@@ -667,4 +684,4 @@ const AddQuestionPaper = () => {
     );
 };
 
-export {AddQuestionPaper , Response};
+export default AddQuestionPaper;

@@ -36,7 +36,7 @@ import OrganizationAuth from './components/auth/OrganizationAuth.jsx';
 import TeacherAuth from './components/auth/TeacherAuth.jsx'
 import StudentAuth from './components/auth/StudentAuth.jsx'
 import LoginOrganization from './components/admin_portal/LoginOrganization';
-import {AddQuestionPaper} from './components/admin_portal/createQuestionPaper.jsx'
+import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
 import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx'
 
 function App() {
