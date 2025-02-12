@@ -5,14 +5,14 @@ async function addAdminStudent(req,res){
         console.log("Ayush Divedi : ",req.body)
         const response = await registerAdminStudent(req.body);
         return res.json({ // .status(201)
-            message : "successfully Added student",
+            message : "successfully Added student in adminStudentController file",
             Success : true,
             data : response,
             statusCode: 201,
             error : {}
         })
     } catch(error){
-        console.log("Hii there : ",error)
+        console.log("Hii there in adminStudentController.js file : ",error)
         res.json({ // .status(error.statusCode)
             message : error.reason,
             Success : false,
