@@ -52,8 +52,3 @@ app.listen((serverConfig.PORT),async () => {
     // await fs.unlink(req.file.path)
     // return res.json({ message: 'OK', url: result.secure_url });
 })
-
-
-
-
-

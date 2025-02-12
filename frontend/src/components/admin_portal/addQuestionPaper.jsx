@@ -19,7 +19,7 @@ export default function AddQuestionPaper() {
         const generateQuestions = (total) => {
             const newQuestions = Array(parseInt(total)).fill().map((_, index) => ({
                 id: index + 1,
-                text: '',
+                // text: '',
                 marks: '',
                 subparts: []
             }));
@@ -34,7 +34,7 @@ export default function AddQuestionPaper() {
                         ...q,
                         subparts: [...q.subparts, {
                             id: q.subparts.length + 1,
-                            text: '',
+                            // text: '',
                             marks: '',
                             subsubparts: []
                         }]
@@ -56,7 +56,7 @@ export default function AddQuestionPaper() {
                                     ...sp,
                                     subsubparts: [...sp.subsubparts, {
                                         id: sp.subsubparts.length + 1,
-                                        text: '',
+                                        // text: '',
                                         marks: ''
                                     }]
                                 };
@@ -127,12 +127,12 @@ export default function AddQuestionPaper() {
                                     <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                         Question {question.id}
                                     </label>
-                                    <input
+                                    {/* <input
                                         type="text"
                                         placeholder="Enter question text"
                                         className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] 
                                         focus:outline-none focus:border-black transition-all"
-                                    />
+                                    /> */}
                                 </div>
                                 <div className="w-32">
                                     <label className="block text-sm font-medium text-[#1E232C] mb-2">
@@ -174,12 +174,12 @@ export default function AddQuestionPaper() {
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                     Subpart {question.id}.{subpart.id}
                                                 </label>
-                                                <input
+                                                {/* <input
                                                     type="text"
                                                     placeholder="Enter subpart text"
                                                     className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] 
                                                     focus:outline-none focus:border-black transition-all"
-                                                />
+                                                /> */}
                                             </div>
                                             <div className="w-32">
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
@@ -221,12 +221,12 @@ export default function AddQuestionPaper() {
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                                 Sub-subpart {question.id}.{subpart.id}.{subsubpart.id}
                                                             </label>
-                                                            <input
+                                                            {/* <input
                                                                 type="text"
                                                                 placeholder="Enter sub-subpart text"
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] 
                                                                 focus:outline-none focus:border-black transition-all"
-                                                            />
+                                                            /> */}
                                                         </div>
                                                         <div className="w-32">
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">

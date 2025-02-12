@@ -47,7 +47,7 @@ const ReEvaluationForm = () => {
                 marks: 4,
                 stats: { doubts: 7, commonIssues: "Calculation Errors" }
               },
-              { 
+              {
                 id: '1a-ii', 
                 text: 'Find the area', 
                 marks: 4,
