@@ -16,7 +16,6 @@ const SearchOrganization = () => {
     const role = location.state?.role ; 
     console.log('Current role:', role); // For debugging
 
-    // Simplified default org data
     const defaultOrgs = [{
         id: 'iiitpune',
         name: 'Indian Institue of Information Technology, Pune',
@@ -24,7 +23,6 @@ const SearchOrganization = () => {
         location: 'Pune, Maharashtra'
     }];
 
-    // Initialize organizations with default org
     useEffect(() => {
         setOrganizations(defaultOrgs);
     }, []);
@@ -88,7 +86,6 @@ const SearchOrganization = () => {
     };
 
     const handleBackToHome = () => {
-        // Navigate back to home
         navigate('/');
     };
 
@@ -98,7 +95,6 @@ const SearchOrganization = () => {
             animate={{ opacity: 1 }}
             className="min-h-screen bg-white font-['Urbanist']"
         >
-            {/* Header Section - make it more compact */}
             <div className="bg-[#F7F8F9] py-8">
                 <div className="container mx-auto px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
@@ -107,7 +103,6 @@ const SearchOrganization = () => {
                 </div>
             </div>
 
-            {/* Search Section - adjust spacing */}
             <div className="container mx-auto px-4 py-4 max-w-5xl">
                 <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 -mt-8">
                     <form onSubmit={handleSearch} className="space-y-4">
@@ -161,7 +156,6 @@ const SearchOrganization = () => {
                     </form>
                 </div>
 
-                {/* Results Section - updated card styling */}
                 <div className="mt-4 flex justify-center">
                     {loading ? (
                         <div className="flex justify-center py-12">
@@ -194,7 +188,6 @@ const SearchOrganization = () => {
                             </div>
                     )}
 
-                    {/* No results message - make it more compact */}
                     {organizations.length === 0 && searchQuery && !loading && (
                         <div className="text-center py-6">
                             <p className="text-[#6A707C] text-sm">No organizations found</p>

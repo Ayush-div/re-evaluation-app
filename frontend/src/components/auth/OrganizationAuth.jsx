@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 const OrganizationAuth = () => {
 
@@ -11,12 +11,10 @@ const OrganizationAuth = () => {
   const orgData = location.state?.organization || JSON.parse(localStorage.getItem('selectedOrg'));
 
   useEffect(() => {
-    // Redirect if no organization is selected
     if (!orgData) {
       console.log('No organization selected, redirecting...');
-      // console.log("hello there: ",orgData)
-      navigate('/search-organization', { 
-        state: { role: 'organization' } 
+      navigate('/search-organization', {
+        state: { role: 'organization' }
       });
     } else {
       console.log('Organization data:', orgData);
@@ -37,15 +35,12 @@ const OrganizationAuth = () => {
           Back to Home
         </Link>
 
-        {/* Title */}
         <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words mb-12 text-center">
           <h1 className="mb-2">Welcome to Re-evaluation Portal</h1>
           <p className="text-[#6A707C] text-lg font-normal">Choose an option to continue</p>
         </div>
 
-        {/* Cards Container */}
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Register Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">
@@ -61,13 +56,12 @@ const OrganizationAuth = () => {
                 </p>
               </div>
               <button className="w-full px-6 py-3 bg-black text-white rounded-[8px] 
-                                 hover:bg-gray-800 transition-all" onClick={()=>navigate('/search-organization',{state:{role:'organization'}})}>
-                  Register Now
-                </button >
+                                 hover:bg-gray-800 transition-all" onClick={() => navigate('/organization/register')}>
+                Register Now
+              </button >
             </div>
           </div>
 
-          {/* Login Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">
@@ -92,7 +86,6 @@ const OrganizationAuth = () => {
           </div>
         </div>
 
-        {/* Support Section */}
         <div className="text-center mt-12">
           <p className="text-[#6A707C]">Need help? Contact our support team</p>
           <button className="mt-4 px-6 py-2 text-sm border border-[#DADADA] rounded-[8px] 

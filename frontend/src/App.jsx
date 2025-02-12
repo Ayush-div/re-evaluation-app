@@ -38,6 +38,7 @@ import StudentAuth from './components/auth/StudentAuth.jsx'
 import LoginOrganization from './components/admin_portal/LoginOrganization';
 import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
 import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx'
+import OrganizationRegisterSuccess from './components/admin_portal/organizationRegisterSuccess.jsx'
 
 function App() {
   return (<>
@@ -60,6 +61,8 @@ function App() {
         <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
         <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
         <Route path='added-student-success' element={<AddedStudentSuccessful />} />
+        <Route path='organization-registered-success' element={<OrganizationRegisterSuccess />} />
+
         <Route index element={<AdminDashboard />} />
       </Route>
 

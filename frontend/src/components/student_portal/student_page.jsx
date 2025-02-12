@@ -45,9 +45,9 @@ const Dashboard = () => {
       title: 'Question Papers',
       description: 'View papers & answers',
       icon: (<svg className="w-8 h-8 text-[#]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
           d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
           d="M10 14h4m-4-3h7" />
       </svg>)
       , route: '/student/question-papers'
@@ -66,15 +66,15 @@ const Dashboard = () => {
       description: 'See Your Answer Sheets',
       icon: (
         <svg className="w-8 h-8 text-[#]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 5a2 2 0 012-2h2a2 2 0 012 2v0a2 2 0 01-2 2h-2a2 2 0 01-2-2v0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 12h6" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M9 16h4" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M16 16h.01" />
         </svg>
       ),
@@ -138,7 +138,7 @@ const Dashboard = () => {
           <div className="grid sm:grid-cols-3 md:grid-cols-5 gap-6 mb-8 ">
             {
               cards.map((card, index) =>
-                <Link to={card.route}>
+                <Link to={card.route} key={index}>
                   <div key={index}
                     className="w-full max-w-[220px] aspect-square bg-white p-4 rounded-[12px] border border-[#DADADA] 
             cursor-pointer select-none
@@ -195,9 +195,9 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        
+
         <Outlet /> {/* Add this to render nested routes */}
-        
+
       </div>
     </div>
   )

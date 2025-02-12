@@ -33,8 +33,8 @@ export default function RegisterCardStudent() {
     studentName: '',
     email: '',
     password: '',
-    department: '', // Add department
-    semester: ''    // Add semester
+    department: '', 
+    semester: ''    
   });
 
   const [showPassword, setShowPassword] = useState(false);

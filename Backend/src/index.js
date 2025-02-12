@@ -18,6 +18,7 @@ const studentRouter = require('./routes/studentRoute.js');
 const adminRouter = require('./routes/adminRoute.js');
 app.use('/api/students',studentRouter)
 app.use('/api/organization',adminRouter) 
+
 app.get('/api/test',isLoggedIn,(req,res)=>{
     res.json({message : 'OK'});
 })

@@ -1,20 +1,10 @@
-import mongoose from "mongoose";
-
+// import mongoose from "mongoose";
+const mongoose = require("mongoose")
 const departmentSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Department name is required'],
         trim: true
-    },
-    code: {
-        type: String,
-        trim: true,
-        uppercase: true
-    },
-    status: {
-        type: String,
-        enum: ['active', 'inactive'],
-        default: 'active'
     }
 });
 
@@ -23,7 +13,7 @@ const registerOrganizationSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Organization name is required'],
         trim: true,
-        unique: true
+        unique: [true,"ORGANISATION ALREADY REGISTERED"]
     },
     orgLocation: {
         type: String,
@@ -31,14 +21,14 @@ const registerOrganizationSchema = new mongoose.Schema({
         trim: true
     },
     departments: [departmentSchema],
-    noOfDepartment: {
-        type: Number,
-        required: [true, 'Number of departments is required'],
-        min: [1, 'Must have at least one department']
-    },
+    // noOfDepartment: {
+    //     type: Number,
+    //     required: [true, 'Number of departments is required'],
+    //     min: [1, 'Must have at least one department']
+    // },
     noOfStudents: {
         type: Number,
-        required: [true, 'Number of students is required'],
+        // required: [true, 'Number of students is required'],
         min: [0, 'Cannot have negative number of students']
     },
     organisationEmail: {
@@ -48,7 +38,24 @@ const registerOrganizationSchema = new mongoose.Schema({
         unique: true,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
     },
-    bankDetails: bankDetailsSchema,
+    bankDetails: {
+        accountNumber: {
+            type: String,
+            required: true
+        },
+        ifscCode: {
+            type: String,
+            required: true
+        },
+        accountHolderName: {
+            type: String,
+            required: true
+        },
+        bankName: {
+            type: String,
+            required: true
+        }
+    },
     contactPerson: {
         name: {
             type: String,
@@ -98,5 +105,8 @@ const registerOrganizationSchema = new mongoose.Schema({
     // }
 
 }, { timestamps: true })
+const registerOrganization = mongoose.model("registerOrganization", registerOrganizationSchema)
 
-export const registerOrganization = mongoose.model("registerOrganization", registerOrganizationSchema)
+module.exports = {
+    registerOrganization
+}
