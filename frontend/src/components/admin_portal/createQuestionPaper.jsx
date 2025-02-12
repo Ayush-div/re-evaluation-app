@@ -605,7 +605,6 @@ const AddQuestionPaper = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => {
-                                                        // document.querySelector(`.marks${qIndex}`).classList.remove("hidden");
                                                         return removeSubpart(question.id, subpart.id)}
                                                     }
                                                     className="px-3 py-3 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-all flex items-center justify-center"
@@ -661,6 +660,8 @@ const AddQuestionPaper = () => {
                                                                     const nq = [...questions];
                                                                     nq[qIndex].subparts[spIndex].marks = updateSubpartMarks(qIndex,spIndex);
                                                                     setQuestions(nq);
+                                                                    nq[qIndex].marks = updateQuestionMarks(qIndex);
+                                                                    setQuestions(nq); 
                                                                 }}
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                                 placeholder="Marks"
