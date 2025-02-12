@@ -1,6 +1,6 @@
 const serverConfig = require("../config/serverConfig");
 const { findStudent } = require("../repositories/studentLoginRepository")
-const Student = require('../schema/studentSchema')
+const Student = require('../schema/student/studentSchema')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 

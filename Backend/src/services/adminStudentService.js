@@ -1,4 +1,4 @@
-const {findAdminStudent, createAdminStudent} = require("../repositories/adminStudent.repository")
+const {findAdminStudent, createAdminStudent} = require("../repositories/adminStudentRepository")
 
         async function registerAdminStudent(studentDetails) {
             console.log("Student details is : ",studentDetails)

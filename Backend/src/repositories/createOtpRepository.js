@@ -1,4 +1,4 @@
-const Student = require("../schema/studentSchema");
+const Student = require("../schema/student/studentSchema");
 // const adminStudent = require('../schema/addStudentAdminSchema')
 
     async function findStudentEmail({email}){

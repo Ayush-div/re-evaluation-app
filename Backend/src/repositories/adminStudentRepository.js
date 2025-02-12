@@ -1,18 +1,20 @@
 //const adminStudent = require("../schema/addStudentAdminSchema");
-const adminStudent = require('../schema/addQuestionPaperSchema')
-    // async function findAdmin(parameters){
-    //     try{
-    //         const response = await adminStudent.findOne({...parameters});
-    //         return response;
-    //     } catch(error) {
-    //         console.log(error)
-    //     }
+const adminStudent = require('../schema/organization/addStudentAdminSchema')
+    async function findAdminStudent(parameters){
+        try{
+            const response = await adminStudent.findOne({...parameters});
+            return response;
+        } catch(error) {
+            console.log(error)
+        }
         
-    // }
-    async function AddingQuestionPaperInto(studentDetails){
+    }
+    async function createAdminStudent(studentDetails){
         try{
             console.log("Student details is : ",studentDetails)
-            
+            const email = studentDetails.email;
+            const rollNumber = studentDetails.rollNumber;
+            console.log("email ans password is : ",email, rollNumber)
             const response = await adminStudent.create(studentDetails);
             // console.log("Response is : ", response);
             return response
@@ -33,6 +35,6 @@ const adminStudent = require('../schema/addQuestionPaperSchema')
     }
 
 module.exports = {
-    AddingQuestionPaperInto,
-    // createAdminStudent
+    findAdminStudent,
+    createAdminStudent
 }

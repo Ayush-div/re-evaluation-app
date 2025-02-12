@@ -1,7 +1,7 @@
 const express = require("express");
-const { addAdminStudent } = require("../controllers/adminStudent.controller.js");
-const { addQuestionPaperController } = require("../controllers/addQuestionPaper.controller.js");
-const uploader = require('../middlewares/multer.middleware.js');
+const { addAdminStudent } = require("../controllers/adminStudentController.js");
+const { addQuestionPaperController } = require("../controllers/addQuestionPaperController.js");
+const uploader = require('../middlewares/multerMiddleware.js');
 const adminRouter = express.Router();
 
 adminRouter.post("/addStudent", addAdminStudent);

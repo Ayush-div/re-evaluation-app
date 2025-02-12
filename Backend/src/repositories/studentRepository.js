@@ -1,5 +1,5 @@
-const Student = require("../schema/studentSchema");
-const adminStudent = require('../schema/addStudentAdminSchema')
+const Student = require("../schema/student/studentSchema");
+const adminStudent = require('../schema/organization/addStudentAdminSchema')
 
     async function findStudent(parameters){
         try{
