@@ -41,11 +41,11 @@ import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx
 import OrganizationRegisterSuccess from './components/admin_portal/organizationRegisterSuccess.jsx'
 
 function App() {
-  return (<>
-    <Routes>
-
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
+  return (
+      <Routes>
+        
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
 
       <Route path="/organization">
         <Route path="register" element={<RegisterOrganization />} />
@@ -66,39 +66,35 @@ function App() {
         <Route index element={<AdminDashboard />} />
       </Route>
 
-      <Route path="/student">
-        <Route path="login" element={<LoginCardStudent />} />
-        <Route path="register" element={<RegisterCardStudent />} />
-        <Route path='student-auth' element={<StudentAuth />} />
-        <Route path='apply-reevaluation' element={<ReEvaluationForm />} />
-        <Route path='check-status' element={<ReEvaluationStatus />} />
-        <Route path='question-papers' element={<QuestionPaperViewer />} />
-        <Route path='video-solutions' element={<VideoSolutions />} />
-        <Route path='answer-sheets' element={<AnswerSheets />} />
-        <Route path='registration-successful' element={<RegisterSuccess />} />
-        <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
-        <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
-        <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
-        <Route path='forgot-password/verify-otp' element={<VerifyOtp />} />
-        <Route index element={<Dashboard />} />
-      </Route>
+        <Route path="/student">
+          <Route path="login" element={<LoginCardStudent />} />
+          <Route path="register" element={<RegisterCardStudent />} />
+          <Route path='student-auth' element={<StudentAuth />} />
+          <Route path='apply-reevaluation' element={<ReEvaluationForm />} />
+          <Route path='check-status' element={<ReEvaluationStatus />} />
+          <Route path='question-papers' element={<QuestionPaperViewer />} />
+          <Route path='video-solutions' element={<VideoSolutions />} />
+          <Route path='answer-sheets' element={<AnswerSheets />} />
+          <Route path='registration-successful' element={<RegisterSuccess />} />
+          <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+          <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
+          <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+          <Route path='forgot-password/verify-otp' element={<VerifyOtp />} />
+          <Route index element={<Dashboard />} />
+        </Route>
 
-      <Route path="/teacher">
-        <Route path="login" element={<LoginCardTeacher />} />
-        <Route path="register" element={<RegisterCardTeacher />} />
-        <Route path='teacher-auth' element={<TeacherAuth />} />
-        <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
-        <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
-        <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
-        <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
-        <Route index element={<TeacherDashboard />} />
-      </Route>
+        <Route path="/teacher">
+          <Route path="login" element={<LoginCardTeacher />} />
+          <Route path="register" element={<RegisterCardTeacher />} />
+          <Route path='teacher-auth' element={<TeacherAuth />} />
+          <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
+          <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
+          <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
+          <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+          <Route index element={<TeacherDashboard />} />
+        </Route>
 
-    </Routes>
-    <Routes>
-    </Routes>
-  </>
-
+      </Routes>
   );
 }
 

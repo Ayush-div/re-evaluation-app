@@ -186,7 +186,7 @@ const LoginCardStudent = () => {
               transition-all duration-300 
               hover:shadow-md hover:border-gray-400 
               focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
-              placeholder:text-gray-400 w-[300px]"
+              placeholder:text-gray-400 "
                     />
                     <button
                         type="button"
@@ -226,7 +226,7 @@ const LoginCardStudent = () => {
                         <div className="flex justify-center gap-8 mt-4 ">
 
 
-                            <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around items-center transition-all duration-300 hover:bg-[#F7F8F9] hover:border-black cursor-pointer hover:scale-105 " onClick={login}>
+                            <div className="w-[200px] h-[46px] rounded-[8px] flex border items-center justify-around  transition-all duration-300 hover:bg-[#F7F8F9] hover:border-black cursor-pointer hover:scale-105 " onClick={login}>
                                 <div className="relative w-[24px] h-[24px]" >
                                     <GoogleIcon className="transition-colors duration-300 hover:text-red-500" />
                                 </div>

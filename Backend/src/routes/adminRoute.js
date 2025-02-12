@@ -10,8 +10,9 @@ const adminRouter = express.Router();
 adminRouter.post("/addStudent", addAdminStudent);
 // adminRouter.post("/add-question-paper", uploader.single('questionPdf'),addQuestionPaperController);
 adminRouter.post("/add-question-paper", (req, res) => {
-    console.log("Requset body : ", req.body);
-    console.log("Hello doston!!")
+    console.log("Request body : ", req.body);
+    // console.log("Hello doston!!");
+    res.send("Question paper received");
 });
 
 

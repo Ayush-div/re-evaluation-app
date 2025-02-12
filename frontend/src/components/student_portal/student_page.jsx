@@ -1,6 +1,6 @@
 import { div } from 'framer-motion/client'
 import React from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -138,8 +138,8 @@ const Dashboard = () => {
           <div className="grid sm:grid-cols-3 md:grid-cols-5 gap-6 mb-8 ">
             {
               cards.map((card, index) =>
-                <Link to={card.route} key={index}>
-                  <div key={index}
+                <NavLink key={index} to={card.route}>
+                  <div 
                     className="w-full max-w-[220px] aspect-square bg-white p-4 rounded-[12px] border border-[#DADADA] 
             cursor-pointer select-none
             transition-all duration-300 
@@ -155,7 +155,7 @@ const Dashboard = () => {
                       <p className="text-[#6A707C] text-xs">{card.description}</p>
                     </div>
                   </div>
-                </Link>
+                </NavLink>
               )
             }
           </div>
@@ -197,7 +197,6 @@ const Dashboard = () => {
         </div>
 
         <Outlet /> {/* Add this to render nested routes */}
-
       </div>
     </div>
   )

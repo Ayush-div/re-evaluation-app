@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+
 const AddQuestionPaper = () => {
     const navigate = useNavigate();
     const [examDetails, setExamDetails] = useState({
@@ -24,7 +25,6 @@ const AddQuestionPaper = () => {
     const generateQuestions = (total) => {
         const newQuestions = Array(parseInt(total)).fill().map((_, index) => ({
             id: index + 1,
-            text: '',
             marks: '',
             subparts: []
         }));
@@ -33,13 +33,13 @@ const AddQuestionPaper = () => {
 
     // Add subpart to a question
     const addSubpart = (questionId) => {
+
         setQuestions(questions.map(q => {
             if (q.id === questionId) {
                 return {
                     ...q,
                     subparts: [...q.subparts, {
                         id: q.subparts.length + 1,
-                        text: '',
                         marks: '',
                         subsubparts: []
                     }]
@@ -48,6 +48,23 @@ const AddQuestionPaper = () => {
             return q;
         }));
     };
+    //Update question marks by addind marks of all subparts and subsubparts
+    const updateQuestionMarks = (questionId) => {
+        let m = 0;
+        for (let i = 0; i < questions[questionId].subparts.length; i++) {
+            m += parseInt(questions[questionId].subparts[i].marks);
+        }
+        // console.log(m);
+        return m;
+    } 
+    const updateSubpartMarks = (questionId, subpartId) => {
+        let m = 0;
+        for (let i = 0; i < questions[questionId].subparts[subpartId].subsubparts.length; i++) {
+            m += parseInt(questions[questionId].subparts[subpartId].subsubparts[i].marks);
+        }
+        // console.log(m);
+        return m;
+    }
 
     // Add sub-subpart to a subpart
     const addSubSubpart = (questionId, subpartId) => {
@@ -61,7 +78,6 @@ const AddQuestionPaper = () => {
                                 ...sp,
                                 subsubparts: [...sp.subsubparts, {
                                     id: sp.subsubparts.length + 1,
-                                    text: '',
                                     marks: ''
                                 }]
                             };
@@ -95,8 +111,8 @@ const AddQuestionPaper = () => {
         
         try {
             console.log(e.target.value)
-            // const response = await axios.post('/api/organization/add-question-paper', examDetails);
-            // console.log('Response:', response);  // Add this for debugging
+            const response = await axios.post('/api/organization/add-question-paper', examDetails);
+            console.log('Response:', response);  // Add this for debugging
             setShowQuestionBuilder(true);  // Move this inside try block
         } catch (error) {
             console.error('Error saving exam details:', error);
@@ -167,45 +183,18 @@ const AddQuestionPaper = () => {
     //     }
     // };
 
-    // const handleFinalSubmit = async () => {
-    //     try {
-    //         const questionPaperData = {
-    //             examDetails,
-    //             questions,
-    //             file: selectedFile // Include file if it exists
-    //         };
-    //         console.log("Question paper data is : ",questionPaperData)
-    //         const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
-    //         console.log(response.data.message);
-    //         console.log(questionPaperData)
-    //         if (response.data.success) {
-    //             alert('Question paper submitted successfully!');
-    //             navigate('/organization/question-papers');
-    //         }
-    //     } catch (error) {
-    //         console.error('Submission failed:', error);
-    //         alert('Failed to submit question paper');
-    //     }
-    // };
     const handleFinalSubmit = async () => {
         try {
-            const formData = new FormData();
-            formData.append('examDetails', JSON.stringify(examDetails)); // Convert object to JSON string
-            formData.append('questions', JSON.stringify(questions)); // Convert questions array to JSON string
-    
-            if (selectedFile) {
-                formData.append('file', selectedFile); // Append the selected file
-            }
-    
-            console.log("Submitting question paper data:", formData);
-    
-            const response = await axios.post('/api/organization/add-question-paper', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-    
-            console.log(response.data.message);
+            const questionPaperData = {
+                examDetails,
+                questions,
+                file: selectedFile // Include file if it exists
+            };
+            console.log("Question paper data is : ",questionPaperData)
+            const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
+            console.log(response);
+            console.log(response.data);
+            // console.log(questionPaperData)
             if (response.data.success) {
                 alert('Question paper submitted successfully!');
                 navigate('/organization/question-papers');
@@ -215,6 +204,62 @@ const AddQuestionPaper = () => {
             alert('Failed to submit question paper');
         }
     };
+
+    // const handleFinalSubmit = async () => {
+    //     try {
+    //         const formData = new FormData();
+    
+    //         // Debugging: Ensure data exists before appending
+    //         console.log("Exam Details:", examDetails);
+    //         console.log("Questions:", questions);
+    //         console.log("Selected File:", selectedFile);
+    
+    //         if (examDetails && Object.keys(examDetails).length > 0) {
+    //             formData.append('examDetails', JSON.stringify(examDetails));
+    //         } else {
+    //             console.warn("⚠️ examDetails is empty or undefined!");
+    //         }
+    
+    //         if (questions.length > 0) {
+    //             formData.append('questions', JSON.stringify(questions));
+    //         } else {
+    //             console.warn("⚠️ questions array is empty!");
+    //         }
+    
+    //         if (selectedFile) {
+    //             console.log("Selected File Name:", selectedFile.name);
+    //             formData.append('file', selectedFile);
+    //         } else {
+    //             console.warn("⚠️ No file selected!");
+    //         }
+    
+    //         // Debug: Check if formData has content
+    //         console.log("Final FormData Entries:");
+    //         for (let pair of formData.entries()) {
+    //             console.log(pair[0], pair[1]);
+    //         }
+
+    //         // console.log(formData.entries())
+    
+    //         const response = await axios.post('/api/organization/add-question-paper', formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         });
+    //         Response = response;
+    //         console.log("Response is  : ",Response);
+    //         console.log(Response.data.message);
+    //         console.log(Response.data.data.response);
+    //         if (response.data.success) {
+    //             alert('Question paper submitted successfully!');
+    //             navigate('/organization/question-papers');
+    //         }
+    //     } catch (error) {
+    //         console.error('Submission failed:', error);
+    //         alert('Failed to submit question paper');
+    //     }
+    // };
+    
     
     // Update the render upload section to include both upload and submit buttons
     const renderUploadSection = () => (
@@ -426,6 +471,11 @@ const AddQuestionPaper = () => {
                                         onChange={(e) => setTotalQuestions(e.target.value)}
                                         className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                         placeholder="Enter number of questions"
+                                        onKeyDown={(e)=>{ 
+                                            if (e.key === "Enter" && (e.value != 0)) {
+                                                return generateQuestions(totalQuestions);
+                                            }  
+                                        }}
                                     />
                                 </div>
                                 <button
@@ -447,22 +497,11 @@ const AddQuestionPaper = () => {
                             >
                                 <div className="flex gap-4 items-end mb-4">
                                     <div className="flex-1">
-                                        <label className="block text-sm font-medium text-[#1E232C] mb-2">
+                                        <h1 className="block text-sm font-bold text-[#1E232C] mb-2">
                                             Question {qIndex + 1}
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={question.text}
-                                            onChange={(e) => {
-                                                const newQuestions = [...questions];
-                                                newQuestions[qIndex].text = e.target.value;
-                                                setQuestions(newQuestions);
-                                            }}
-                                            className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
-                                            placeholder="Enter question text"
-                                        />
+                                        </h1>
                                     </div>
-                                    <div className="w-32">
+                                    <div className={`marks${qIndex} w-32`}>
                                         <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                             Marks
                                         </label>
@@ -479,7 +518,9 @@ const AddQuestionPaper = () => {
                                         />
                                     </div>
                                     <button
-                                        onClick={() => addSubpart(question.id)}
+                                        onClick={(e) => {
+                                            return addSubpart(question.id)
+                                        }}
                                         className="px-3 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-all flex items-center justify-center"
                                         title="Add Subpart"
                                     >
@@ -508,7 +549,7 @@ const AddQuestionPaper = () => {
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                     Subpart {qIndex + 1}.{spIndex + 1}
                                                 </label>
-                                                <input
+                                                {/* <input
                                                     type="text"
                                                     value={subpart.text}
                                                     onChange={(e) => {
@@ -518,9 +559,9 @@ const AddQuestionPaper = () => {
                                                     }}
                                                     className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                     placeholder="Enter subpart text"
-                                                />
+                                                /> */}
                                             </div>
-                                            <div className="w-32">
+                                            <div className= {`Marks${qIndex + 1}_${spIndex + 1} w-32`}>
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                     Marks
                                                 </label>
@@ -531,6 +572,9 @@ const AddQuestionPaper = () => {
                                                         const newQuestions = [...questions];
                                                         newQuestions[qIndex].subparts[spIndex].marks = e.target.value;
                                                         setQuestions(newQuestions);
+                                                        const nq = [...questions];
+                                                        nq[qIndex].marks = updateQuestionMarks(qIndex);
+                                                        setQuestions(nq);                               
                                                     }}
                                                     className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                     placeholder="Marks"
@@ -538,7 +582,9 @@ const AddQuestionPaper = () => {
                                             </div>
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => addSubSubpart(question.id, subpart.id)}
+                                                    onClick={() => {
+                                                        return addSubSubpart(question.id, subpart.id)}
+                                                    }
                                                     className="px-3 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition-all flex items-center justify-center"
                                                     title="Add Sub-subpart"
                                                 >
@@ -558,7 +604,9 @@ const AddQuestionPaper = () => {
                                                     </svg>
                                                 </button>
                                                 <button
-                                                    onClick={() => removeSubpart(question.id, subpart.id)}
+                                                    onClick={() => {
+                                                        return removeSubpart(question.id, subpart.id)}
+                                                    }
                                                     className="px-3 py-3 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-all flex items-center justify-center"
                                                     title="Remove Subpart"
                                                 >
@@ -586,7 +634,7 @@ const AddQuestionPaper = () => {
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                                 Sub-subpart {qIndex + 1}.{spIndex + 1}.{sspIndex + 1}
                                                             </label>
-                                                            <input
+                                                            {/* <input
                                                                 type="text"
                                                                 value={subsubpart.text}
                                                                 onChange={(e) => {
@@ -596,7 +644,7 @@ const AddQuestionPaper = () => {
                                                                 }}
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                                 placeholder="Enter sub-subpart text"
-                                                            />
+                                                            /> */}
                                                         </div>
                                                         <div className="w-32">
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">
@@ -609,6 +657,11 @@ const AddQuestionPaper = () => {
                                                                     const newQuestions = [...questions];
                                                                     newQuestions[qIndex].subparts[spIndex].subsubparts[sspIndex].marks = e.target.value;
                                                                     setQuestions(newQuestions);
+                                                                    const nq = [...questions];
+                                                                    nq[qIndex].subparts[spIndex].marks = updateSubpartMarks(qIndex,spIndex);
+                                                                    setQuestions(nq);
+                                                                    nq[qIndex].marks = updateQuestionMarks(qIndex);
+                                                                    setQuestions(nq); 
                                                                 }}
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                                 placeholder="Marks"
