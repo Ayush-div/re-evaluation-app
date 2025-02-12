@@ -19,11 +19,11 @@ async function registerStudent(studentDetails) {
         studentName: studentDetails.studentName,
         email: studentDetails.email,
         password: studentDetails.password,
-        department:studentDetails.department,
-        semester:studentDetails.semester
+        department: studentDetails.department,
+        semester: studentDetails.semester
     })
 
-    console.log("Hii there : ", newStudent);
+    console.log("Hii there from studentregistractioncontoller.js : ", newStudent);
     if (newStudent.Field == 'email') {
         throw { reason: "Please enter correct email", statusCode: 500 }
     }

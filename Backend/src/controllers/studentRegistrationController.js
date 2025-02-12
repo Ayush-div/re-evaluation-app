@@ -1,27 +1,28 @@
 const { registerStudent } = require("../services/studentRegisterService");
 
-async function createStudent(req,res){
+async function createStudent(req, res) {
     console.log(req.body);
-    try{
+    try {
         const response = await registerStudent(req.body);
         console.log(response)
         return res.json({ // .status(201)
-            message : "successfully resistered the user",
-            Success : true,
-            data : response,
+            message: "successfully resistered the user",
+            Success: true,
+            data: response,
             statusCode: 201,
-            error : {}
+            error: {}
         })
-    } catch(error){
+    } catch (error) {
+        console.log("error from studentregistrationcontroller.js")
         res.json({ // .status(error.statusCode)
-            message : error.reason,
-            Success : false,
-            data : {},
-            error : error,
+            message: error.reason,
+            Success: false,
+            data: {},
+            error: error,
             statusCode: error.statusCode
         })
     }
-    
+
 }
 
 module.exports = {

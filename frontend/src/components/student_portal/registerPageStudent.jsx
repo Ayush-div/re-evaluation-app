@@ -58,6 +58,8 @@ export default function RegisterCardStudent() {
         studentName: formData.studentName,
         email: formData.email,
         password: formData.password,
+        department:formData.department,
+        semester:formData.semester
       });
       console.log("Response is : ", response.data.message);
       if (response.data.message === 'successfully resistered the user') {

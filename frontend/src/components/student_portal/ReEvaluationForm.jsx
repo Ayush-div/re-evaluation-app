@@ -491,14 +491,14 @@ const ReEvaluationForm = () => {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-between">
-              <button
+            <div className="mt-6 flex justify-center">
+              {/* <button
                 onClick={() => setStep(1)}
                 className="px-6 py-2 border border-[#DADADA] rounded-[8px] text-[#6A707C] 
                   hover:text-[#000000] hover:border-[#000000] transition-all duration-300"
               >
                 Back
-              </button>
+              </button> */}
               <button
                 onClick={() => setStep(3)}
                 className="px-6 py-2 bg-[#000000] text-white rounded-[8px] 

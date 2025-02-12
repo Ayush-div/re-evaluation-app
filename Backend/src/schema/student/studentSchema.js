@@ -38,7 +38,7 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Semester: {
+    semester: {
         type: String,
         required: true
     }
