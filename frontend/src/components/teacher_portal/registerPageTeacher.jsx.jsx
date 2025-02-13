@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 const RegisterCardTeacher = () => {
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
@@ -23,12 +23,10 @@ const RegisterCardTeacher = () => {
       </nav>
 
       <div className="max-w-[1440px] mx-auto px-6 py-8">
-        {/* Form Container */}
         <div className="max-w-2xl mx-auto bg-white rounded-[12px] border border-[#DADADA] p-6">
           <h2 className="text-xl font-bold text-[#1E232C] mb-6">Enter Your Information</h2>
           
           <form className="space-y-6">
-            {/* Basic Information */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[#6A707C] text-sm mb-2">Full Name</label>
@@ -54,7 +52,6 @@ const RegisterCardTeacher = () => {
               </div>
             </div>
 
-            {/* Contact Information */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[#6A707C] text-sm mb-2">Email Address</label>
@@ -80,7 +77,6 @@ const RegisterCardTeacher = () => {
               </div>
             </div>
 
-            {/* Department & Role */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-[#6A707C] text-sm mb-2">Department</label>
@@ -106,7 +102,6 @@ const RegisterCardTeacher = () => {
               </div>
             </div>
 
-            {/* Qualifications */}
             <div>
               <label className="block text-[#6A707C] text-sm mb-2">Qualifications</label>
               <textarea
@@ -118,7 +113,6 @@ const RegisterCardTeacher = () => {
               ></textarea>
             </div>
 
-            {/* Upload Documents Section */}
             <div className="border-2 border-dashed border-[#DADADA] rounded-[12px] p-8
                          hover:border-black transition-colors duration-300">
               <div className="flex flex-col items-center text-center">
@@ -138,7 +132,6 @@ const RegisterCardTeacher = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-end gap-4">
               <button
                 type="button"

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import FluentEyeIcon from '../../../public/icons/eye';
 import FluentEyeClosedIcon from '../../../public/icons/eye-closed';
 import axios from 'axios';
@@ -7,7 +7,10 @@ import { useGoogleLogin } from '@react-oauth/google';
 
 export default function RegisterCardStudent() {
   const navigate = useNavigate();
-
+  const location = useLocation()
+  const organization = location.state?.organization
+  // console.log("here in registerPageStudent")
+  // console.log(organization.id)
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -33,8 +36,8 @@ export default function RegisterCardStudent() {
     studentName: '',
     email: '',
     password: '',
-    department: '', 
-    semester: ''    
+    department: '',
+    semester: ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -47,10 +50,12 @@ export default function RegisterCardStudent() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const [errorMessage, setErrorMessage] = useState('');
 
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log(e)
+   
     try {
       const response = await axios.post('/api/students/register', {
         mobileNumber: formData.mobileNumber,
@@ -58,16 +63,27 @@ export default function RegisterCardStudent() {
         studentName: formData.studentName,
         email: formData.email,
         password: formData.password,
-        department:formData.department,
-        semester:formData.semester
+        department: formData.department,
+        semester: formData.semester,
+        organization: organization.name,
+        orgID: organization.id
       });
       console.log("Response is : ", response.data.message);
       if (response.data.message === 'successfully resistered the user') {
         navigate('/student/registration-successful');
+      } else if (response.data.message === 'Please enter correct email it is already in use') {
+        setErrorMessage('Student already exists with this email');
+        setTimeout(() => setErrorMessage(''), 3000);
       }
-
-    } catch (error) {
+      else if (response.data.message === 'Please enter correct rollnumber it is already in use') {
+        setErrorMessage('Student already exists with this rollnumber');
+        setTimeout(() => setErrorMessage(''), 3000);
+      }
+    }
+    catch (error) {
       console.error('Error registering student:', error);
+      setErrorMessage('Error adding student. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
@@ -80,7 +96,11 @@ export default function RegisterCardStudent() {
           Hello! Register to get started
         </div>
         <div>
-
+          {errorMessage && (
+            <div className="mt-3 text-red-500 text-sm font-medium bg-red-50 p-2 rounded-md border border-red-200">
+              {errorMessage}
+            </div>
+          )}
         </div>
         <div className='flex flex-col gap-2 '>
 
@@ -125,7 +145,6 @@ export default function RegisterCardStudent() {
           placeholder:text-gray-400"
           />
 
-          {/* Add department and semester inputs */}
           <div className='flex flex-col gap-2'>
             <div className="gap-2 flex">
               <input
@@ -203,9 +222,7 @@ export default function RegisterCardStudent() {
           Register
         </button>
 
-        {/* Social Login Section */}
         <div className="w-full ">
-
           <div className="flex justify-center items-center mt-6 mb-4">
             <div className="text-[#1E232C] text-[15px]">Already have an account? </div>
             <Link to='/student/login'>

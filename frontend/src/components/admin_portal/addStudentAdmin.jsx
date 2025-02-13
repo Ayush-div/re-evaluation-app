@@ -8,16 +8,22 @@ const AddStudentAdmin = () => {
     rollNumber: '',
     email: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/admin/addStudent', formData);
+      const response = await axios.post('/api/organization/addStudent', formData);
       if (response.data.success) {
         navigate('/organization/added-student-success');
+      } else if (response.data.message === "Student with the given rollnumber and email already exists") {
+        setErrorMessage('Student already exists with this roll number or email');
+        setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
       console.error('Error adding student:', error);
+      setErrorMessage('Error adding student. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
@@ -44,6 +50,11 @@ const AddStudentAdmin = () => {
           <div className="bg-white rounded-t-[12px] border border-b-0 border-[#DADADA] p-6">
             <h2 className="text-xl font-bold text-[#1E232C]">Student Information</h2>
             <p className="text-[#6A707C] text-sm mt-1">Add a new student to the system</p>
+            {errorMessage && (
+              <div className="mt-3 text-red-500 text-sm font-medium bg-red-50 p-2 rounded-md border border-red-200">
+                {errorMessage}
+              </div>
+            )}
           </div>
           
           {/* Form Container */}

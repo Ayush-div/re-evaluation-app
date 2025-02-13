@@ -1,9 +1,9 @@
 
-// import { registerOrganization } from "../schema/organization/organisationRegisterSchema";
-const { registerOrganization } = require("../schema/organization/organisationRegisterSchema.js")
+// import { Organization } from "../schema/organization/organisationRegisterSchema";
+const { Organization } = require("../schema/organization/organisationRegisterSchema.js")
 async function findOrganization(parameters) {
     try {
-        const response = await registerOrganization.findOne({ ...parameters });
+        const response = await Organization.findOne({ ...parameters });
         // console.log("find ORGANISATION RESPONSE")
         // console.log("response")
         // console.log(response)
@@ -18,7 +18,7 @@ async function createOrganization(organizationDetails) {
     console.log("here in the organizationregister.repository.js ->> ")
     console.log(organizationDetails)
     try {
-        const response = await registerOrganization.create(organizationDetails);
+        const response = await Organization.create(organizationDetails);
         console.log(response)
         console.log("here in organizationRegister.repositroy.js")
         return response

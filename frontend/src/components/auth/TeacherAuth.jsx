@@ -5,7 +5,6 @@ const TeacherAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Get organization data from both state and localStorage
   const orgData = location.state?.organization || JSON.parse(localStorage.getItem('selectedOrg'));
 
   useEffect(() => {
@@ -41,7 +40,6 @@ const TeacherAuth = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Register Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">
@@ -56,13 +54,12 @@ const TeacherAuth = () => {
                 </p>
               </div>
               <button className="w-full px-6 py-3 bg-black text-white rounded-[8px] 
-                                 hover:bg-gray-800 transition-all" onClick={()=>navigate('/search-organization',{state:{role:'teacher'}})}>
-                  Register Now
-                </button >
+                                 hover:bg-gray-800 transition-all" onClick={() => navigate('/search-organization', { state: { role: 'teacher' } })}>
+                Register Now
+              </button >
             </div>
           </div>
 
-          {/* Login Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">

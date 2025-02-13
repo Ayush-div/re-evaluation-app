@@ -8,7 +8,7 @@ const departmentSchema = new mongoose.Schema({
     }
 });
 
-const registerOrganizationSchema = new mongoose.Schema({
+const organizationSchema = new mongoose.Schema({
     orgName: {
         type: String,
         required: [true, 'Organization name is required'],
@@ -105,8 +105,8 @@ const registerOrganizationSchema = new mongoose.Schema({
     // }
 
 }, { timestamps: true })
-const registerOrganization = mongoose.model("registerOrganization", registerOrganizationSchema)
+const Organization = mongoose.model("Organization", organizationSchema)
 
 module.exports = {
-    registerOrganization
+    Organization
 }

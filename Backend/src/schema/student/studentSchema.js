@@ -41,6 +41,14 @@ const studentSchema = new mongoose.Schema({
     semester: {
         type: String,
         required: true
+    },
+    organization: {
+        type: String,
+        required: true
+    },
+    orgID: {
+        type: String,
+        required: true
     }
 
 }, { timestamps: true })

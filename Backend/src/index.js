@@ -10,28 +10,32 @@ const fs = require('fs/promises');
 const app = express()
 
 app.use(cookieParser());
-app.use(express.json()); 
-app.use(express.text()); 
-app.use(express.urlencoded({ extended : true }));
+app.use(express.json());
+app.use(express.text());
+app.use(express.urlencoded({ extended: true }));
 
 const studentRouter = require('./routes/studentRoute.js');
 const adminRouter = require('./routes/adminRoute.js');
-app.use('/api/students',studentRouter)
-app.use('/api/organization',adminRouter) 
+const searchOrganizationRouter = require('./routes/searchOrganization.route.js')
 
-app.get('/api/test',isLoggedIn,(req,res)=>{
-    res.json({message : 'OK'});
+app.use('/api/students', studentRouter)
+app.use('/api/organization', adminRouter)
+
+app.use('/api/search-organization', searchOrganizationRouter);
+
+app.get('/api/test', isLoggedIn, (req, res) => {
+    res.json({ message: 'OK' });
 })
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send("Hello World!!");
 })
 
 
-app.get('/ping', isLoggedIn, (req,res)=>{
+app.get('/ping', isLoggedIn, (req, res) => {
     console.log(req.body);
     console.log(req.cookies);
-    return res.json({message : 'pong'}); 
+    return res.json({ message: 'pong' });
 })
 
 // app.post('/photo', uploader.single('incomingFile'), async (req,res)=>{
@@ -43,9 +47,9 @@ app.get('/ping', isLoggedIn, (req,res)=>{
 //     } catch(error){
 //         console.log("ERROR : ", error)
 //     }
-    
+
 // })
-app.listen((serverConfig.PORT),async () => {
+app.listen((serverConfig.PORT), async () => {
     await connectDB();
     console.log(`server started at PORT ${serverConfig.PORT}`)
     // const result = await cloudinary.uploader.upload(req.file.path /*, {resource_type: resourceType}*/);

@@ -43,28 +43,27 @@ import OrganizationRegisterSuccess from './components/admin_portal/organizationR
 function App() {
   return (
       <Routes>
-        
+
         <Route path="/" element={<LandingPage />} />
         <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
 
-      <Route path="/organization">
-        <Route path="register" element={<RegisterOrganization />} />
-        <Route path="login" element={<LoginOrganization />} />
-        <Route path="organization-auth" element={<OrganizationAuth />} />
-        <Route path="question-papers" element={<QuestionPapersPage />} />
-        <Route path="create-question-paper" element={<AddQuestionPaper />} />
-        <Route path='add-teacher' element={<AddTeacherAdmin />} />
-        <Route path='add-student' element={<AddStudentAdmin />} />
-        <Route path='generate-report' element={<GenerateReport />} />
-        <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
-        <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
-        <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
-        <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
-        <Route path='added-student-success' element={<AddedStudentSuccessful />} />
-        <Route path='organization-registered-success' element={<OrganizationRegisterSuccess />} />
-
-        <Route index element={<AdminDashboard />} />
-      </Route>
+        <Route path="/organization">
+          <Route path="register" element={<RegisterOrganization />} />
+          <Route path="login" element={<LoginOrganization />} />
+          <Route path="organization-auth" element={<OrganizationAuth />} />
+          <Route path="question-papers" element={<QuestionPapersPage />} />
+          <Route path="create-question-paper" element={<AddQuestionPaper />} />
+          <Route path='add-teacher' element={<AddTeacherAdmin />} />
+          <Route path='add-student' element={<AddStudentAdmin />} />
+          <Route path='generate-report' element={<GenerateReport />} />
+          <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
+          <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
+          <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
+          <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
+          <Route path='added-student-success' element={<AddedStudentSuccessful />} />
+          <Route path='organization-registered-success' element={<OrganizationRegisterSuccess />} />
+          <Route index element={<AdminDashboard />} />
+        </Route>
 
         <Route path="/student">
           <Route path="login" element={<LoginCardStudent />} />

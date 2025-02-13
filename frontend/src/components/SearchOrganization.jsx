@@ -6,26 +6,38 @@ import { div } from 'framer-motion/client';
 
 const SearchOrganization = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [organizations, setOrganizations] = useState([]);
+    const [organizations, setOrganizations] = useState([{ id: '', name: '', location: '' }]);
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState('all');
     const [recentSearches, setRecentSearches] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const role = location.state?.role ; 
-    console.log('Current role:', role); // For debugging
+    const role = location.state?.role;
+    console.log('Current role:', role);
 
-    const defaultOrgs = [{
-        id: 'iiitpune',
-        name: 'Indian Institue of Information Technology, Pune',
-        type: 'university',
-        location: 'Pune, Maharashtra'
-    }];
+    const [defaultOrgs, setDefaultOrgs] = useState([{ id: '', name: '', location: '' }]);
+
+    useEffect(() => {
+        const fetchDefaultOrgs = async () => {
+            try {
+                const response = await axios.get('/api/search-organization');
+                const orgs = response.data.data.map(org => ({
+                    id: org._id,
+                    name: org.orgName,
+                    location: org.orgLocation
+                }));
+                setDefaultOrgs(orgs);
+            } catch (error) {
+                console.error('Error fetching default organizations:', error);
+            }
+        };
+        fetchDefaultOrgs();
+    }, []);
 
     useEffect(() => {
         setOrganizations(defaultOrgs);
-    }, []);
+    }, [defaultOrgs]);
 
     useEffect(() => {
         const saved = localStorage.getItem('recentSearches');
@@ -37,48 +49,56 @@ const SearchOrganization = () => {
         setLoading(true);
         setError(null);
 
-        // Save to recent searches
         const updatedSearches = [searchQuery, ...recentSearches.slice(0, 4)];
         setRecentSearches(updatedSearches);
         localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
 
         try {
-            // If searching for IIIT Pune, show the default org
-            if (searchQuery.toLowerCase().includes('iiit') ||
-                searchQuery.toLowerCase().includes('pune')) {
+            if (searchQuery.trim() === '') {
                 setOrganizations(defaultOrgs);
             } else {
-                const response = await axios.get(`/api/organizations/search?q=${searchQuery}&filter=${filter}`);
-                setOrganizations([...defaultOrgs, ...response.data]);
+                const filteredOrgs = defaultOrgs.filter(org =>
+                    org.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    org.location.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+                if (filter !== 'all') {
+                    const response = await axios.get(`/api/organizations/search?q=${searchQuery}&filter=${filter}`);
+                    const combinedResults = [...filteredOrgs, ...response.data];
+                    const uniqueResults = Array.from(new Map(combinedResults.map(org => [org.id, org])).values());
+                    setOrganizations(uniqueResults);
+                } else {
+                    setOrganizations(filteredOrgs);
+                }
             }
         } catch (error) {
             setError('Failed to fetch organizations. Please try again.');
             console.error('Error searching organizations:', error);
+            setOrganizations(defaultOrgs);
         }
         setLoading(false);
     };
 
     const handleSelectOrganization = (orgId) => {
-        if (orgId === 'iiitpune') {
+        const selectedOrg = organizations.find(org => org.id === orgId);
+        if (selectedOrg) {
             const orgData = {
-                id: orgId,
-                name: 'Indian Institute of Information Technology, Pune'
+                id: selectedOrg.id,
+                name: selectedOrg.name
             };
-            
-            // Store in localStorage
+
             localStorage.setItem('selectedOrg', JSON.stringify(orgData));
-            
-            // Navigate with org data in state
-            switch(role) {
+            // console.log(orgData)
+            switch (role) {
                 case 'teacher':
                     navigate('/teacher/register', { state: { organization: orgData } });
                     break;
                 case 'student':
                     navigate('/student/register', { state: { organization: orgData } });
                     break;
-                case 'organization':
-                    navigate('/organization/register', { state: { organization: orgData } });
-                    break;
+                // case 'organization':
+                //     navigate('/organization/register', { state: { organization: orgData } });
+                //     break;
                 default:
                     console.log('No role specified');
             }
@@ -86,7 +106,7 @@ const SearchOrganization = () => {
     };
 
     const handleBackToHome = () => {
-        navigate('/');
+        navigate(-1);
     };
 
     return (
@@ -120,7 +140,7 @@ const SearchOrganization = () => {
                             />
                             <button
                                 onClick={handleBackToHome}
-                                type="button" // Important: type="button" prevents form submission
+                                type="button"
                                 className="h-[50px] px-8 bg-gray-500 text-white rounded-[8px] text-[14px]
                                          transition-all duration-300"
                             >
@@ -138,8 +158,7 @@ const SearchOrganization = () => {
                             </button>
                         </div>
 
-                        {/* Filter Pills */}
-                        <div className="flex flex-wrap gap-3 justify-center">
+                        {/* <div className="flex flex-wrap gap-3 justify-center">
                             {['all', 'university', 'school', 'institute'].map((type) => (
                                 <button
                                     key={type}
@@ -152,7 +171,7 @@ const SearchOrganization = () => {
                                     {type.charAt(0).toUpperCase() + type.slice(1)}
                                 </button>
                             ))}
-                        </div>
+                        </div> */}
                     </form>
                 </div>
 
@@ -164,28 +183,28 @@ const SearchOrganization = () => {
                             </div>
                         </div>
                     ) : (
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-[90vh]">
-                                {organizations.map((org) => (
-                                    <div
-                                        key={org.id}
-                                        onClick={() => handleSelectOrganization(org.id)}
-                                        className={`bg-white p-3 rounded-lg border cursor-pointer
-                                    hover:border-black transition-all duration-200 
-                                    ${org.id === 'iiitpune' ? 'border-black' : 'border-[#DADADA]'}`}
-                                    >
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className="text-sm font-semibold text-[#1E232C] truncate pr-2">
-                                                {org.name}
-                                            </h3>
-                                        </div>
-                                        <p className="text-[#6A707C] text-xs">{org.location}</p>
-                                        <span className="text-xs text-[#6A707C] bg-[#F7F8F9] px-2 py-0.5 rounded inline-block mt-1">
-                                            {org.type}
-                                        </span>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-[90vh]">
+                            {organizations.map((org) => (
+                                <div
+                                    key={org.id}
+                                    onClick={() => handleSelectOrganization(org.id)}
+                                    className={`bg-white p-3  rounded-lg border cursor-pointer
+                                    hover:border-black transition-all duration-200 border-[#DADADA]
+                                   `}
+                                >
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h3 className="text-sm font-semibold text-[#1E232C] truncate pr-2">
+                                            {org.name}
+                                        </h3>
                                     </div>
-                                ))}
-                            </div>
+                                    <p className="text-[#6A707C] text-xs">{org.location}</p>
+                                    {/* <span className="text-xs text-[#6A707C] bg-[#F7F8F9] px-2 py-0.5 rounded inline-block mt-1">
+                                        {org.type}
+                                    </span> */}
+                                </div>
+                            ))}
+                        </div>
                     )}
 
                     {organizations.length === 0 && searchQuery && !loading && (

@@ -12,7 +12,7 @@ const AddTeacherAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/admin/addTeacher', formData);
+      const response = await axios.post('/api/organization/addTeacher', formData);
       if (response.data.success) {
         navigate('/organization/added-teacher-success');
       }
