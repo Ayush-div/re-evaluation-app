@@ -183,73 +183,18 @@ const AddQuestionPaper = () => {
     //     }
     // };
 
-    const handleFinalSubmit = async () => {
-        try {
-            const questionPaperData = {
-                examDetails,
-                questions,
-                file: selectedFile // Include file if it exists
-            };
-            console.log("Question paper data is : ",questionPaperData)
-            const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
-            console.log(response);
-            console.log(response.data);
-            // console.log(questionPaperData)
-            if (response.data.success) {
-                alert('Question paper submitted successfully!');
-                navigate('/organization/question-papers');
-            }
-        } catch (error) {
-            console.error('Submission failed:', error);
-            alert('Failed to submit question paper');
-        }
-    };
-
     // const handleFinalSubmit = async () => {
     //     try {
-    //         const formData = new FormData();
-    
-    //         // Debugging: Ensure data exists before appending
-    //         console.log("Exam Details:", examDetails);
-    //         console.log("Questions:", questions);
-    //         console.log("Selected File:", selectedFile);
-    
-    //         if (examDetails && Object.keys(examDetails).length > 0) {
-    //             formData.append('examDetails', JSON.stringify(examDetails));
-    //         } else {
-    //             console.warn("⚠️ examDetails is empty or undefined!");
-    //         }
-    
-    //         if (questions.length > 0) {
-    //             formData.append('questions', JSON.stringify(questions));
-    //         } else {
-    //             console.warn("⚠️ questions array is empty!");
-    //         }
-    
-    //         if (selectedFile) {
-    //             console.log("Selected File Name:", selectedFile.name);
-    //             formData.append('file', selectedFile);
-    //         } else {
-    //             console.warn("⚠️ No file selected!");
-    //         }
-    
-    //         // Debug: Check if formData has content
-    //         console.log("Final FormData Entries:");
-    //         for (let pair of formData.entries()) {
-    //             console.log(pair[0], pair[1]);
-    //         }
-
-    //         // console.log(formData.entries())
-    
-    //         const response = await axios.post('/api/organization/add-question-paper', formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         });
-    //         Response = response;
-    //         console.log("Response is  : ",Response);
-    //         console.log(Response.data.message);
-    //         console.log(Response.data.data.response);
+    //         const questionPaperData = {
+    //             examDetails,
+    //             questions,
+    //             file: selectedFile // Include file if it exists
+    //         };
+    //         console.log("Question paper data is : ",questionPaperData)
+    //         const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
+    //         console.log(response);
+    //         console.log(response.data);
+    //         // console.log(questionPaperData)
     //         if (response.data.success) {
     //             alert('Question paper submitted successfully!');
     //             navigate('/organization/question-papers');
@@ -259,6 +204,74 @@ const AddQuestionPaper = () => {
     //         alert('Failed to submit question paper');
     //     }
     // };
+
+    const handleFinalSubmit = async () => {
+        try {
+            const formData = new FormData();
+    
+            console.log("Exam Details:", examDetails);
+            console.log("Questions:", questions);
+            console.log("Selected File:", selectedFile);
+    
+            if (examDetails && Object.keys(examDetails).length > 0) {
+                formData.append('examDetails', JSON.stringify(examDetails));
+            } else {
+                console.warn("⚠️ examDetails is empty or undefined!");
+            }
+    
+            if (questions.length > 0) {
+                formData.append('questions', JSON.stringify(questions));
+            } else {
+                console.warn("⚠️ questions array is empty!");
+            }
+    
+            if (selectedFile) {
+                console.log("Selected File Name:", selectedFile.name);
+                formData.append('file', selectedFile);
+            } else {
+                console.warn("⚠️ No file selected!");
+            }
+    
+            console.log("Final FormData Entries:");
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+    
+            // ✅ Send request
+            const response = await axios.post('/api/organization/add-question-paper', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
+            console.log("🚀 Response received:", response.data);
+    
+            // ✅ Check if backend returned success
+            if (response.data.success) {
+                console.log('✅ Question paper submitted successfully!');
+                // navigate('/organization/question-papers');
+            } else {
+                console.warn("⚠️ Backend did not return success:", response.data);
+                alert('⚠️ Failed to submit question paper.');
+            }
+    
+        } catch (error) {
+            console.error('🚨 Submission failed:', error);
+    
+            // ✅ Handle different Axios errors properly
+            if (error.response) {
+                console.error("Backend responded with an error:", error.response.data);
+                alert(`❌ Error: ${error.response.data.message || "Unknown server error"}`);
+            } else if (error.request) {
+                console.error("No response received from backend:", error.request);
+                alert('⚠️ No response from server. Please check if the backend is running.');
+            } else {
+                console.error("Axios error:", error.message);
+                alert(`❌ Request failed: ${error.message}`);
+            }
+        }
+    };
+        
     
     
     // Update the render upload section to include both upload and submit buttons
