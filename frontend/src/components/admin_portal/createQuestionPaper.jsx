@@ -13,7 +13,6 @@ const AddQuestionPaper = () => {
         duration: '',
         department: '',
         semester: '',
-        // academicYear: ''
     });
     const [totalQuestions, setTotalQuestions] = useState('');
     const [questions, setQuestions] = useState([]);
@@ -21,7 +20,6 @@ const AddQuestionPaper = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    // Add a new question
     const generateQuestions = (total) => {
         const newQuestions = Array(parseInt(total)).fill().map((_, index) => ({
             id: index + 1,
@@ -31,7 +29,6 @@ const AddQuestionPaper = () => {
         setQuestions(newQuestions);
     };
 
-    // Add subpart to a question
     const addSubpart = (questionId) => {
 
         setQuestions(questions.map(q => {
@@ -54,7 +51,6 @@ const AddQuestionPaper = () => {
         for (let i = 0; i < questions[questionId].subparts.length; i++) {
             m += parseInt(questions[questionId].subparts[i].marks);
         }
-        // console.log(m);
         return m;
     } 
     const updateSubpartMarks = (questionId, subpartId) => {
@@ -62,11 +58,9 @@ const AddQuestionPaper = () => {
         for (let i = 0; i < questions[questionId].subparts[subpartId].subsubparts.length; i++) {
             m += parseInt(questions[questionId].subparts[subpartId].subsubparts[i].marks);
         }
-        // console.log(m);
         return m;
     }
 
-    // Add sub-subpart to a subpart
     const addSubSubpart = (questionId, subpartId) => {
         setQuestions(questions.map(q => {
             if (q.id === questionId) {
@@ -120,7 +114,6 @@ const AddQuestionPaper = () => {
         }
     };
 
-    // Add console log to debug state
     console.log('showQuestionBuilder:', showQuestionBuilder);
 
     const handleFileSelect = (e) => {
@@ -179,6 +172,8 @@ const AddQuestionPaper = () => {
                 console.warn("⚠️ questions array is empty!");
             }
     
+            
+
             if (selectedFile) {
                 console.log("Selected File Name:", selectedFile.name);
                 formData.append('file', selectedFile);
@@ -193,14 +188,13 @@ const AddQuestionPaper = () => {
     
             // ✅ Send request
             const response = await axios.post('/api/organization/add-question-paper', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // }
             });
     
             console.log("🚀 Response received:", response.data);
     
-            // ✅ Check if backend returned success
             if (response.data.success) {
                 console.log('✅ Question paper submitted successfully!');
                 // navigate('/organization/question-papers');
@@ -212,7 +206,6 @@ const AddQuestionPaper = () => {
         } catch (error) {
             console.error('🚨 Submission failed:', error);
     
-            // ✅ Handle different Axios errors properly
             if (error.response) {
                 console.error("Backend responded with an error:", error.response.data);
                 alert(`❌ Error: ${error.response.data.message || "Unknown server error"}`);
@@ -228,7 +221,6 @@ const AddQuestionPaper = () => {
         
     
     
-    // Update the render upload section to include both upload and submit buttons
     const renderUploadSection = () => (
         <div className="mt-6 space-y-6">
             <div
@@ -454,7 +446,6 @@ const AddQuestionPaper = () => {
                             </div>
                         </div>
 
-                        {/* Questions List */}
                         {questions.map((question, qIndex) => (
                             <motion.div
                                 key={question.id}
@@ -508,7 +499,6 @@ const AddQuestionPaper = () => {
                                     </button>
                                 </div>
 
-                                {/* Subparts */}
                                 {question.subparts.map((subpart, spIndex) => (
                                     <div key={subpart.id} className="ml-8 mt-4">
                                         <div className="flex gap-4 items-end mb-4">
@@ -516,17 +506,7 @@ const AddQuestionPaper = () => {
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                     Subpart {qIndex + 1}.{spIndex + 1}
                                                 </label>
-                                                {/* <input
-                                                    type="text"
-                                                    value={subpart.text}
-                                                    onChange={(e) => {
-                                                        const newQuestions = [...questions];
-                                                        newQuestions[qIndex].subparts[spIndex].text = e.target.value;
-                                                        setQuestions(newQuestions);
-                                                    }}
-                                                    className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
-                                                    placeholder="Enter subpart text"
-                                                /> */}
+                                              
                                             </div>
                                             <div className= {`Marks${qIndex + 1}_${spIndex + 1} w-32`}>
                                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">
@@ -601,17 +581,7 @@ const AddQuestionPaper = () => {
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                                                 Sub-subpart {qIndex + 1}.{spIndex + 1}.{sspIndex + 1}
                                                             </label>
-                                                            {/* <input
-                                                                type="text"
-                                                                value={subsubpart.text}
-                                                                onChange={(e) => {
-                                                                    const newQuestions = [...questions];
-                                                                    newQuestions[qIndex].subparts[spIndex].subsubparts[sspIndex].text = e.target.value;
-                                                                    setQuestions(newQuestions);
-                                                                }}
-                                                                className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
-                                                                placeholder="Enter sub-subpart text"
-                                                            /> */}
+                                                           
                                                         </div>
                                                         <div className="w-32">
                                                             <label className="block text-sm font-medium text-[#1E232C] mb-2">

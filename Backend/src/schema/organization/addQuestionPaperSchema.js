@@ -12,7 +12,7 @@ const statsSchema = new mongoose.Schema({
     }
 });
 
-const subpartOfSubpartSchema = new mongoose.Schema({
+const subSubpartsSchema = new mongoose.Schema({
     id: {
         type: Number,
         required: true
@@ -34,7 +34,7 @@ const subpartSchema = new mongoose.Schema({
         required: true
     },
     // stats: statsSchema,
-    subpartOfSubpart: [subpartOfSubpartSchema]
+    subsubparts: [subSubpartsSchema]
 });
 
 const questionSchema = new mongoose.Schema({
@@ -47,7 +47,7 @@ const questionSchema = new mongoose.Schema({
         required: true
     },
     // stats: statsSchema,
-    subpart: [subpartSchema]
+    subparts: [subpartSchema]
 });
 
 const questionPaperSchema = new mongoose.Schema({
