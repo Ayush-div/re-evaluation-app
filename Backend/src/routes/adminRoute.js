@@ -2,7 +2,7 @@ const express = require("express");
 const { addAdminStudent } = require("../controllers/adminStudentController.js");
 const { addQuestionPaperController } = require("../controllers/addQuestionPaperController.js");
 const { registerOrganization } = require("../controllers/registerOrganization.controller.js")
-
+const { addAdminTeacher } = require("../controllers/addAdminTeacher.controller.js")
 
 const uploader = require('../middlewares/multerMiddleware.js');
 const adminRouter = express.Router();
@@ -18,6 +18,8 @@ adminRouter.post("/add-question-paper", (req, res) => {
 
 
 adminRouter.post('/register', registerOrganization)
+adminRouter.post("/addTeacher", addAdminTeacher);
+
 adminRouter.post('/', (req, res) => {
     res.send("registered in");
 })

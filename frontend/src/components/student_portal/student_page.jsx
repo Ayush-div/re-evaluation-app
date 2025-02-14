@@ -3,7 +3,7 @@ import React from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const stats = [
     {

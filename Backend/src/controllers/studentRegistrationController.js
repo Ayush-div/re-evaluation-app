@@ -6,7 +6,7 @@ async function createStudent(req, res) {
         const response = await registerStudent(req.body);
         console.log("here in studentregistercontroller.js")
         console.log(response)
-        return res.json({ 
+        return res.json({
             message: "successfully resistered the user",
             Success: true,
             data: response,
@@ -15,7 +15,8 @@ async function createStudent(req, res) {
         })
     } catch (error) {
         console.log("error from studentregistrationcontroller.js")
-        res.json({ 
+        console.log("error message is -> ", error.reason)
+        res.json({
             message: error.reason,
             Success: false,
             data: {},

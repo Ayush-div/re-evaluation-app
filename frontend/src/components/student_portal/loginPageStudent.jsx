@@ -61,12 +61,14 @@ const LoginCardStudent = () => {
             if (response.data.message === 'Logged In successfully') {
                 console.log('Login successful:', response.data.message);
                 setErrorMessage('');
+                setTimeout(() => setErrorMessage(''), 3000);
                 navigate('/student');
             }
             else {
                 // show response.data.message into frontend UI 
                 console.log("Login Unsuccessful")
                 setErrorMessage(response.data.message);
+                setTimeout(() => setErrorMessage(''), 3000);
             }
             // if (response.data.success && response.data.accessToken && response.data.refreshToken) {
             //     // Store tokens
@@ -86,6 +88,7 @@ const LoginCardStudent = () => {
         } catch (error) {
             console.error('Login error:', error.response?.data || error);
             setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');
+            setTimeout(() => setErrorMessage(''), 3000);
         }
     };
 
@@ -141,8 +144,12 @@ const LoginCardStudent = () => {
                     Welcome back! Glad to see you, Again!
                 </div>
                 {errorMessage && (
-                    <div className="text-red-600 text-center mt-2">
-                        {errorMessage} {/* Display the error message */}
+                    <div
+                        id="error-message"
+                        className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg"
+                        style={{ animation: 'fadeOut 2s forwards' }}
+                    >
+                        {errorMessage}
                     </div>
                 )}
                 <div className='flex justify-center mt-[57px]'>

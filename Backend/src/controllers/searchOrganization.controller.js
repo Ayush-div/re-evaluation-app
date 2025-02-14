@@ -3,8 +3,6 @@ const { searchOrganizationService } = require("../services/searchOrganization.se
 console.log("Route hit: /api/organization/search");
 
 async function searchOrganization(req, res) {
-    console.log("Request method:", req.method);
-    console.log("Request headers:", req.headers);
     try {
         const response = await searchOrganizationService();
         console.log("Search successful, found organizations:", response.length);

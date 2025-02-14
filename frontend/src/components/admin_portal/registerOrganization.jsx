@@ -110,21 +110,22 @@ const RegisterOrganization = () => {
                 verificationDetails: formData.verificationDetails,
             });
             console.log(response.data)
-            
+
             if (response.data.Success) {
                 navigate('/organization/organization-registered-success')
             } else if (response.data.message === 'Organization already exists') {
                 setErrorMessage('Organization already exists');
-                setTimeout(() => {
-                    setErrorMessage('');
-                }, 2000); 
+                setTimeout(() => { setErrorMessage(''); }, 2000);
+            } else {
+                setErrorMessage(response.data.message);
+                setTimeout(() => { setErrorMessage(''); }, 2000);
             }
         } catch (error) {
             console.error('Error registering organization:', error);
             setErrorMessage('Error registering organization');
             setTimeout(() => {
                 setErrorMessage('');
-            }, 2000); 
+            }, 2000);
         }
     };
 

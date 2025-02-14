@@ -17,12 +17,13 @@ const {findAdminStudent, createAdminStudent} = require("../repositories/adminStu
                 email: studentDetails.email,
                 rollNumber: studentDetails.rollNumber,
             })
+
             console.log("newAdminStudent Ayush is :  ",newAdminStudent)
             if(newAdminStudent.Field==='rollNumber'){
-                throw {reason : `Please enter correct ${newAdminStudent.Field}`, statusCode : 401}
+                throw {reason : `Student With Same ${newAdminStudent.Field} Already Exist`, statusCode : 401}
             }
             else if(newAdminStudent.Field==='email'){
-                throw {reason : `Please enter correct ${newAdminStudent.Field}`, statusCode : 401}
+                throw {reason : `Student With Same ${newAdminStudent.Field} Already Exist`, statusCode : 401}
             }
             else if(newAdminStudent.error==='Internal Error'){
                 throw {reason : 'not able to create student, Internal Server Error', statusCode: 500}

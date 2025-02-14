@@ -10,7 +10,7 @@ export default function RegisterCardStudent() {
   const location = useLocation()
   const organization = location.state?.organization
   // console.log("here in registerPageStudent")
-  // console.log(organization.id)
+  // console.log(organization)
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -55,7 +55,7 @@ export default function RegisterCardStudent() {
   const onSubmit = async (e) => {
     e.preventDefault();
     console.log(e)
-   
+
     try {
       const response = await axios.post('/api/students/register', {
         mobileNumber: formData.mobileNumber,
@@ -78,10 +78,14 @@ export default function RegisterCardStudent() {
       else if (response.data.message === 'Please enter correct rollnumber it is already in use') {
         setErrorMessage('Student already exists with this rollnumber');
         setTimeout(() => setErrorMessage(''), 3000);
+      } else {
+        setErrorMessage(response.data.message);
+        setTimeout(() => setErrorMessage(''), 3000);
       }
     }
     catch (error) {
-      console.error('Error registering student:', error);
+      console.log(error.message)
+      console.error('Error adding student:', error.response || error);
       setErrorMessage('Error adding student. Please try again.');
       setTimeout(() => setErrorMessage(''), 3000);
     }
@@ -97,7 +101,11 @@ export default function RegisterCardStudent() {
         </div>
         <div>
           {errorMessage && (
-            <div className="mt-3 text-red-500 text-sm font-medium bg-red-50 p-2 rounded-md border border-red-200">
+            <div
+              id="error-message"
+              className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg"
+              style={{ animation: 'fadeOut 2s forwards' }}
+            >
               {errorMessage}
             </div>
           )}

@@ -1,42 +1,42 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const AddedTeacherSuccess = () => {
   const navigate = useNavigate();
-
+  const location = useLocation()
+  const role = location.state?.role
+  console.log(role)
   return (
     <div className="h-screen flex justify-center items-center font-['Urbanist'] bg-[#F7F8F9]">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
         className="flex flex-col items-center p-8 bg-white rounded-[16px] shadow-lg max-w-md w-full mx-4"
       >
-        {/* Success Icon */}
-        <motion.div 
+        <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6"
         >
-          <svg 
-            className="w-10 h-10 text-green-500" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-10 h-10 text-green-500"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M5 13l4 4L19 7" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
             />
           </svg>
         </motion.div>
 
-        {/* Success Message */}
-        <motion.h2 
+        <motion.h2
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
@@ -44,8 +44,8 @@ const AddedTeacherSuccess = () => {
         >
           Registered Successfully!
         </motion.h2>
-        
-        <motion.p 
+
+        <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -54,23 +54,22 @@ const AddedTeacherSuccess = () => {
           You have been added successfully.
         </motion.p>
 
-        {/* Login Button */}
         <motion.button
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/teacher')}
-          className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
-                    transition-all duration-300 
-                    hover:bg-gray-800 hover:shadow-lg
-                    focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+          onClick={() => role === "organization" ? navigate('/organization') : navigate('/teacher')}
+          className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px]
+        transition-all duration-300
+        hover:bg-gray-800 hover:shadow-lg
+        focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
         >
-          Go to Teacher's Dashboard
+          {`Go to ${role}'s Dashboard`}
         </motion.button>
       </motion.div>
-    </div>
+    </div >
   );
 };
 

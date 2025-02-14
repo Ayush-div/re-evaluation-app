@@ -2,73 +2,72 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function AddQuestionPaper() {
-       const [examDetails, setExamDetails] = useState({
-            subject: '',
-            examDate: '',
-            totalMarks: '',
-            duration: '',
-            department: '',
-            semester: '',
-            academicYear: ''
-        });
-        const [totalQuestions, setTotalQuestions] = useState('');
-        const [questions, setQuestions] = useState([]);
-        
-    
-        // Add a new question
-        const generateQuestions = (total) => {
-            const newQuestions = Array(parseInt(total)).fill().map((_, index) => ({
-                id: index + 1,
-                // text: '',
-                marks: '',
-                subparts: []
-            }));
-            setQuestions(newQuestions);
-        };
-    
-        // Add subpart to a question
-        const addSubpart = (questionId) => {
-            setQuestions(questions.map(q => {
-                if (q.id === questionId) {
-                    return {
-                        ...q,
-                        subparts: [...q.subparts, {
-                            id: q.subparts.length + 1,
-                            // text: '',
-                            marks: '',
-                            subsubparts: []
-                        }]
-                    };
-                }
-                return q;
-            }));
-        };
-    
-        // Add sub-subpart to a subpart
-        const addSubSubpart = (questionId, subpartId) => {
-            setQuestions(questions.map(q => {
-                if (q.id === questionId) {
-                    return {
-                        ...q,
-                        subparts: q.subparts.map(sp => {
-                            if (sp.id === subpartId) {
-                                return {
-                                    ...sp,
-                                    subsubparts: [...sp.subsubparts, {
-                                        id: sp.subsubparts.length + 1,
-                                        // text: '',
-                                        marks: ''
-                                    }]
-                                };
-                            }
-                            return sp;
-                        })
-                    };
-                }
-                return q;
-            }));
-        };
-    
+    const [examDetails, setExamDetails] = useState({
+        subjectName: '',
+        examDate: '',
+        totalMarks: '',
+        duration: '',
+        department: '',
+        semester: ''
+    });
+    const [totalQuestions, setTotalQuestions] = useState('');
+    const [questions, setQuestions] = useState([]);
+
+
+    // Add a new question
+    const generateQuestions = (total) => {
+        const newQuestions = Array(parseInt(total)).fill().map((_, index) => ({
+            id: index + 1,
+            // text: '',
+            marks: '',
+            subparts: []
+        }));
+        setQuestions(newQuestions);
+    };
+
+    // Add subpart to a question
+    const addSubpart = (questionId) => {
+        setQuestions(questions.map(q => {
+            if (q.id === questionId) {
+                return {
+                    ...q,
+                    subparts: [...q.subparts, {
+                        id: q.subparts.length + 1,
+                        // text: '',
+                        marks: '',
+                        subsubparts: []
+                    }]
+                };
+            }
+            return q;
+        }));
+    };
+
+    // Add sub-subpart to a subpart
+    const addSubSubpart = (questionId, subpartId) => {
+        setQuestions(questions.map(q => {
+            if (q.id === questionId) {
+                return {
+                    ...q,
+                    subparts: q.subparts.map(sp => {
+                        if (sp.id === subpartId) {
+                            return {
+                                ...sp,
+                                subsubparts: [...sp.subsubparts, {
+                                    id: sp.subsubparts.length + 1,
+                                    // text: '',
+                                    marks: ''
+                                }]
+                            };
+                        }
+                        return sp;
+                    })
+                };
+            }
+            return q;
+        }));
+    };
+
     return (
         <div>
             <>
