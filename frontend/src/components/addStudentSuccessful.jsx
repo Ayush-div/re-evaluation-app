@@ -13,7 +13,6 @@ const AddedStudentSuccess = () => {
         transition={{ duration: 0.5 }}
         className="flex flex-col items-center p-8 bg-white rounded-[16px] shadow-lg max-w-md w-full mx-4"
       >
-        {/* Success Icon */}
         <motion.div 
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -35,7 +34,6 @@ const AddedStudentSuccess = () => {
           </svg>
         </motion.div>
 
-        {/* Success Message */}
         <motion.h2 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -54,7 +52,6 @@ const AddedStudentSuccess = () => {
           student has been added successfully.
         </motion.p>
 
-        {/* Login Button */}
         <motion.button
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ReEvaluationForm = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [subjects, setSubjects] = useState([{ id: '', name: '', fee: '', paper: '' }])
+
+  const [questionsBySubject, setQuestionsBySubject] = useState({});
   const [formData, setFormData] = useState({
     subject: '',
     questionPaper: null,
@@ -15,76 +21,103 @@ const ReEvaluationForm = () => {
   });
   const [expandedStats, setExpandedStats] = useState({});
 
+  useEffect(() => {
+    fetchReEvaluationData();
+  }, []);
+
+  const fetchReEvaluationData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/students/apply-reevaluation', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Raw API Response:', response.data);
+
+      if (response.data?.data) {
+        const papers = response.data.data; 
+
+        const formattedSubjects = papers.map(paperData => ({
+          id: paperData._id,
+          name: paperData.subjectName,
+          examDate  : new Date(paperData.examDate).toLocaleDateString(),
+          department: paperData.department,
+          semester: paperData.semester,
+          totalMarks: paperData.totalMarks,
+          duration: paperData.duration,
+          fee: 500,
+          paper: paperData.questionPdfPath
+        }));
+
+        const formattedQuestionsBySubject = papers.reduce((acc, paperData) => {
+          const formattedQuestions = paperData.questions.map(question => ({
+            number: question.id,
+            title: `Question ${question.id}`,
+            marks: question.marks,
+            stats: {
+              doubts: question.doubts || 0,
+              commonIssues: question.commonIssues || 'No common issues reported',
+              marksChangeProb: question.marksChangePercentage || '0%',
+              avgMarksChange: question.averageMarksChange || '+0'
+            },
+            subpart: (question.subparts || []).map(subpart => ({
+              id: `q${question.id}_${subpart.id}`, 
+              marks: subpart.marks,
+              text: `Part ${subpart.id}`,
+              stats: {
+                doubts: subpart.doubts || 0,
+                commonIssues: subpart.commonIssues || 'No common issues reported',
+                marksChangeProb: subpart.marksChangePercentage || '0%',
+                avgMarksChange: subpart.averageMarksChange || '+0'
+              },
+              subpartOfSubpart: (subpart.subsubparts || []).map(subsub => ({
+                id: `q${question.id}_${subpart.id}_${subsub.id}`, 
+                text: `Subpart ${subsub.id}`,
+                marks: subsub.marks,
+                stats: {
+                  doubts: subsub.doubts || 0,
+                  commonIssues: subsub.commonIssues || 'No common issues reported',
+                  marksChangeProb: subsub.marksChangePercentage || '0%',
+                  avgMarksChange: subsub.averageMarksChange || '+0'
+                }
+              }))
+            }))
+          }));
+
+          acc[paperData.subjectName] = formattedQuestions;
+          return acc;
+        }, {});
+
+        setSubjects(formattedSubjects);
+        setQuestionsBySubject(formattedQuestionsBySubject);
+
+        console.log('Formatted Subjects:', formattedSubjects);
+        console.log('Formatted Questions by Subject:', formattedQuestionsBySubject);
+
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (err) {
+      console.error('API Error Details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      setError('Failed to load question paper data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleStats = (subpartId) => {
     setExpandedStats(prev => ({
       ...prev,
       [subpartId]: !prev[subpartId]
     }));
   };
-
-  const subjects = [
-    { id: 1, name: 'Mathematics', fee: 500, paper: '/path/to/math-paper.pdf' },
-    { id: 2, name: 'Physics', fee: 500, paper: '/path/to/physics-paper.pdf' },
-    // { id: 3, name: 'Chemistry', fee: 500, paper: '/path/to/chemistry-paper.pdf' }
-  ];
-
-  const questionsBySubject = {
-    Mathematics: [
-      {
-        number: 1,
-        title: "Calculus Integration",
-        marks: 15,
-        stats: { doubts: 15, commonIssues: "Calculation Errors" },
-        subpart: [
-          {
-            id: '1a',
-            marks: 8,
-            stats: { doubts: 12, commonIssues: "Calculation Errors" },
-            subpartOfSubpart: [
-              { 
-                id: '1a-i', 
-                text: 'Evaluate the integral', 
-                marks: 4,
-                stats: { doubts: 7, commonIssues: "Calculation Errors" }
-              },
-              {
-                id: '1a-ii', 
-                text: 'Find the area', 
-                marks: 4,
-                stats: { doubts: 5, commonIssues: "Unmarked Answers" }
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    Physics: [
-      {
-        number: 1,
-        title: "Kinematics",
-        marks: 10,
-        subpart: [
-          {
-            id: '1a',
-            marks: 5,
-            stats: { doubts: 8, commonIssues: "Incorrect Marking" },
-          },
-          {
-            id: '1b',
-            marks: 5,
-            stats: { doubts: 6, commonIssues: "Calculation Errors" },
-          }
-        ]
-      },
-      {
-        number: 2,
-        title: "Newton's Laws",
-        marks: 5,
-        stats: { doubts: 0, commonIssues: "Unmarked Answers" }
-      }
-    ],
-  };
-
+ 
   const ISSUE_TYPES = {
     CALCULATION: 'Calculation Errors',
     UNMARKED: 'Unmarked Answers',
@@ -142,7 +175,7 @@ const ReEvaluationForm = () => {
     if (step > 1) {
       setStep(step - 1);
     } else {
-      navigate(-1); 
+      navigate(-1);
     }
   };
 
@@ -174,8 +207,8 @@ const ReEvaluationForm = () => {
           <div className="mr-3">
             <div className="p-2 bg-blue-100 rounded-full">
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
           </div>
@@ -189,8 +222,8 @@ const ReEvaluationForm = () => {
           <div className="mr-3">
             <div className="p-2 bg-yellow-100 rounded-full">
               <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
           </div>
@@ -210,8 +243,8 @@ const ReEvaluationForm = () => {
         hover:bg-gray-200 transition-all duration-300"
     >
       {expanded ? 'Hide Stats' : 'View Stats'}
-      <svg 
-        className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`} 
+      <svg
+        className={`w-4 h-4 transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
         fill="none" stroke="currentColor" viewBox="0 0 24 24"
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -238,7 +271,7 @@ const ReEvaluationForm = () => {
               </div>
             </div>
             {subpart.stats && (
-              <StatsToggleButton 
+              <StatsToggleButton
                 id={subpart.id}
                 expanded={expandedStats[subpart.id]}
                 onClick={(e) => {
@@ -251,12 +284,12 @@ const ReEvaluationForm = () => {
 
           {expandedStats[subpart.id] && subpart.stats && renderStats(subpart.stats)}
 
-          {(!subpart.subpartOfSubpart || subpart.subpartOfSubpart.length === 0) && 
+          {(!subpart.subpartOfSubpart || subpart.subpartOfSubpart.length === 0) &&
             formData.selectedQuestions.includes(subpart.id) && (
               <div className="mt-3">
                 {renderIssueSelectionAndRemarks(subpart.id)}
               </div>
-          )}
+            )}
 
           {subpart.subpartOfSubpart && subpart.subpartOfSubpart.length > 0 && (
             <div className="ml-4 mt-3 space-y-3">
@@ -338,7 +371,7 @@ const ReEvaluationForm = () => {
   );
 
   const renderQuestion = (question) => (
-    <div key={question.number} className="bg-[#F7F8F9] rounded-[12px] p-4">
+    <div key={`q${question.number}`} className="bg-[#F7F8F9] rounded-[12px] p-4">
       <div className="flex justify-between items-center mb-4">
         <h4 className="text-[#1E232C] text-lg font-bold">
           Question {question.number}: {question.title}
@@ -348,7 +381,7 @@ const ReEvaluationForm = () => {
             {question.marks} marks
           </span>
           {question.stats && (!question.subpart || question.subpart.length === 0) && (
-            <StatsToggleButton 
+            <StatsToggleButton
               id={`q${question.number}`}
               expanded={expandedStats[`q${question.number}`]}
               onClick={(e) => {
@@ -408,7 +441,7 @@ const ReEvaluationForm = () => {
           </div>
         </div>
         {subSubpart.stats && (
-          <StatsToggleButton 
+          <StatsToggleButton
             id={subSubpart.id}
             expanded={expandedStats[subSubpart.id]}
             onClick={() => toggleStats(subSubpart.id)}
@@ -539,6 +572,38 @@ const ReEvaluationForm = () => {
         return null;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#6A707C]">Loading re-evaluation data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-6 bg-white rounded-[12px] shadow-lg">
+          <svg className="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 className="text-xl font-bold text-[#1E232C] mb-2">Error Loading Data</h3>
+          <p className="text-[#6A707C] mb-4">{error}</p>
+          <button
+            onClick={() => fetchReEvaluationData()}
+            className="px-6 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
