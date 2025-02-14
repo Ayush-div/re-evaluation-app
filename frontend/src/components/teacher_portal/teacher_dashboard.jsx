@@ -27,7 +27,6 @@ function TeacherDashboard() {
       attachments: ['doubt1.jpg', 'workings.pdf'],
       timestamp: '2024-01-20T10:30:00',
     },
-    // ... add more sample doubts
   ];
 
   const stats = {
@@ -268,48 +267,88 @@ function TeacherDashboard() {
               </div>
             </div>
 
-            {/* Upload Details */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-[#F7F8F9] rounded-[8px]">
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-[#1E232C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <p className="text-[#1E232C] font-medium">Video Details</p>
-                    <select className="mt-1 text-sm text-[#6A707C] bg-transparent border-none focus:ring-0">
-                      <option>Select Question Number</option>
-                      <option>Question #1</option>
-                      <option>Question #2</option>
-                      <option>Question #3</option>
-                    </select>
-                  </div>
+              <div className="grid grid-cols-3 gap-4"> {/* Changed to 3 columns */}
+                <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
+                  <p className="text-[#1E232C] font-medium mb-2">Subject</p>
+                  <select className="w-full text-sm text-[#6A707C] bg-transparent border border-[#DADADA] rounded-md 
+                                   focus:outline-none focus:border-black p-2">
+                    <option value="">Select Subject</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                  </select>
                 </div>
-                <button className="text-sm px-4 py-1 bg-black text-white rounded-full
-                                 hover:bg-gray-800 transition-all duration-300">
-                  Upload
+
+                <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
+                  <p className="text-[#1E232C] font-medium mb-2">Paper</p>
+                  <select className="w-full text-sm text-[#6A707C] bg-transparent border border-[#DADADA] rounded-md 
+                                   focus:outline-none focus:border-black p-2">
+                    <option value="">Select Paper</option>
+                    <option value="mid">Mid Semester</option>
+                    <option value="end">End Semester</option>
+                  </select>
+                </div>
+
+                <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
+                  <p className="text-[#1E232C] font-medium mb-2">Question</p>
+                  <select className="w-full text-sm text-[#6A707C] bg-transparent border border-[#DADADA] rounded-md 
+                                   focus:outline-none focus:border-black p-2">
+                    <option value="">Select Question</option>
+                    <option value="1">Question 1</option>
+                    <option value="2">Question 2</option>
+                    <option value="3">Question 3</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
+                  <p className="text-[#1E232C] font-medium mb-2">Part</p>
+                  <select className="w-full text-sm text-[#6A707C] bg-transparent border border-[#DADADA] rounded-md 
+                                   focus:outline-none focus:border-black p-2">
+                    <option value="">Select Part</option>
+                    <option value="a">Part A</option>
+                    <option value="b">Part B</option>
+                    <option value="c">Part C</option>
+                  </select>
+                </div>
+
+                <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
+                  <p className="text-[#1E232C] font-medium mb-2">Title</p>
+                  <input
+                    type="text"
+                    placeholder="Enter video title"
+                    className="w-full text-sm text-[#6A707C] bg-transparent border border-[#DADADA] rounded-md 
+                             focus:outline-none focus:border-black p-2"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-center mt-6">
+                <button className="px-8 py-2.5 bg-black text-white rounded-full
+                                 hover:bg-gray-800 transition-all duration-300
+                                 active:scale-95">
+                  Upload Video
                 </button>
               </div>
-              
-              {/* Recent Uploads */}
-              <div className="p-3 bg-[#F7F8F9] rounded-[8px]">
-                <p className="text-[#6A707C] text-sm mb-2">Recent Uploads</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <p className="text-[#1E232C] text-sm">Question #5 Solution.mp4</p>
+
+              <div className="mt-6 p-3 bg-[#F7F8F9] rounded-[8px]">
+                <p className="text-[#6A707C] text-sm font-medium mb-3">Recent Uploads</p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <p className="text-[#1E232C] text-sm">Question #5 Solution.mp4</p>
+                    </div>
+                    <span className="text-[#6A707C] text-xs">2 hours ago</span>
                   </div>
-                  <span className="text-[#6A707C] text-xs">2 hours ago</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Recent Reviews Section */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-[12px] border border-[#DADADA] p-6">
             <h2 className="text-lg font-bold text-[#1E232C] mb-4">Recent Reviews</h2>
