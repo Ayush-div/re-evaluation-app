@@ -1,14 +1,15 @@
 const express = require("express")
 // import findOrganization from '../repositories/organizationRegister.repository'
-const { findOrganization } = require("../repositories/organizationRegister.repository.js")
-const { createOrganization } = require("../repositories/organizationRegister.repository.js")
+const { findOrganization } = require("../repositories/registerOrganization.repository.js")
+const { createOrganization } = require("../repositories/registerOrganization.repository.js")
 
 async function registerOrganizationService(organizationDetails) {
     // console.log("register service : ", organizationDetails)
 
     const organization = await findOrganization({
         orgName: organizationDetails.orgName,
-        orgLocation: organizationDetails.orgLocation,
+        // orgLocation: organizationDetails.orgLocation,
+        organisationEmail:organizationDetails.organisationEmail
     })
     
     if (organization) {
@@ -32,13 +33,13 @@ async function registerOrganizationService(organizationDetails) {
     console.log("new organization created!! (in regsiterOrganization.service.js)")
 
 
-    // if (newOrganization.Field == 'orgName') {
-    //     throw { reason: "Please enter correct email", statusCode: 500 }
-    // }
-    // else if (newOrganization.Field == 'orgLocation') {
-    //     throw { reason: "Please enter correct rollNumber", statusCode: 500 }
-    // }
-
+    if (newOrganization.Field == 'orgName') {
+        throw { reason: "Organization With This Name Already Exist", statusCode: 500 }
+    }
+    if (newOrganization.Field == 'organisationEmail') {
+        throw { reason: "Organization With This Email Already Exist", statusCode: 500 }
+    }
+    
     if (!newOrganization) {
         throw { reason: "Internal Server Error, Not able to Register", statusCode: 500 }
     }

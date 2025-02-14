@@ -25,16 +25,15 @@ async function createOrganization(organizationDetails) {
     } catch (error) {
         console.log("error ")
         console.log(error);
-        
-        // console.log(error.cause.code)
+        const errorCode = error?.code || error?.cause?.code
+        console.log(errorCode)
         // console.log("i am here")
-        // console.log(error.code)
-        if (error.cause.code === 11000) {
+        if (errorCode === 11000) {
             // Duplicate key error
-            const duplicateKey = error.keyValue; // Access the duplicate key value
-            // console.log('Duplicate Key:', duplicateKey);
+            const duplicateKey = error?.cause?.keyValue || error?.keyValue;
+            console.log('Duplicate Key:', duplicateKey);
             // console.log("duplicate key error")
-            throw new Error("Organization Already Exist. (from organization.register.repository.js)");
+            // throw new Error("Organization Already Exist. (from organization.register.repository.js)");
 
             return { Field: Object.keys(duplicateKey)[0] }
         }

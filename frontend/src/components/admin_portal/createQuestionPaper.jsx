@@ -17,7 +17,7 @@ const AddQuestionPaper = () => {
     });
     const [totalQuestions, setTotalQuestions] = useState('');
     const [questions, setQuestions] = useState([]);
-    const [showQuestionBuilder, setShowQuestionBuilder] = useState(false);
+    const [showQuestionBuilder, setShowQuestionBuilder] = useState(true);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
 

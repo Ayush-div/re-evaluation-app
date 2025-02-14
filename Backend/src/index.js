@@ -17,10 +17,11 @@ app.use(express.urlencoded({ extended: true }));
 const studentRouter = require('./routes/studentRoute.js');
 const adminRouter = require('./routes/adminRoute.js');
 const searchOrganizationRouter = require('./routes/searchOrganization.route.js')
+const teacherRouter = require('./routes/teacher.route.js')
 
 app.use('/api/students', studentRouter)
 app.use('/api/organization', adminRouter)
-
+app.use('/api/teacher', teacherRouter)  
 app.use('/api/search-organization', searchOrganizationRouter);
 
 app.get('/api/test', isLoggedIn, (req, res) => {

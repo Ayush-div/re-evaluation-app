@@ -13,15 +13,22 @@ const AddStudentAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(formData);
       const response = await axios.post('/api/organization/addStudent', formData);
-      if (response.data.success) {
+      console.log("API response:", response);
+
+      if (response?.data?.Success) {
         navigate('/organization/added-student-success');
-      } else if (response.data.message === "Student with the given rollnumber and email already exists") {
+      } else if (response?.data?.message === "Student with the given rollnumber and email already exists") {
         setErrorMessage('Student already exists with this roll number or email');
+        setTimeout(() => setErrorMessage(''), 3000);
+      } else {
+        setErrorMessage(response?.data?.message || 'Unexpected error');
         setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
-      console.error('Error adding student:', error);
+      console.log(error.message)
+      console.error('Error adding student:', error.response || error);
       setErrorMessage('Error adding student. Please try again.');
       setTimeout(() => setErrorMessage(''), 3000);
     }
@@ -29,12 +36,11 @@ const AddStudentAdmin = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="text-xl font-bold text-[#1E232C]">Add New Student</div>
-            <button 
+            <button
               onClick={() => navigate(-1)}
               className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300"
             >
@@ -46,18 +52,20 @@ const AddStudentAdmin = () => {
 
       <div className="max-w-[1440px] mx-auto px-6 py-8">
         <div className="max-w-xl mx-auto">
-          {/* Form Header */}
           <div className="bg-white rounded-t-[12px] border border-b-0 border-[#DADADA] p-6">
             <h2 className="text-xl font-bold text-[#1E232C]">Student Information</h2>
             <p className="text-[#6A707C] text-sm mt-1">Add a new student to the system</p>
             {errorMessage && (
-              <div className="mt-3 text-red-500 text-sm font-medium bg-red-50 p-2 rounded-md border border-red-200">
+              <div
+                id="error-message"
+                className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg"
+                style={{ animation: 'fadeOut 2s forwards' }}
+              >
                 {errorMessage}
               </div>
             )}
           </div>
-          
-          {/* Form Container */}
+
           <div className="bg-white rounded-b-[12px] border border-[#DADADA] p-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
@@ -66,7 +74,7 @@ const AddStudentAdmin = () => {
                   <input
                     type="text"
                     value={formData.rollNumber}
-                    onChange={(e) => setFormData({...formData, rollNumber: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })}
                     className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                              transition-all duration-300 
                              hover:shadow-md hover:border-gray-400 
@@ -81,7 +89,7 @@ const AddStudentAdmin = () => {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                              transition-all duration-300 
                              hover:shadow-md hover:border-gray-400 
@@ -93,7 +101,6 @@ const AddStudentAdmin = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex justify-end gap-4 pt-4 border-t border-[#DADADA]">
                 <button
                   type="button"

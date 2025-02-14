@@ -8,22 +8,33 @@ const AddTeacherAdmin = () => {
     fullName: '',
     email: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/organization/addTeacher', formData);
-      if (response.data.success) {
-        navigate('/organization/added-teacher-success');
+      const response = await axios.post('/api/organization/addTeacher', {
+        fullName: formData.fullName,
+        email: formData.email
+      });
+
+
+      if (response.data.Success) {
+        console.log("Teacher added successfully");
+        navigate('/organization/added-teacher-success', { state: { role: 'organization' } });
+      } else if (response.data.message === "Teacher with the given fullName and email already exists") {
+        setErrorMessage('Teacher already exists with this email');
+        setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
       console.error('Error adding teacher:', error);
+      setErrorMessage('Error adding teacher. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
@@ -40,13 +51,16 @@ const AddTeacherAdmin = () => {
 
       <div className="max-w-[1440px] mx-auto px-6 py-8">
         <div className="max-w-xl mx-auto">
-          {/* Form Header */}
           <div className="bg-white rounded-t-[12px] border border-b-0 border-[#DADADA] p-6">
             <h2 className="text-xl font-bold text-[#1E232C]">Teacher Information</h2>
             <p className="text-[#6A707C] text-sm mt-1">Add a new teacher to the system</p>
+            {errorMessage && (
+              <div className="mt-3 text-red-500 text-sm font-medium bg-red-50 p-2 rounded-md border border-red-200">
+                {errorMessage}
+              </div>
+            )}
           </div>
 
-          {/* Form Container */}
           <div className="bg-white rounded-b-[12px] border border-[#DADADA] p-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
@@ -82,7 +96,6 @@ const AddTeacherAdmin = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex justify-end gap-4 pt-4 border-t border-[#DADADA]">
                 <button
                   type="button"
@@ -94,7 +107,7 @@ const AddTeacherAdmin = () => {
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type="submit"  
                   className="px-6 py-3 bg-black text-white rounded-[8px] 
                             transition-all duration-300
                             hover:bg-gray-800 hover:scale-[1.02]

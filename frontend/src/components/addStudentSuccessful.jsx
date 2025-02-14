@@ -67,7 +67,7 @@ const AddedStudentSuccess = () => {
                     hover:bg-gray-800 hover:shadow-lg
                     focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
         >
-          Go to Admin page
+          Go to Organization page
         </motion.button>
       </motion.div>
     </div>

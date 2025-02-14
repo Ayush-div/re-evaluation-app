@@ -9,10 +9,10 @@ async function registerStudent(studentDetails) {
     if (!student) { 
         throw { reason: "Please check your Email or RollNumber it does not exist in Organisation", statuscode: 400 }
     }
-    console.log("here in the studentregisterservice")
+    // console.log("here in the studentregisterservice")
     console.log("register service : ", studentDetails)
-    console.log("studentDetails.orgID is -> ")
-    console.log(studentDetails.id)
+    // console.log("studentDetails.orgID is -> ")
+    // console.log(studentDetails.id)
 
     // 2. if not then create the user into the database
     const newStudent = await createStudent({

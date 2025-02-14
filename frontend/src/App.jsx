@@ -4,9 +4,9 @@ import Dashboard from './components/student_portal/student_page.jsx'
 import TeacherDashboard from './components/teacher_portal/teacher_dashboard.jsx'
 import AdminDashboard from './components/admin_portal/organization_dashboard.jsx'
 import LandingPage from './components/landing_page.jsx'
-import AddTeacher from './components/teacher_portal/registerPageTeacher.jsx.jsx'
+import AddTeacher from './components/teacher_portal/registerPageTeacher.jsx'
 import GenerateReport from './components/admin_portal/generate_report.jsx'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import {  Routes, Route } from 'react-router-dom'
 import FinancialSummary from '../src/components/admin_portal/reports/financial_summary.jsx'
 import TeacherActivityReport from '../src/components/admin_portal/reports/teacher_activity_report.jsx'
 import StudentPerformanceReport from '../src/components/admin_portal/reports/student_performance_report.jsx'
@@ -21,7 +21,6 @@ import VerifyOtp from './components/VerifyOtp.jsx'
 import ResetNewPassword from './components/resetNewPassword.jsx';
 import CreateNewPasswordPage from './components/createNewPasswordPage..jsx'
 import RegisterCardStudent from './components/student_portal/registerPageStudent.jsx'
-import RegisterCardTeacher from './components/teacher_portal/registerPageTeacher.jsx.jsx'
 import LoginCardTeacher from './components/teacher_portal/loginPageTeacher.jsx'
 import LoginCardStudent from './components/student_portal/loginPageStudent.jsx'
 import LoginCard from './components/student_portal/loginPageStudent.jsx'
@@ -43,27 +42,28 @@ import OrganizationRegisterSuccess from './components/admin_portal/organizationR
 function App() {
   return (
       <Routes>
-
+        
         <Route path="/" element={<LandingPage />} />
         <Route path="/search-organization" element={<SearchOrganization />} /> {/* Verify spelling */}
 
-        <Route path="/organization">
-          <Route path="register" element={<RegisterOrganization />} />
-          <Route path="login" element={<LoginOrganization />} />
-          <Route path="organization-auth" element={<OrganizationAuth />} />
-          <Route path="question-papers" element={<QuestionPapersPage />} />
-          <Route path="create-question-paper" element={<AddQuestionPaper />} />
-          <Route path='add-teacher' element={<AddTeacherAdmin />} />
-          <Route path='add-student' element={<AddStudentAdmin />} />
-          <Route path='generate-report' element={<GenerateReport />} />
-          <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
-          <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
-          <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
-          <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
-          <Route path='added-student-success' element={<AddedStudentSuccessful />} />
-          <Route path='organization-registered-success' element={<OrganizationRegisterSuccess />} />
-          <Route index element={<AdminDashboard />} />
-        </Route>
+      <Route path="/organization">
+        <Route path="register" element={<RegisterOrganization />} />
+        <Route path="login" element={<LoginOrganization />} />
+        <Route path="organization-auth" element={<OrganizationAuth />} />
+        <Route path="question-papers" element={<QuestionPapersPage />} />
+        <Route path="create-question-paper" element={<AddQuestionPaper />} />
+        <Route path='add-teacher' element={<AddTeacherAdmin />} />
+        <Route path='add-student' element={<AddStudentAdmin />} />
+        <Route path='generate-report' element={<GenerateReport />} />
+        <Route path='generate-report/student-report' element={<StudentPerformanceReport />} />
+        <Route path='generate-report/teacher-report' element={<TeacherActivityReport />} />
+        <Route path='generate-report/financial-summary' element={<FinancialSummary />} />
+        <Route path='added-teacher-success' element={<AddedTeacherSuccessful />} />
+        <Route path='added-student-success' element={<AddedStudentSuccessful />} />
+        <Route path='organization-registered-success' element={<OrganizationRegisterSuccess />} />
+
+        <Route index element={<AdminDashboard />} />
+      </Route>
 
         <Route path="/student">
           <Route path="login" element={<LoginCardStudent />} />
@@ -84,11 +84,12 @@ function App() {
 
         <Route path="/teacher">
           <Route path="login" element={<LoginCardTeacher />} />
-          <Route path="register" element={<RegisterCardTeacher />} />
+          <Route path="register" element={<AddTeacher />} />
           <Route path='teacher-auth' element={<TeacherAuth />} />
           <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
           <Route path='forgot-password/verify-otp/create-new-password' element={<CreateNewPasswordPage />} />
           <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
+          <Route path='register-teacher-success' element={<AddedTeacherSuccessful />} />
           <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
           <Route index element={<TeacherDashboard />} />
         </Route>
