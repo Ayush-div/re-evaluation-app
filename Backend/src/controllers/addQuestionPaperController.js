@@ -3,9 +3,11 @@ const {AddQuestionPaperService} = require("../services/addQuestionPaperService")
 async function addQuestionPaperController(req,res){
     try{
         console.log("req.body is : ",req.body);
+        console.log("path  of file is : ",req.file)
         const product = await AddQuestionPaperService({
-            questionPdfPath: req.file?.path,
-            
+            questionPdf: req.file?.path,
+            examDetails: req.body.examDetails,
+            questions: req.body.questions
         })
         console.log("Back to controller", product);
         return res.status(201).json({

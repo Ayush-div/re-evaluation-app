@@ -157,53 +157,7 @@ const AddQuestionPaper = () => {
         }
     };
 
-    // const handleUpload = async () => {
-    //     if (!selectedFile) {
-    //         alert('Please select a file first');
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append('questionPaper', selectedFile);
-    //     formData.append('examDetails', JSON.stringify(examDetails));
-
-    //     try {
-    //         const response = await axios.post('/api/upload-question-paper', formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         });
-    //         if (response.data.success) {
-    //             alert('Question paper uploaded successfully!');
-    //             navigate('/organization/question-papers');
-    //         }
-    //     } catch (error) {
-    //         console.error('Upload failed:', error);
-    //         alert('Failed to upload question paper');
-    //     }
-    // };
-
-    // const handleFinalSubmit = async () => {
-    //     try {
-    //         const questionPaperData = {
-    //             examDetails,
-    //             questions,
-    //             file: selectedFile // Include file if it exists
-    //         };
-    //         console.log("Question paper data is : ",questionPaperData)
-    //         const response = await axios.post('/api/organization/add-question-paper', questionPaperData);
-    //         console.log(response);
-    //         console.log(response.data);
-    //         // console.log(questionPaperData)
-    //         if (response.data.success) {
-    //             alert('Question paper submitted successfully!');
-    //             navigate('/organization/question-papers');
-    //         }
-    //     } catch (error) {
-    //         console.error('Submission failed:', error);
-    //         alert('Failed to submit question paper');
-    //     }
-    // };
+    
 
     const handleFinalSubmit = async () => {
         try {

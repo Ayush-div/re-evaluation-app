@@ -1,5 +1,5 @@
 //const adminStudent = require("../schema/addStudentAdminSchema");
-const adminStudent = require('../schema/organization/addQuestionPaperSchema')
+const QuestionPaper = require('../schema/organization/addQuestionPaperSchema')
     // async function findAdmin(parameters){
     //     try{
     //         const response = await adminStudent.findOne({...parameters});
@@ -9,13 +9,28 @@ const adminStudent = require('../schema/organization/addQuestionPaperSchema')
     //     }
         
     // }
-    async function AddingQuestionPaperInto(studentDetails){
+    async function AddingQuestionPaperIntoDb(questionPaperDetails){
         try{
-            console.log("Student details is : ",studentDetails)
-            
-            const response = await adminStudent.create(studentDetails);
-            // console.log("Response is : ", response);
+            console.log("question paper details given by admin is : ",questionPaperDetails)
+            examDetailsData = JSON.parse(questionPaperDetails.examDetails)
+            questionDetailsData = JSON.parse(questionPaperDetails.questions)
+            console.log("Subject details is given by Ayush is : ",questionDetailsData)
+            // console.log("My subjetc is not undefined : ",)
+            const obj = {
+                subjectName: examDetailsData.subject,
+                examDate: examDetailsData.examDate,
+                totalMarks: examDetailsData.totalMarks,
+                duration: examDetailsData.duration,
+                department: examDetailsData.department,
+                semester: examDetailsData.semester,
+                questionPdfPath: questionPaperDetails.questionPdfURL,
+                questions: questionDetailsData
+            }
+            console.log("Here is my object and it  is given by ayush : ",obj);
+            const response = await QuestionPaper.create(obj);
+            console.log("Ayush's Response is : ", response);
             return response
+            
         } catch(error) {
             console.log(error)
             if (error.code === 11000) {
@@ -33,6 +48,6 @@ const adminStudent = require('../schema/organization/addQuestionPaperSchema')
     }
 
 module.exports = {
-    AddingQuestionPaperInto,
+    AddingQuestionPaperIntoDb,
     // createAdminStudent
 }
