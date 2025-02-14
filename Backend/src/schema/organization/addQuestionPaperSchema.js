@@ -13,40 +13,40 @@ const statsSchema = new mongoose.Schema({
 });
 
 const subpartOfSubpartSchema = new mongoose.Schema({
-    text: {
-        type: String,
+    id: {
+        type: Number,
         required: true
     },
     marks: {
         type: Number,
         required: true
     },
-    stats: statsSchema
+    // stats: statsSchema
 });
 
 const subpartSchema = new mongoose.Schema({
-    subpartText: {
-        type: String,
+    id: {
+        type: Number,
         required: true
     },
     marks: {
         type: Number,
         required: true
     },
-    stats: statsSchema,
+    // stats: statsSchema,
     subpartOfSubpart: [subpartOfSubpartSchema]
 });
 
 const questionSchema = new mongoose.Schema({
-    questiontext: {
-        type: String,
+    id: {
+        type: Number,
         required: true
     },
     marks: {
         type: Number,
         required: true
     },
-    stats: statsSchema,
+    // stats: statsSchema,
     subpart: [subpartSchema]
 });
 
@@ -81,24 +81,24 @@ const questionPaperSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    organizationId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Organization',
-        required: true
-    },
-    allowedStudents: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student'
-    }],
-    reEvaluationDeadline: {
-        type: Date,
-        required: true
-    }
+    // organizationId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Organization',
+    //     required: true
+    // },
+    // allowedStudents: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Student'
+    // }],
+    // reEvaluationDeadline: {
+    //     type: Date,
+    //     required: true
+    // }
 }, { timestamps: true });
 
-questionPaperSchema.methods.canStudentAccess = async function(studentId) {
-    return this.allowedStudents.includes(studentId);
-};
+// questionPaperSchema.methods.canStudentAccess = async function(studentId) {
+//     return this.allowedStudents.includes(studentId);
+// };
 
 const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);
 module.exports = QuestionPaper;
