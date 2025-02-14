@@ -1,5 +1,4 @@
 const { findTeacher, createTeacher } = require("../repositories/teacherRegister.repository.js");
-// const { ApiError } = require("../utils/ApiError.utils.js")
 async function registerTeacher(teacherDetails) {
     const teacher = await findTeacher({
         // teacherName: teacherDetails.teacherName,
