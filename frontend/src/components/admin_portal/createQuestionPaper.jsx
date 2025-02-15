@@ -45,7 +45,22 @@ const AddQuestionPaper = () => {
             return q;
         }));
     };
+
+    // track total marks so it do not exceed totalmarks of obj examDetails
+
+    const updateTotalMarks = (total) => {
+        let m = 0;
+        for (let i = 0; i < questions.length; i++) {
+            m += parseInt(questions[i].marks);
+        }
+        if (m > total) {
+            return false;
+        }
+        return true;
+    }
+
     //Update question marks by addind marks of all subparts and subsubparts
+    
     const updateQuestionMarks = (questionId) => {
         let m = 0;
         for (let i = 0; i < questions[questionId].subparts.length; i++) {
@@ -459,7 +474,7 @@ const AddQuestionPaper = () => {
                                             Question {qIndex + 1}
                                         </h1>
                                     </div>
-                                    <div className={`marks${qIndex} w-32`}>
+                                    <div className={`w-32`}>
                                         <label className="block text-sm font-medium text-[#1E232C] mb-2">
                                             Marks
                                         </label>
@@ -470,6 +485,12 @@ const AddQuestionPaper = () => {
                                                 const newQuestions = [...questions];
                                                 newQuestions[qIndex].marks = e.target.value;
                                                 setQuestions(newQuestions);
+                                                if (!updateTotalMarks(examDetails.totalMarks)) {
+                                                    alert('Total marks exceeded !!');
+                                                    const newQuestions = [...questions];
+                                                    newQuestions[qIndex].marks = 0;
+                                                    setQuestions(newQuestions);
+                                                }
                                             }}
                                             className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                             placeholder="Marks"
@@ -521,7 +542,14 @@ const AddQuestionPaper = () => {
                                                         setQuestions(newQuestions);
                                                         const nq = [...questions];
                                                         nq[qIndex].marks = updateQuestionMarks(qIndex);
-                                                        setQuestions(nq);                               
+                                                        setQuestions(nq);                            
+                                                        if (!updateTotalMarks(examDetails.totalMarks)) {
+                                                            alert('Total marks exceeded !!');
+                                                            const newQuestions = [...questions];
+                                                            newQuestions[qIndex].subparts[spIndex].marks = 0;
+                                                            setQuestions(newQuestions);
+                                                        }
+
                                                     }}
                                                     className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                     placeholder="Marks"
@@ -595,10 +623,17 @@ const AddQuestionPaper = () => {
                                                                     newQuestions[qIndex].subparts[spIndex].subsubparts[sspIndex].marks = e.target.value;
                                                                     setQuestions(newQuestions);
                                                                     const nq = [...questions];
-                                                                    nq[qIndex].subparts[spIndex].marks = updateSubpartMarks(qIndex,spIndex);
+                                                                    nq[qIndex].subparts[spIndex].marks = updateSubpartMarks(qIndex, spIndex);
                                                                     setQuestions(nq);
-                                                                    nq[qIndex].marks = updateQuestionMarks(qIndex);
-                                                                    setQuestions(nq); 
+                                                                    const nqq = [...questions];
+                                                                    nqq[qIndex].marks = updateQuestionMarks(qIndex);
+                                                                    setQuestions(nqq);
+                                                                    if (!updateTotalMarks(examDetails.totalMarks)) {
+                                                                        alert('Total marks exceeded !!');
+                                                                        const newQuestions = [...questions];
+                                                                        newQuestions[qIndex].subparts[spIndex].subsubparts[sspIndex].marks = 0;
+                                                                        setQuestions(newQuestions);
+                                                                    }
                                                                 }}
                                                                 className="w-full px-4 py-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-black transition-all"
                                                                 placeholder="Marks"
