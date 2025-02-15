@@ -9,7 +9,7 @@ async function connectDB(){
         // console.log(serverConfig.DB_URL)
 
         // CHANGE THIS URL TO YOUR DATABASE URL
-        // await mongoose.connect("mongodb+srv://Ayush:JNLLuEt3bUVEr3tv@cluster0.v5uie.mongodb.net/");
+        await mongoose.connect("mongodb+srv://Ayush:JNLLuEt3bUVEr3tv@cluster0.v5uie.mongodb.net/");
 
         // CHANGE THIS URL TO YOUR DATABASE URL
         // await mongoose.connect("mongodb+srv://srivastavadevansh123:a338ywDPkHD0kjhI@cluster0.82jim.mongodb.net/");

@@ -18,3 +18,26 @@ module.exports = {
     getPapersService
 }
 
+
+// my service
+
+/*
+const { getQuestionPaperFromDb } = require("../repositories/QuestionPaperRepository");
+async function getQuestionPaperService() {
+    try{
+        const response = getQuestionPaperFromDb();
+        return response;
+    } catch(error){
+        console.log("Error found by ayush : ",error);
+    }
+  
+}
+
+
+module.exports = {
+    getQuestionPaperService,
+};
+
+
+
+*/

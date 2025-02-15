@@ -1,30 +1,3 @@
-// // const { AddingQuestionPaperIntoDB,} = require("../repositories/addQuestionPaperRepository");
-// const fs = require("fs/promises");
-// const cloudinary = require('../config/cloudinaryConfig');
-
-// async function AddQuestionPaperService(questionPaperDetails) {
-//   console.log("question paper details is : ", questionPaperDetails);
-//   if(questionPaperDetails.questionPdfPath){
-//     try{
-//         const cloudinaryResponse = await cloudinary.uploader.upload(questionPaperDetails.questionPdfPath , {resource_type: "raw"});
-//         console.log("cloudinaryResponse is ayush : ",cloudinaryResponse)
-//         var questionPdfPath = cloudinaryResponse.secure_url;
-//         await fs.unlink(process.cwd() + "/" + questionPdfPath);
-//         throw {message : "Done"}
-//     } catch(error){
-//         console.log("pta nni kyu error aa rha hai : ",error);
-//         throw {message: "not able to store pdf into cloudinary"};
-//     }
-// }
-
-//   return addingQuePaper;
-// }
-
-// module.exports = {
-//     AddQuestionPaperService,
-// };
-
-
 const fs = require("fs/promises");
 const cloudinary = require('../config/cloudinaryConfig');
 const { AddingQuestionPaperIntoDb } = require("../repositories/addQuestionPaperRepository");

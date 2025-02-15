@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose');
 
 const stagesSchema = new mongoose.Schema({
     name: {
@@ -28,8 +28,9 @@ const applicationStatusSchema = new mongoose.Schema({
         ref: 'Student',
         required: true
     },
-    subject: {
+    subjectId: {
         type: String,
+        ref: 'QuestionPaper',
         required: true,
     },
     questionDetails: [{  
@@ -99,4 +100,6 @@ applicationStatusSchema.virtual('processingTime').get(function() {
     return null;
 });
 
-export const ApplicationStatus = mongoose.model("ApplicationStatus", applicationStatusSchema)
+const ApplicationStatus = mongoose.model("ApplicationStatus", applicationStatusSchema); // collection
+
+module.exports = ApplicationStatus;

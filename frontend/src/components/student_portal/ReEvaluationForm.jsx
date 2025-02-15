@@ -28,7 +28,7 @@ const ReEvaluationForm = () => {
   const fetchReEvaluationData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/students/apply-reevaluation', {
+      const response = await axios.get('/api/students/get-papers-for-reevaluation', {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -69,8 +69,6 @@ const ReEvaluationForm = () => {
               stats: {
                 doubts: subpart.doubts || 0,
                 commonIssues: subpart.commonIssues || 'No common issues reported',
-                marksChangeProb: subpart.marksChangePercentage || '0%',
-                avgMarksChange: subpart.averageMarksChange || '+0'
               },
               subpartOfSubpart: (subpart.subsubparts || []).map(subsub => ({
                 id: `q${question.id}_${subpart.id}_${subsub.id}`, 
@@ -79,8 +77,6 @@ const ReEvaluationForm = () => {
                 stats: {
                   doubts: subsub.doubts || 0,
                   commonIssues: subsub.commonIssues || 'No common issues reported',
-                  marksChangeProb: subsub.marksChangePercentage || '0%',
-                  avgMarksChange: subsub.averageMarksChange || '+0'
                 }
               }))
             }))
@@ -361,12 +357,15 @@ const ReEvaluationForm = () => {
         />
       )}
 
+      {['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking'].includes(formData.issueTypes[itemId]) && (
       <textarea
         placeholder="Enter your specific remarks/doubts for this part..."
         className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
         onChange={(e) => handleRemarkChange(itemId, e.target.value)}
         value={formData.remarks[itemId] || ''}
       />
+    )}
+
     </div>
   );
 
@@ -469,7 +468,7 @@ const ReEvaluationForm = () => {
             ))}
           </div>
 
-          {formData.issueTypes[subSubpart.id] === 'Others' && (
+          {/* {formData.issueTypes[subSubpart.id] === 'Others' && (
             <input
               type="text"
               placeholder="Please specify the issue..."
@@ -484,7 +483,23 @@ const ReEvaluationForm = () => {
             className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
             onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
             value={formData.remarks[subSubpart.id] || ''}
-          />
+          /> */}
+          {formData.issueTypes[subSubpart.id] === 'Others' ? (
+      <input
+        type="text"
+        placeholder="Please specify the issue..."
+        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+        onChange={(e) => handleCustomIssueDescription(subSubpart.id, e.target.value)}
+        value={formData.customIssueDescriptions[subSubpart.id] || ''}
+      />
+    ) : ['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking'].includes(formData.issueTypes[subSubpart.id]) ? (
+      <textarea
+        placeholder="Enter your specific remarks/doubts for this part..."
+        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+        onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
+        value={formData.remarks[subSubpart.id] || ''}
+      />
+  ) : null}
         </div>
       )}
     </div>
@@ -558,8 +573,16 @@ const ReEvaluationForm = () => {
               <button
                 className="mt-6 w-full py-2 bg-[#000000] text-white rounded-[8px] 
                   hover:bg-[#FFFFFF] hover:text-black hover:border-[.69px] transition-all duration-300"
-                onClick={() => {
+                onClick={async () => {
                   alert('Payment processing...');
+                  console.log("Form data given by ayush is : ",formData)
+
+                  try {
+                    const response = await axios.post('/api/students/apply-reevaluation', formData);
+                    console.log("Server Response:", response.data);
+                  } catch (error) {
+                    console.error("Error submitting reevaluation request:", error.response ? error.response.data : error.message);
+                  }
                 }}
               >
                 Pay Now
