@@ -1,73 +1,69 @@
 import React, { useState } from 'react';
-
+import { useEffect } from 'react';
+import axios from 'axios';
 const QuestionPaperViewer = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [subjects,setSubjects] = useState([]);
+  const [papers,setPapers] = useState([]);
 
-  // Mock data
-  const subjects = [
-    { id: 1, name: "Mathematics" },
-    { id: 2, name: "Physics" },
-    { id: 3, name: "Chemistry" }
-  ];
+  useEffect(() => {
+    fetchReEvaluationData();
+  }, []);
 
- 
-  const papers = [
-    {
-      id: 1,
-      subject: "Mathematics",
-      exam: "Mid Semester",
-      date: "2023-11-15",
-      resources: [
-        { 
-          name: "Question Paper", 
-          type: "pdf", 
-          size: "2.4 MB",
-          url: "/path/to/math-paper.pdf",
-          downloads: 234,
-          lastUpdated: "2023-11-16",
-          category: "exam"
-        },
-        { 
-          name: "Answer Key", 
-          type: "pdf", 
-          size: "1.8 MB",
-          url: "/path/to/math-answers.pdf",
-          downloads: 198,
-          lastUpdated: "2023-11-17",
-          category: "exam"
-        },
-        {
-          name: "Detailed Solutions", 
-          type: "pdf", 
-          size: "4.2 MB",
-          url: "/path/to/math-solutions.pdf",
-          downloads: 156,
-          lastUpdated: "2023-11-17",
-          isPremium: true,
-          category: "study"
-        },
-        {
-          name: "Study Notes", 
-          type: "pdf", 
-          size: "3.1 MB",
-          url: "/path/to/math-notes.pdf",
-          downloads: 145,
-          lastUpdated: "2023-11-17",
-          isPremium: true,
-          category: "study"
+  const fetchReEvaluationData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/students/get-papers-for-reevaluation', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
-      ],
-      metadata: {
-        duration: "3 hours",
-        totalMarks: 100,
-        sections: 3,
-        difficulty: "Intermediate"
-      }
-    }
-    // Add more papers...
-  ];
+      });
+      console.log('Raw API Response:', response.data);
+      console.log("Data found by ayush is  : ",response.data.data)
+      setSubjects(response.data.data.map((item, index) => ({
+        id: index + 1,
+        name: item.subjectName
+      })));
 
+      const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        return date.toISOString().split('T')[0].split('-').reverse().join('-'); // Format: DD-MM-YYYY
+    };
+    
+    setPapers(response.data.data.map((paper, index) => ({
+        id: index + 1,
+        subject: paper.subjectName,
+        examDate: formatDate(paper.examDate),
+        examDuration: `${paper.duration} minutes`,
+        totalMarks: paper.totalMarks,
+        resources: [
+            { 
+                name: "Question Paper", 
+                type: "pdf", 
+                url: paper.questionPdfPath,
+                lastUpdated: formatDate(paper.updatedAt)
+            }
+        ]
+    })));
+    
+      // console.log("Subjects defined by ayush is : ",subjects)
+
+    } catch (err) {
+      console.error('API Error Details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      setError('Failed to load question paper data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const handleDownload = (resource) => {
     if (resource.isPremium) {
       // Show premium modal or redirect to subscription
@@ -159,12 +155,13 @@ const QuestionPaperViewer = () => {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-xl font-bold text-[#1E232C]">{paper.subject}</h2>
-                  <p className="text-[#6A707C]">{paper.exam} </p>
+                  {/* <p className="text-[#6A707C]">{paper.exam} </p> */}
                 </div>
-                {/* <div className="text-right text-[#6A707C] text-sm">
-                  <p>Date: {paper.date}</p>
-                  <p>Duration: {paper.metadata.duration}</p>
-                </div> */}
+                <div className="text-right text-[#6A707C] text-sm">
+                  <p>examDate: {paper.examDate}</p>
+                  <p>examDuration: {paper.examDuration}</p>
+                  <p>totalMarks: {paper.totalMarks}</p>
+                </div>
               </div>
 
               {/* Resources - Now grouped by category */}
@@ -174,7 +171,7 @@ const QuestionPaperViewer = () => {
                   <h3 className="text-[#1E232C] font-medium mb-3">Exam Materials</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {paper.resources
-                      .filter(resource => resource.category === 'exam')
+                      // .filter(resource => resource.category === 'exam')
                       .map(resource => (
                         <div
                           key={resource.name}
@@ -189,7 +186,7 @@ const QuestionPaperViewer = () => {
                             </div>
                             <div>
                               <p className="font-medium text-[#1E232C]">{resource.name}</p>
-                              <p className="text-xs text-[#6A707C]">{resource.size} • {resource.downloads} downloads</p>
+                              {/* <p className="text-xs text-[#6A707C]">{resource.size} </p> */}
                             </div>
                           </div>
                           <button
