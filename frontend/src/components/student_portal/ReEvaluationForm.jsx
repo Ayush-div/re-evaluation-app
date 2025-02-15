@@ -578,6 +578,10 @@ const ReEvaluationForm = () => {
                   console.log("Form data given by ayush is : ",formData)
 
                   try {
+                    // inside if add condition for checking wether payement is successful or not if successful the navigate
+                    if("payment successful"){
+                      navigate('/student/reevaluation-application-success')
+                    }
                     const response = await axios.post('/api/students/apply-reevaluation', formData);
                     console.log("Server Response:", response.data);
                   } catch (error) {

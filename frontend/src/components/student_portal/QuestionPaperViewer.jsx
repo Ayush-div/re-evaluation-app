@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 const QuestionPaperViewer = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
-  // const [selectedYear, setSelectedYear] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data
@@ -12,8 +11,7 @@ const QuestionPaperViewer = () => {
     { id: 3, name: "Chemistry" }
   ];
 
-  // const years = ["2023", "2022", "2021"];
-
+ 
   const papers = [
     {
       id: 1,

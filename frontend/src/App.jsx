@@ -38,6 +38,7 @@ import LoginOrganization from './components/admin_portal/LoginOrganization';
 import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
 import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx'
 import OrganizationRegisterSuccess from './components/admin_portal/organizationRegisterSuccess.jsx'
+import AppliedForReevaluationSuccess from './components/student_portal/appliedForReevaluationSuccess.jsx'
 
 function App() {
   return (
@@ -79,6 +80,7 @@ function App() {
           <Route path='forgot-password' element={<ForgotPasswordEmailPage />} />
           <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
           <Route path='forgot-password/verify-otp' element={<VerifyOtp />} />
+          <Route path='reevaluation-application-success' element={<AppliedForReevaluationSuccess />} />
           <Route index element={<Dashboard />} />
         </Route>
 
