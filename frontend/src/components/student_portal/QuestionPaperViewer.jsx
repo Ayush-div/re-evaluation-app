@@ -64,21 +64,29 @@ const QuestionPaperViewer = () => {
     }
   };
   
+  // const handleDownload = (resource) => {
+  //   if (resource.isPremium) {
+  //     // Show premium modal or redirect to subscription
+  //     alert("This is a premium resource. Please subscribe to download.");
+  //     return;
+  //   }
+  //   // Implement download logic
+    
+  //   alert(`Downloading ${resource.name}...`);
+  // };
   const handleDownload = (resource) => {
-    if (resource.isPremium) {
-      // Show premium modal or redirect to subscription
-      alert("This is a premium resource. Please subscribe to download.");
-      return;
-    }
-    // Implement download logic
-    alert(`Downloading ${resource.name}...`);
+    const link = document.createElement('a');
+    link.href = resource.url;
+    link.setAttribute('download', resource.name || 'document.pdf');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const filteredPapers = papers.filter(paper => 
     (!selectedSubject || paper.subject === selectedSubject) &&
     (!searchQuery || 
-      paper.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      paper.exam.toLowerCase().includes(searchQuery.toLowerCase())
+      paper.subject.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -129,24 +137,16 @@ const QuestionPaperViewer = () => {
               </div>
             </div>
             <div className="flex-1">
-              {/* <label className="block text-[#6A707C] text-sm mb-2">Year</label> */}
               <div className="flex flex-wrap gap-2">
-                {/* {years.map(year => (
-                  <button
-                    key={year}
-                    onClick={() => setSelectedYear(selectedYear === year ? null : year)}
-                    className={`px-4 py-2 rounded-[8px] text-sm transition-all duration-300
-                      ${selectedYear === year
-                        ? 'bg-black text-white'
-                        : 'bg-[#F7F8F9] text-[#6A707C] hover:bg-gray-100'}`}
-                  >
-                    {year}
-                  </button>
-                ))} */}
+                
               </div>
             </div>
           </div>
         </div>
+
+        {error && <p className="text-center text-red-500">{error}</p>}
+
+        {loading && <p className="text-center text-gray-500">Loading question papers...</p>}
 
         {/* Papers Grid */}
         <div className="grid grid-cols-1 gap-6">
