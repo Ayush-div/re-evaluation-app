@@ -25,6 +25,98 @@ const ReEvaluationForm = () => {
     fetchReEvaluationData();
   }, []);
 
+
+
+// Payment Gateway 
+  const [PaymentresponseId, setPaymentResponseId] = useState("");
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+
+      script.src = src;
+
+      script.onload = () => {
+        resolve(true)
+      }
+      script.onerror = () => {
+        resolve(false)
+      }
+
+      document.body.appendChild(script);
+    })
+  }
+  const createRazorpayOrder = (amount) => {
+    let data = JSON.stringify({
+      amount: amount * 100,
+      currency: "INR"
+    })
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "/api/students/orders",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    }
+
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data))
+      handleRazorpayScreen(response.data.amount)
+
+    })
+    .catch((error) => {
+      console.log("createRszorpayOrder error at", error)
+    })
+  }
+  const handleRazorpayScreen = async(amount) => {
+    const res = await loadScript("https:/checkout.razorpay.com/v1/checkout.js")
+
+    if (!res) {
+      alert("Some error at razorpay screen loading")
+      return;
+    }
+
+    const options = {
+      key: 'rzp_test_Y61gV72b1PxhpF',
+      amount: amount,
+      currency: 'INR',
+      name: "Reevaluation Portal",
+      description: "payment to Revaluation Portal",
+      
+      handler: function (response){
+        setPaymentResponseId(response.razorpay_payment_id)
+      },
+      
+      // prefill: {
+      //   name: "Devansh",
+      //   email: "srivastavadevansh123@gmail.com",
+      // },
+      theme: {
+        color: "#F4C430"
+      }
+    }
+
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+  }
+
+  useEffect(async() => {
+    if (PaymentresponseId !== "") {
+      
+      await axios.post('/api/students/apply-reevaluation', formData);
+      navigate('/student/reevaluation-application-success');
+      window.location.reload();
+    }
+    
+  }, [PaymentresponseId]);
+
+
+
+
+
   const fetchReEvaluationData = async () => {
     try {
       setLoading(true);
@@ -574,17 +666,12 @@ const ReEvaluationForm = () => {
                 className="mt-6 w-full py-2 bg-[#000000] text-white rounded-[8px] 
                   hover:bg-[#FFFFFF] hover:text-black hover:border-[.69px] transition-all duration-300"
                 onClick={async () => {
-                  alert('Payment processing...');
-                  console.log("Form data given by ayush is : ",formData)
-
+                  // alert('Payment processing...');
+                  // console.log("Form data given by ayush is : ",formData)
                   try {
-                    // inside if add condition for checking wether payement is successful or not if successful the navigate
-                    if("payment successful"){
-                      navigate('/student/reevaluation-application-success')
-                    }
-                    const response = await axios.post('/api/students/apply-reevaluation', formData);
-                    console.log("Server Response:", response.data);
+                    createRazorpayOrder(formData.selectedQuestions.length * formData.subject.fee);
                   } catch (error) {
+                    alert('Error submitting reevaluation request. Please try again later.');
                     console.error("Error submitting reevaluation request:", error.response ? error.response.data : error.message);
                   }
                 }}
