@@ -1,11 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import axios from 'axios';
 
 const AnswerSheets = () => {
   const [selectedTab, setSelectedTab] = useState('available');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubject, setSelectedSubject] = useState(null);
 
-  // Mock data
+  // Payment Gateway 
+  const [PaymentresponseId, setPaymentResponseId] = useState("");
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+
+      script.src = src;
+
+      script.onload = () => {
+        resolve(true)
+      }
+      script.onerror = () => {
+        resolve(false)
+      }
+
+      document.body.appendChild(script);
+    })
+  }
+  const createRazorpayOrder = (amount,sheet) => {
+    let data = JSON.stringify({
+      amount: amount * 100,
+      currency: "INR"
+    })
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "/api/students/orders",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    }
+
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data))
+      handleRazorpayScreen(response.data.amount,sheet)
+
+    })
+    .catch((error) => {
+      console.log("createRszorpayOrder error at", error)
+    })
+  }
+  const handleRazorpayScreen = async(amount,sheet) => {
+    const res = await loadScript("https:/checkout.razorpay.com/v1/checkout.js")
+
+    if (!res) {
+      alert("Some error at razorpay screen loading")
+      return;
+    }
+
+    const options = {
+      key: 'rzp_test_Y61gV72b1PxhpF',
+      amount: amount,
+      currency: 'INR',
+      name: "Reevaluation Portal",
+      description: "payment to Revaluation Portal",
+      
+      handler: function (response){
+        setpaidSheet(sheet);
+        setPaymentResponseId(response.razorpay_payment_id);
+      },
+      // prefill: {
+      //   name: "Devansh",
+      //   email: "srivastavadevansh123@gmail.com",
+      // },
+      theme: {
+        color: "#F4C430"
+      }
+    }
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+  }
+
+
+
+
+//                  Write code for what to do after successful payment
+//------------------------------------------------------------------------------------
+let [paidsheet, setpaidSheet] = useState({});
+  useEffect(() => {
+    if (PaymentresponseId !== "") {
+      console.log("payment successful payment id is", PaymentresponseId);
+      console.log("sheet requested is ", paidsheet);
+      // await axios.post('', sheet);
+      // navigate('');
+    }
+  }, [PaymentresponseId]);
+//------------------------------------------------------------------------------------
+
+
+
+
+
+
+// Mock data
   const answerSheets = [
     {
       id: 1,
@@ -49,10 +146,6 @@ const AnswerSheets = () => {
 
   const subjects = ["Mathematics", "Physics", "Chemistry"];
 
-  const handlePurchase = (sheet) => {
-    // Implement purchase logic
-    alert(`Processing payment of ₹${sheet.price} for ${sheet.subject} answer sheet`);
-  };
 
   const handleDownload = (sheet) => {
     if (sheet.downloadCount >= sheet.maxDownloads) {
@@ -191,7 +284,7 @@ const AnswerSheets = () => {
                 <div className="flex flex-col gap-3 min-w-[200px] justify-center">
                   {sheet.status === 'available' ? (
                     <button
-                      onClick={() => handlePurchase(sheet)}
+                      onClick={() =>createRazorpayOrder(sheet.price,sheet)}
                       className="w-full px-6 py-2 bg-black text-white rounded-[8px] font-medium 
                         hover:bg-white hover:text-black hover:border-[.69px] border-black transition-all duration-300"
                     >
