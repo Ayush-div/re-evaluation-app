@@ -39,6 +39,7 @@ import AddQuestionPaper from './components/admin_portal/createQuestionPaper.jsx'
 import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx'
 import OrganizationRegisterSuccess from './components/admin_portal/organizationRegisterSuccess.jsx'
 import AppliedForReevaluationSuccess from './components/student_portal/appliedForReevaluationSuccess.jsx'
+import VideoUploadSuccess from './components/teacher_portal/videoUploadSuccessful';
 
 function App() {
   return (
@@ -93,6 +94,7 @@ function App() {
           <Route path='forget-password/verify-otp' element={<VerifyOtp />} />
           <Route path='register-teacher-success' element={<AddedTeacherSuccessful />} />
           <Route path='forgot-password/verify-otp/reset-password' element={<ResetNewPassword />} />
+          <Route path='video-upload-success' element={<VideoUploadSuccess />} />
           <Route index element={<TeacherDashboard />} />
         </Route>
 

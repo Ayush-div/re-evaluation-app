@@ -20,8 +20,7 @@ const stagesSchema = new mongoose.Schema({
 const applicationStatusSchema = new mongoose.Schema({
     applicationId: {  
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     studentId: {  
         type: mongoose.Schema.Types.ObjectId,
@@ -72,7 +71,7 @@ const applicationStatusSchema = new mongoose.Schema({
             ref: 'User'
         }
     },
-    paymentStatus: {  // Added payment tracking
+    paymentStatus: {  
         paid: {
             type: Boolean,
             default: false
@@ -86,13 +85,10 @@ const applicationStatusSchema = new mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-
-// indexes for better query performance ()
 applicationStatusSchema.index({ studentId: 1, status: 1 });
 applicationStatusSchema.index({ applicationId: 1 }, { unique: true });
 applicationStatusSchema.index({ assignedTeacher: 1, status: 1 });
 
-// Virtual for calculating processing time
 applicationStatusSchema.virtual('processingTime').get(function() {
     if (this.status === 'completed') {
         return this.updatedAt - this.createdAt;
@@ -100,6 +96,6 @@ applicationStatusSchema.virtual('processingTime').get(function() {
     return null;
 });
 
-const ApplicationStatus = mongoose.model("ApplicationStatus", applicationStatusSchema); // collection
+const ApplicationStatus = mongoose.model("ApplicationStatus", applicationStatusSchema);
 
 module.exports = ApplicationStatus;

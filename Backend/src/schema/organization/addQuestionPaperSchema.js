@@ -12,6 +12,31 @@ const statsSchema = new mongoose.Schema({
     }
 });
 
+const solutionVideoSchema = new mongoose.Schema({
+    url: {
+        type: String,
+        required: true
+    },
+    uploadedAt: {
+        type: Date,
+        default: Date.now
+    },
+    uploadedBy: {
+        name: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        department: {
+            type: String,
+            required: true
+        }
+    }
+});
+
 const subSubpartsSchema = new mongoose.Schema({
     id: {
         type: Number,
@@ -21,7 +46,8 @@ const subSubpartsSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    // stats: statsSchema
+    // stats: statsSchema,
+    videoSolution:solutionVideoSchema
 });
 
 const subpartSchema = new mongoose.Schema({
@@ -34,7 +60,8 @@ const subpartSchema = new mongoose.Schema({
         required: true
     },
     // stats: statsSchema,
-    subsubparts: [subSubpartsSchema]
+    subsubparts: [subSubpartsSchema],
+    videoSolution:solutionVideoSchema
 });
 
 const questionSchema = new mongoose.Schema({
@@ -47,7 +74,8 @@ const questionSchema = new mongoose.Schema({
         required: true
     },
     // stats: statsSchema,
-    subparts: [subpartSchema]
+    subparts: [subpartSchema],
+    videoSolution:solutionVideoSchema
 });
 
 const questionPaperSchema = new mongoose.Schema({

@@ -37,12 +37,12 @@ const ReEvaluationForm = () => {
       console.log('Raw API Response:', response.data);
 
       if (response.data?.data) {
-        const papers = response.data.data; 
+        const papers = response.data.data;
 
         const formattedSubjects = papers.map(paperData => ({
           id: paperData._id,
           name: paperData.subjectName,
-          examDate  : new Date(paperData.examDate).toLocaleDateString(),
+          examDate: new Date(paperData.examDate).toLocaleDateString(),
           department: paperData.department,
           semester: paperData.semester,
           totalMarks: paperData.totalMarks,
@@ -63,20 +63,24 @@ const ReEvaluationForm = () => {
               avgMarksChange: question.averageMarksChange || '+0'
             },
             subpart: (question.subparts || []).map(subpart => ({
-              id: `q${question.id}_${subpart.id}`, 
+              id: `${question.id}(${String.fromCharCode(96 + subpart.id)})`,
               marks: subpart.marks,
-              text: `Part ${subpart.id}`,
+              text: `Part ${String.fromCharCode(96 + subpart.id)}`,
               stats: {
                 doubts: subpart.doubts || 0,
                 commonIssues: subpart.commonIssues || 'No common issues reported',
+                marksChangeProb: subpart.marksChangePercentage || '0%',
+                avgMarksChange: subpart.averageMarksChange || '+0'
               },
               subpartOfSubpart: (subpart.subsubparts || []).map(subsub => ({
-                id: `q${question.id}_${subpart.id}_${subsub.id}`, 
+                id: `${question.id}(${String.fromCharCode(96 + subpart.id)}).${subsub.id}`,
                 text: `Subpart ${subsub.id}`,
                 marks: subsub.marks,
                 stats: {
                   doubts: subsub.doubts || 0,
                   commonIssues: subsub.commonIssues || 'No common issues reported',
+                  marksChangeProb: subsub.marksChangePercentage || '0%',
+                  avgMarksChange: subsub.averageMarksChange || '+0'
                 }
               }))
             }))
@@ -113,7 +117,7 @@ const ReEvaluationForm = () => {
       [subpartId]: !prev[subpartId]
     }));
   };
- 
+
   const ISSUE_TYPES = {
     CALCULATION: 'Calculation Errors',
     UNMARKED: 'Unmarked Answers',
@@ -356,16 +360,14 @@ const ReEvaluationForm = () => {
           value={formData.customIssueDescriptions[itemId] || ''}
         />
       )}
-
       {['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking'].includes(formData.issueTypes[itemId]) && (
-      <textarea
-        placeholder="Enter your specific remarks/doubts for this part..."
-        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
-        onChange={(e) => handleRemarkChange(itemId, e.target.value)}
-        value={formData.remarks[itemId] || ''}
-      />
-    )}
-
+        <textarea
+          placeholder="Enter your specific remarks/doubts for this part..."
+          className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+          onChange={(e) => handleRemarkChange(itemId, e.target.value)}
+          value={formData.remarks[itemId] || ''}
+        />
+      )}
     </div>
   );
 
@@ -476,31 +478,22 @@ const ReEvaluationForm = () => {
               onChange={(e) => handleCustomIssueDescription(subSubpart.id, e.target.value)}
               value={formData.customIssueDescriptions[subSubpart.id] || ''}
             />
-          )}
-
-          <textarea
-            placeholder="Enter your specific remarks/doubts for this part..."
-            className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
-            onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
-            value={formData.remarks[subSubpart.id] || ''}
-          /> */}
+          )} */}
           {formData.issueTypes[subSubpart.id] === 'Others' ? (
-      <input
-        type="text"
-        placeholder="Please specify the issue..."
-        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
-        onChange={(e) => handleCustomIssueDescription(subSubpart.id, e.target.value)}
-        value={formData.customIssueDescriptions[subSubpart.id] || ''}
-      />
-    ) : ['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking'].includes(formData.issueTypes[subSubpart.id]) ? (
-      <textarea
-        placeholder="Enter your specific remarks/doubts for this part..."
-        className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
-        onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
-        value={formData.remarks[subSubpart.id] || ''}
-      />
-  ) : null}
-        </div>
+            <input
+              type="text"
+              placeholder="Please specify the issue..."
+              className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+              onChange={(e) => handleCustomIssueDescription(subSubpart.id, e.target.value)}
+              value={formData.customIssueDescriptions[subSubpart.id] || ''}
+            />
+          ) : ['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking'].includes(formData.issueTypes[subSubpart.id]) ? (
+            <textarea
+              placeholder="Enter your specific remarks/doubts for this part..."
+              className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
+              onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
+              value={formData.remarks[subSubpart.id] || ''}
+            />):null    }    </div>
       )}
     </div>
   );
@@ -575,11 +568,11 @@ const ReEvaluationForm = () => {
                   hover:bg-[#FFFFFF] hover:text-black hover:border-[.69px] transition-all duration-300"
                 onClick={async () => {
                   alert('Payment processing...');
-                  console.log("Form data given by ayush is : ",formData)
+                  console.log("Form data given by ayush is : ", formData)
 
                   try {
                     // inside if add condition for checking wether payement is successful or not if successful the navigate
-                    if("payment successful"){
+                    if ("payment successful") {
                       navigate('/student/reevaluation-application-success')
                     }
                     const response = await axios.post('/api/students/apply-reevaluation', formData);
