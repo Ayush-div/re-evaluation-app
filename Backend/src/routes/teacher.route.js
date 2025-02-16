@@ -130,7 +130,7 @@ teacherRouter.get('/uploaded-videos', async (req, res) => {
   }
 });
 
-// (teacher profile ke liye)
+// teacher profile ke liye
 // teacherRouter.get('/profile', authenticateTeacher, async (req, res) => {
 //   try {
 //     // The teacher info should be available in req.teacher after authentication
@@ -157,4 +157,4 @@ teacherRouter.get('/uploaded-videos', async (req, res) => {
 
 teacherRouter.post('/upload-solution', uploader.single('video'), uploadSolution);
 
-module.exports = teacherRouter
+module.exports = teacherRouter;

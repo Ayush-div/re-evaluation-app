@@ -213,7 +213,7 @@ const AddQuestionPaper = () => {
     
             if (response.data.success) {
                 console.log('✅ Question paper submitted successfully!');
-                // navigate('/organization/question-papers');
+                navigate('/organization/question-papers');
             } else {
                 console.warn("⚠️ Backend did not return success:", response.data);
                 alert('⚠️ Failed to submit question paper.');

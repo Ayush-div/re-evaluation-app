@@ -344,7 +344,12 @@ const ReEvaluationForm = () => {
     </button>
   );
 
-  const renderSubpart = (subpart) => (
+  const getPartLabel = (index) => {
+    const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+    return letters[index] || `${index + 1}`;
+  };
+
+  const renderSubpart = (subpart, spIndex) => (
     <div key={subpart.id} className="bg-white rounded-[8px] p-4 border border-[#DADADA]">
       <div className="flex items-start space-x-3">
         <div className="flex-1">
@@ -359,7 +364,7 @@ const ReEvaluationForm = () => {
                 />
               )}
               <div>
-                <p className="text-[#1E232C] font-bold">Part {subpart.id} ({subpart.marks} marks)</p>
+                <p className="text-[#1E232C] font-bold">Part {getPartLabel(spIndex)} ({subpart.marks} marks)</p>
               </div>
             </div>
             {subpart.stats && (
