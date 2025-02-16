@@ -40,9 +40,11 @@ import QuestionPapersPage from './components/admin_portal/questionPapersPage.jsx
 import OrganizationRegisterSuccess from './components/admin_portal/organizationRegisterSuccess.jsx'
 import AppliedForReevaluationSuccess from './components/student_portal/appliedForReevaluationSuccess.jsx'
 import VideoUploadSuccess from './components/teacher_portal/videoUploadSuccessful';
+import ChatBot from './components/Chatbot.jsx'
 
 function App() {
   return (
+    <>
       <Routes>
         
         <Route path="/" element={<LandingPage />} />
@@ -97,8 +99,9 @@ function App() {
           <Route path='video-upload-success' element={<VideoUploadSuccess />} />
           <Route index element={<TeacherDashboard />} />
         </Route>
-
       </Routes>
+      <ChatBot />
+    </>
   );
 }
 
