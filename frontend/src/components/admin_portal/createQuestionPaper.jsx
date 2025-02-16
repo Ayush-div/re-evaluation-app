@@ -169,6 +169,7 @@ const AddQuestionPaper = () => {
 
     const handleFinalSubmit = async () => {
         try {
+
             const formData = new FormData();
     
             console.log("Exam Details:", examDetails);
@@ -297,7 +298,19 @@ const AddQuestionPaper = () => {
                     </button>
                 )}
                 <button
-                    onClick={handleFinalSubmit}
+                    onClick={() =>{
+                        let totalMarks = 0;
+                        for (let i = 0; i < questions.length; i++) {
+                            totalMarks += parseInt(questions[i].marks);
+                        }
+                        if (totalMarks < examDetails.totalMarks) {
+                            alert('Total marks are less than the total marks of the exam !!');
+                        }
+                        else {
+                            return handleFinalSubmit();
+                        }
+                    }
+                    }
                     className="px-6 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all"
                 >
                     Final Submit
