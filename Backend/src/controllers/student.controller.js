@@ -1,15 +1,9 @@
-// const { createReevaluationRequest } = require('../services/reevaluation.service');
+const { createReevaluationRequest } = require('../services/reevaluation.service');
 
-const applyForReevaluationController = async (req, res) => {
+const handleReevaluationRequest = async (req, res) => {
     try {
         const { paymentData, requestData } = req.body;
-        const studentId = req.user._id; // Note: changed from id to _id
-
-        console.log('Received request:', {
-            studentId,
-            paymentData,
-            requestData
-        });
+        const studentId = req.user.id; // Assuming you have authentication middleware
 
         const reevaluation = await createReevaluationRequest(
             studentId,
@@ -23,7 +17,6 @@ const applyForReevaluationController = async (req, res) => {
             data: reevaluation
         });
     } catch (error) {
-        console.error('Reevaluation request error:', error);
         res.status(500).json({
             success: false,
             message: 'Failed to submit reevaluation request',
@@ -32,7 +25,4 @@ const applyForReevaluationController = async (req, res) => {
     }
 };
 
-module.exports = {
-    applyForReevaluationController
-};
-
+// ... other controller methods ...

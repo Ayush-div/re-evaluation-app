@@ -1,6 +1,6 @@
 
 // import { Organization } from "../schema/organization/organisationRegisterSchema";
-const { Organization } = require("../schema/organization/organizationRegisterSchema.js")
+const { Organization } = require("../schema/organization/organizationSchema.js")
 async function findOrganization(parameters) {
     try {
         const response = await Organization.findOne({ ...parameters });
@@ -36,6 +36,14 @@ async function createOrganization(organizationDetails) {
             // throw new Error("Organization Already Exist. (from organization.register.repository.js)");
 
             return { Field: Object.keys(duplicateKey)[0] }
+        } else if (error.name == "ValidationError") {
+            console.log("here in validation errors ")
+            const validationErrors = Object.keys(error.errors).map(field => ({
+                field: field,
+                message: error.errors[field].message
+            }));
+            console.log("Validation errors:", validationErrors);
+            throw { reason: validationErrors[0].message };
         }
         else {
             console.log("this is not duplicate error")

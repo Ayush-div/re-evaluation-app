@@ -4,23 +4,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const TeacherAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const orgData = location.state?.organization || JSON.parse(localStorage.getItem('selectedOrg'));
 
   useEffect(() => {
-    // Redirect if no organization is selected
-    if (!orgData) {
-      console.log('No organization selected, redirecting...');
-      navigate('/search-organisation', {
-        state: { role: 'teacher' }
-      });
-    } else {
-      console.log('Organization data:', orgData);
-    }
-  }, [orgData, navigate]);
-
-  // Only render content if we have organization data
-  if (!orgData) return null;
+    console.log(orgData ? 'Organization data available:' : 'No organization data found');
+  }, [orgData]);
 
   return (
     <div className="h-full bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center ">

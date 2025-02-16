@@ -1,5 +1,5 @@
-const { Teacher } = require("../schema/teacher/teacher.schema.js");
-const { adminTeacher } = require("../schema/organization/addTeacherAdmin.schema.js");
+const { Teacher } = require("../../schema/teacher/teacher.schema.js");
+const { adminTeacher } = require("../../schema/organization/addTeacherAdmin.schema.js");
 
 async function findTeacher(parameters) {
     try {

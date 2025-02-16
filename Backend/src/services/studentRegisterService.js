@@ -11,8 +11,8 @@ async function registerStudent(studentDetails) {
     }
     // console.log("here in the studentregisterservice")
     console.log("register service : ", studentDetails)
-    // console.log("studentDetails.orgID is -> ")
-    // console.log(studentDetails.id)
+    console.log("studentDetails.orgID is -> ")
+    console.log(studentDetails.orgID)
 
     // 2. if not then create the user into the database
     const newStudent = await createStudent({
@@ -24,7 +24,7 @@ async function registerStudent(studentDetails) {
         department: studentDetails.department,
         semester: studentDetails.semester,
         organization: studentDetails.organization,
-        orgID: studentDetails.orgID
+        organizationId: studentDetails.orgID
     })
 
     console.log("Hii there from studentregistractioncontoller.js : ", newStudent);

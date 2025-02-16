@@ -46,41 +46,54 @@ const LoginCardTeacher = () => {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+    const [errorMessage, setErrorMessage] = useState('');
 
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/students/login', {
-                email: formData.email,
+            const response = await axios.post('/api/teacher/login', {
+                email: formData.email, 
                 password: formData.password,
             });
-            console.log('Login successful:', response.data);
-            if (response.data.message === 'Logged In successfully') {
+
+            if (response.data.success) { 
                 navigate('/teacher');
+            } else {
+                setErrorMessage(response.data.message || 'Login failed');
+                setTimeout(() => setErrorMessage(''), 3000);
             }
         } catch (error) {
-            console.error('Error logging in:', error);
+            console.error('Login error:', error);
+            setErrorMessage(error.response?.data?.message || 'Invalid email or password');
+            setTimeout(() => setErrorMessage(''), 3000);
         }
     };
 
+
+
     return (
         <div className="h-full flex justify-center font-['Urbanist']">
-            <form className="flex flex-col gap-4 w-[300px]" onSubmit={onSubmit}>
+            <form className="flex flex-col gap-4 w-[300px] relative" onSubmit={onSubmit}> {/* Added relative positioning */}
                 <div className="text-[#1E232C] text-[30px] font-bold leading-[39px] break-words pt-[40px] text-center">
                     Welcome back! Glad to see you, Again!
                 </div>
-
+                {errorMessage && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                        <span className="block sm:inline">{errorMessage}</span>
+                    </div>
+                )}
                 <div className='flex justify-center mt-[15px]'>
                     <input
-                        type="text"
-                        name="mobileNumber"
-                        value={formData.mobileNumber}
+                        type="email"  
+                        name="email"  
+                        value={formData.email}  
                         onChange={handleChange}
                         placeholder='Enter Your Email'
                         className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
                         transition-all duration-300 hover:shadow-md hover:border-gray-400 
                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
                         placeholder:text-gray-400"
+                        required
                     />
                 </div>
 
@@ -143,11 +156,13 @@ const LoginCardTeacher = () => {
                         <div className="flex justify-center items-center mt-6">
                             <span className="text-[#1E232C] text-[15px]">Don't have an account? </span>
                             {/* <Link to='/teacher/register'> */}
-                                <span className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer" onClick={()=>navigate('/search-organization',{state:{
-                                    role:'teacher'
-                                }})}>
-                                    Register Now
-                                </span>
+                            <span className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer" onClick={() => navigate('/search-organization', {
+                                state: {
+                                    role: 'teacher'
+                                }
+                            })}>
+                                Register Now
+                            </span>
                             {/* </Link> */}
                         </div>
                     </div>

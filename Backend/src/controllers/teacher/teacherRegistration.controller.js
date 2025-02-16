@@ -1,4 +1,4 @@
-const { registerTeacher } = require("../services/teacherRegister.service.js")
+const { registerTeacher } = require("../../services/teacher/teacherRegister.service.js")
 
 async function createTeacher(req, res) {
     console.log("in controller");
@@ -18,19 +18,12 @@ async function createTeacher(req, res) {
         console.log("error is ", error)
         console.log("error from teacherRegisterioncontroller.js", error.statusCode)
         console.log("error from teacherRegisterioncontroller.js", error.reason)
-        // console.log({
-        //     message: error.reason,
-        //     Success: false,
-        //     data: {},
-        //     error: error,
-        //     statusCode: error.statusCode
-        // })
+
         res.json({
             message: error.reason,
             Success: false,
             data: {},
             error: error,
-            // statusCode: error.statusCode
         })
     }
 

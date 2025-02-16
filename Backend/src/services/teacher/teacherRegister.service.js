@@ -1,4 +1,4 @@
-const { findTeacher, createTeacher } = require("../repositories/teacherRegister.repository.js");
+const { findTeacher, createTeacher } = require("../../repositories/teacher/teacherRegister.repository.js");
 async function registerTeacher(teacherDetails) {
     const teacher = await findTeacher({
         // teacherName: teacherDetails.teacherName,

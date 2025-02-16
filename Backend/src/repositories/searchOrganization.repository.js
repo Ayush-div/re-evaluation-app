@@ -1,5 +1,5 @@
 
-const { Organization } = require("../schema/organization/organizationRegisterSchema.js")
+const {Organization}=require("../schema/organization/organizationSchema.js")
 // const { Organization } = require("../schema/organization/organisationRegisterSchema.js")
 async function findOrganization() {
     try {

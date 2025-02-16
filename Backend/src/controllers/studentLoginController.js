@@ -1,35 +1,40 @@
 const { loginStudent } = require("../services/studentLoginService");
+const jwt = require('jsonwebtoken');
 
-async function LoginStudent(req,res){
-    console.log(req);
-    try{
-        console.log(req)
-        const response = await loginStudent(req.body);
-        res.cookie('authToken', response, {
-            httpOnly: true,
-            secure: false, // if we use true then we can only access using https but if we use false then we use it in http also
-            maxAge: 7*24*60*60*1000
-        })
-        
-        return res.json({
-            message : "Logged In successfully",
-            data : response,
-            error : {},
-            success : true
-        })
-        
-    } catch(error){
-        console.log("controller Login Error : ",error)
-        res.json({ // .status(error.statusCode)
-            message : error.reason,
-            Success : false,
-            data : {},
-            error : error
-        })
+async function LoginStudent(req, res) {
+    try {
+        const student = await loginStudent(req.body);
+        // Create access token
+        const accessToken = jwt.sign(
+            { id: student._id },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRY || '1h' }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            data: {
+                student: {
+                    id: student._id,
+                    name: student.studentName,
+                    email: student.email,
+                    organization: student.organizationId
+                },
+                accessToken // Changed from token to accessToken
+            }
+        });
+
+    } catch (error) {
+        console.error("Login Error:", error);
+        return res.status(401).json({
+            success: false,
+            message: error.message || "Login failed",
+            error: error
+        });
     }
-    
 }
 
 module.exports = {
     LoginStudent
-}
+};

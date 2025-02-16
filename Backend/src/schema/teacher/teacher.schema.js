@@ -59,7 +59,20 @@ const teacherSchema = new mongoose.Schema(
         orgID: {
             type: String,
             required: true
-        }
+        },
+        organizationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Organization',
+            required: true
+        },
+        assignedReevaluations: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Reevaluation'
+        }],
+        subjects: [{
+            type: String,
+            required: true
+        }]
     },
     { timestamps: true }
 );
@@ -72,4 +85,6 @@ teacherSchema.pre('save', async function () {
 
 const Teacher = mongoose.model("Teacher", teacherSchema);
 
-module.exports = { Teacher };
+module.exports = {
+    Teacher  
+};

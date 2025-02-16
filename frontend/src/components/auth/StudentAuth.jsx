@@ -4,28 +4,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const StudentAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Get organization data from both state and localStorage
   const orgData = location.state?.organization || JSON.parse(localStorage.getItem('selectedOrg'));
 
   useEffect(() => {
-    // Redirect if no organization is selected
-    if (!orgData) {
-      console.log('No organization selected, redirecting...');
-      navigate('/search-organisation', { 
-        state: { role: 'student' } 
-      });
-    } else {
-      console.log('Organization data:', orgData);
-    }
-  }, [orgData, navigate]);
-
-  // Only render content if we have organization data
-  if (!orgData) return null;
+    console.log(orgData ? 'Organization data available:' : 'No organization data found');
+  }, [orgData]);
 
   return (
     <div className="h-full bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
-         <div className="max-w-4xl w-full p-6">
+      <div className="max-w-4xl w-full p-6">
         <Link to="/" className="inline-block mb-8">
           <button className="text-[#6A707C] hover:text-black transition-all flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +28,6 @@ const StudentAuth = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Register Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">
@@ -55,22 +41,19 @@ const StudentAuth = () => {
                   Create a new account to submit re-evaluation requests
                 </p>
               </div>
-              {/* <Link to="/search-organization" className="w-full"> */}
-                <button className="w-full px-6 py-3 bg-black text-white rounded-[8px] 
-                                 hover:bg-gray-800 transition-all" onClick={()=>navigate('/search-organization',{state:{role:'student'}})}>
-                  Register Now
-                </button >
-              {/* </Link> */}
+              <button className="w-full px-6 py-3 bg-black text-white rounded-[8px] 
+                                 hover:bg-gray-800 transition-all" onClick={() => navigate('/search-organization', { state: { role: 'student' } })}>
+                Register Now
+              </button >
             </div>
           </div>
 
-          {/* Login Card */}
           <div className="bg-white p-8 rounded-[16px] border border-[#DADADA] hover:shadow-lg transition-all hover:border-black">
             <div className="flex flex-col items-center text-center gap-6">
               <div className="w-16 h-16 rounded-full bg-[#F7F8F9] flex items-center justify-center">
                 <svg className="w-8 h-8 text-[#1E232C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                 </svg>
               </div>
               <div>

@@ -1,4 +1,4 @@
-const { Organization } = require("../schema/organization/organizationRegisterSchema.js")
+const { Organization } = require("../schema/organization/organizationSchema.js")
 
 async function findOrganizationRepo(emailData) {
     try {

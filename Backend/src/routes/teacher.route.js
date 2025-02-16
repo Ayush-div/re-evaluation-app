@@ -1,71 +1,71 @@
 const express = require('express');
 const teacherRouter = express.Router();
 const QuestionPaper = require('../schema/organization/addQuestionPaperSchema.js')
-const { uploadSolution } = require("../controllers/teacher.controller.js")
-const { createTeacher } = require("../controllers/teacherRegistration.controller.js")
+const { uploadSolution } = require("../controllers/uploadVideoSolution.controller.js")
+const { createTeacher } = require("../controllers/teacher/teacherRegistration.controller.js")
 const uploader = require('../middlewares/multerMiddleware.js');
-
+const { loginTeacherController } = require("../controllers/teacher/teacherLogin.controller.js")
 // console.log("here in route");
 
 teacherRouter.post('/register', createTeacher)
-// teacherRouter.post('/login', LoginStudent)
+teacherRouter.post('/login', loginTeacherController)
 
 // teacherRouter.post('/', (_, res) => {
 //     res.send("registered in");
 // })
 
 teacherRouter.get('/papers', async (req, res) => {
-    try {
-        const papers = await QuestionPaper.find({})
-            .lean()
-            .select('-__v')
-            .sort({ examDate: -1 });
+  try {
+    const papers = await QuestionPaper.find({})
+      .lean()
+      .select('-__v')
+      .sort({ examDate: -1 });
 
-        if (!papers || papers.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No papers found'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: papers
-        });
-    } catch (error) {
-        console.error('Error fetching papers:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching papers',
-            error: error.message
-        });
+    if (!papers || papers.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No papers found'
+      });
     }
+
+    res.json({
+      success: true,
+      data: papers
+    });
+  } catch (error) {
+    console.error('Error fetching papers:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching papers',
+      error: error.message
+    });
+  }
 });
 
 teacherRouter.get('/papers/:paperId/questions', async (req, res) => {
-    try {
-        const { paperId } = req.params;
-        const paper = await QuestionPaper.findById(paperId).lean();
+  try {
+    const { paperId } = req.params;
+    const paper = await QuestionPaper.findById(paperId).lean();
 
-        if (!paper) {
-            return res.status(404).json({
-                success: false,
-                message: 'Paper not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: paper.questions
-        });
-    } catch (error) {
-        console.error('Error fetching paper questions:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching questions',
-            error: error.message
-        });
+    if (!paper) {
+      return res.status(404).json({
+        success: false,
+        message: 'Paper not found'
+      });
     }
+
+    res.json({
+      success: true,
+      data: paper.questions
+    });
+  } catch (error) {
+    console.error('Error fetching paper questions:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching questions',
+      error: error.message
+    });
+  }
 });
 
 teacherRouter.get('/uploaded-videos', async (req, res) => {
@@ -135,7 +135,7 @@ teacherRouter.get('/uploaded-videos', async (req, res) => {
 //   try {
 //     // The teacher info should be available in req.teacher after authentication
 //     const teacherInfo = req.teacher;
-    
+
 //     res.json({
 //       success: true,
 //       data: {

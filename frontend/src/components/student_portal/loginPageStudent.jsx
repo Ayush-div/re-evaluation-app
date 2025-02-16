@@ -58,10 +58,22 @@ const LoginCardStudent = () => {
                 rollNumber: formData.rollNumber,
                 password: formData.password,
             });
-            if (response.data.message === 'Logged In successfully') {
-                console.log('Login successful:', response.data.message);
-                setErrorMessage('');
-                setTimeout(() => setErrorMessage(''), 3000);
+
+            console.log('Login response:', response.data); // Debug log
+
+            if (response.data.success) {
+                // Store token from the correct location in response
+                const token = response.data.data.accessToken;
+                if (!token) {
+                    throw new Error('No access token received');
+                }
+
+                localStorage.setItem('accessToken', token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+                // Store user data if needed
+                localStorage.setItem('userData', JSON.stringify(response.data.data.student));
+
                 navigate('/student');
             }
             else {
@@ -86,7 +98,7 @@ const LoginCardStudent = () => {
             //     setErrorMessage(response.data.message || 'Invalid login response');
             // }
         } catch (error) {
-            console.error('Login error:', error.response?.data || error);
+            console.error('Login error:', error);
             setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');
             setTimeout(() => setErrorMessage(''), 3000);
         }
