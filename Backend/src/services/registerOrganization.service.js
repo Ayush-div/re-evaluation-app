@@ -9,9 +9,9 @@ async function registerOrganizationService(organizationDetails) {
     const organization = await findOrganization({
         orgName: organizationDetails.orgName,
         // orgLocation: organizationDetails.orgLocation,
-        organisationEmail:organizationDetails.organisationEmail
+        organizationEmail: organizationDetails.organizationEmail
     })
-    
+
     if (organization) {
         throw { reason: "Organization already exists", statuscode: 400 }
     }
@@ -22,11 +22,12 @@ async function registerOrganizationService(organizationDetails) {
         orgLocation: organizationDetails.orgLocation,
         departments: organizationDetails.departments,
         noOfStudents: organizationDetails.noOfStudents,
-        organisationEmail: organizationDetails.organisationEmail,
+        organizationEmail: organizationDetails.organizationEmail,
         bankDetails: organizationDetails.bankDetails,
         organizaitonWebsite: organizationDetails.organizaitonWebsite,
         contactPerson: organizationDetails.contactPerson,
-        verificationDetails: ""
+        verificationDetails: "",
+        password: organizationDetails.password
     });
 
 
@@ -36,10 +37,10 @@ async function registerOrganizationService(organizationDetails) {
     if (newOrganization.Field == 'orgName') {
         throw { reason: "Organization With This Name Already Exist", statusCode: 500 }
     }
-    if (newOrganization.Field == 'organisationEmail') {
+    if (newOrganization.Field == 'organizationEmail') {
         throw { reason: "Organization With This Email Already Exist", statusCode: 500 }
     }
-    
+
     if (!newOrganization) {
         throw { reason: "Internal Server Error, Not able to Register", statusCode: 500 }
     }

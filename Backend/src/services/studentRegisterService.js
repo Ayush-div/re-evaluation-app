@@ -7,7 +7,7 @@ async function registerStudent(studentDetails) {
     });
 
     if (!student) { 
-        throw { reason: "Please check your Email or RollNumber it does not exist in Organisation", statuscode: 400 }
+        throw { reason: "Please check your Email or RollNumber it does not exist in Organization", statuscode: 400 }
     }
     // console.log("here in the studentregisterservice")
     console.log("register service : ", studentDetails)

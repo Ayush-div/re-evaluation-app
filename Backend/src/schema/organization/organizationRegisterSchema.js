@@ -1,5 +1,5 @@
-// import mongoose from "mongoose";
 const mongoose = require("mongoose")
+const bcrypt =require("bcrypt")
 const departmentSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,7 +13,7 @@ const organizationSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Organization name is required'],
         trim: true,
-        unique: [true,"ORGANISATION ALREADY REGISTERED"]
+        unique: [true, "ORGANIZATION ALREADY REGISTERED"]
     },
     orgLocation: {
         type: String,
@@ -31,7 +31,7 @@ const organizationSchema = new mongoose.Schema({
         // required: [true, 'Number of students is required'],
         min: [0, 'Cannot have negative number of students']
     },
-    organisationEmail: {
+    organizationEmail: {  
         type: String,
         trim: true,
         required: [true, 'Email is required'],
@@ -73,7 +73,7 @@ const organizationSchema = new mongoose.Schema({
             trim: true
         }
     },
-    organizaitonWebsite: {
+    organizationWebsite: {
         type: String,
         trim: true,
         match: [
@@ -83,7 +83,13 @@ const organizationSchema = new mongoose.Schema({
     },
     verificationDetails: {
         url: String,
-    }
+    },
+    password: {
+        required: [true, "Password should be provided"],
+        minlength: [6, "Password should be minimum six character long"],
+        type: String,
+    },
+
 
     // verificationDocuments: [{
     //     name: String,
@@ -105,6 +111,14 @@ const organizationSchema = new mongoose.Schema({
     // }
 
 }, { timestamps: true })
+
+organizationSchema.pre('save', async function () {
+    // here you can modify your user before it is saved in mongodb
+
+    // console.log(this); // it will print all those things which the user has passed like in this case studentName, email, password, mobileNumber
+    const hasedPassword = await bcrypt.hash(this.password, 10);
+    this.password = hasedPassword;
+})
 const Organization = mongoose.model("Organization", organizationSchema)
 
 module.exports = {

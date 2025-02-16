@@ -35,7 +35,6 @@ const AppliedForReevaluationSuccess = () => {
           </svg>
         </motion.div>
 
-        {/* Success Message */}
         <motion.h2 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -54,7 +53,6 @@ const AppliedForReevaluationSuccess = () => {
           Application successful. Please press below button to show questionPapers.
         </motion.p>
 
-        {/* Login Button */}
         <motion.button
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

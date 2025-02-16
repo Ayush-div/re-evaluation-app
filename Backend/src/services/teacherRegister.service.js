@@ -6,7 +6,7 @@ async function registerTeacher(teacherDetails) {
     });
 
     if (!teacher) {
-        throw { reason: "Please check your email it does not exist in Organisation", statusCode: 400 }
+        throw { reason: "Please check your email it does not exist in Organization", statusCode: 400 }
     }
     console.log("register service : ", teacherDetails)
 

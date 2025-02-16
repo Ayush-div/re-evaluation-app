@@ -25,7 +25,7 @@ async function createTeacher(req, res) {
         //     error: error,
         //     statusCode: error.statusCode
         // })
-        res.status(error.statusCode).json({
+        res.json({
             message: error.reason,
             Success: false,
             data: {},

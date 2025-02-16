@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const ReEvaluationStatus = () => {
-  // Mock data for re-evaluation applications
   const applications = [
     {
       id: "REV-2023-001",
@@ -59,7 +58,6 @@ const ReEvaluationStatus = () => {
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl font-bold text-[#1E232C] mb-6">Re-evaluation Status</h1>
 
-        {/* Applications Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {applications.map(app => (
             <div
@@ -89,7 +87,6 @@ const ReEvaluationStatus = () => {
                 </div>
               </div>
 
-              {/* Progress Timeline */}
               <div className={`transition-all duration-300 overflow-hidden ${app.id === selectedApp ? 'max-h-96' : 'max-h-0'
                 }`}>
                 <div className="relative mt-4">
@@ -120,7 +117,6 @@ const ReEvaluationStatus = () => {
           ))}
         </div>
 
-        {/* Past Applications Section */}
         <div className="bg-white rounded-[12px] border border-[#DADADA] p-6">
           <h2 className="text-lg font-bold text-[#1E232C] mb-4">Past Re-evaluations</h2>
           <div className="overflow-x-auto">

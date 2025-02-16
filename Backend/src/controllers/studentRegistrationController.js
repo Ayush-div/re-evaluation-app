@@ -15,7 +15,7 @@ async function createStudent(req, res) {
         })
     } catch (error) {
         console.log("error from studentregistrationcontroller.js")
-        console.log("error message is -> ", error.reason)
+        console.log("error message is -> ", error)
         res.json({
             message: error.reason,
             Success: false,

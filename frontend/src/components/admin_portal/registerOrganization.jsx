@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import FluentEyeIcon from '../../../public/icons/eye';
+import FluentEyeClosedIcon from '../../../public/icons/eye-closed';
 
 const RegisterOrganization = () => {
     const navigate = useNavigate();
@@ -8,7 +10,7 @@ const RegisterOrganization = () => {
         orgName: '',
         orgLocation: '',
         numStudents: '',
-        organisationEmail: '',
+        organizationEmail: '', 
         orgWebsite: '',
         departments: [{ name: '' }],
         numDepartments: '',
@@ -23,11 +25,14 @@ const RegisterOrganization = () => {
             phone: '',
             designation: ''
         },
+        password: '',
         verificationDetails: null,
     });
 
     const [departments, setDepartments] = useState([{ name: '' }]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -84,8 +89,20 @@ const RegisterOrganization = () => {
         }));
     };
 
+    const validatePassword = () => {
+        if (formData.password.length < 8) {
+            setPasswordError('Password must be at least 8 characters long');
+            return false;
+        }
+        setPasswordError('');
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validatePassword()) {
+            return;
+        }
         const formDataToSend = new FormData();
         Object.keys(formData).forEach(key => {
             if (key === 'departments') {
@@ -96,18 +113,19 @@ const RegisterOrganization = () => {
         });
 
         try {
-            console.log("hello from registerorganization.jsx")
+            console.log("Submitting data:", formData); 
             const response = await axios.post('/api/organization/register', {
                 orgName: formData.orgName,
                 orgLocation: formData.orgLocation,
                 departments: formData.departments,
                 noOfStudents: formData.noOfStudents,
-                organisationEmail: formData.organisationEmail,
+                organizationEmail: formData.organizationEmail, 
                 organizaitonWebsite: formData.organizaitonWebsite,
                 bankDetails: formData.bankDetails,
                 numDepartments: formData.numDepartments,
                 contactPerson: formData.contactPerson,
                 verificationDetails: formData.verificationDetails,
+                password: formData.password
             });
             console.log(response.data)
 
@@ -164,6 +182,38 @@ const RegisterOrganization = () => {
                     )}
                 </div>
             ))}
+        </div>
+    );
+
+    const renderSecuritySection = () => (
+        <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-[#1E232C] pb-2 border-b">Security</h3>
+            <div>
+                <label className="block text-[#1E232C] font-medium text-sm mb-2">Password</label>
+                <div className="relative">
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 pr-12
+                            transition-all duration-300 hover:shadow-md hover:border-gray-400 
+                            focus:outline-none focus:border-[#000000] focus:shadow-lg"
+                        placeholder="Enter password"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    >
+                        {showPassword ? <FluentEyeIcon /> : <FluentEyeClosedIcon />}
+                    </button>
+                </div>
+                {passwordError && (
+                    <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+                )}
+            </div>
         </div>
     );
 
@@ -236,8 +286,8 @@ const RegisterOrganization = () => {
                                         <label className="block text-[#1E232C] font-medium text-sm mb-2">Email</label>
                                         <input
                                             type="email"
-                                            name="organisationEmail"
-                                            value={formData.organisationEmail}
+                                            name="organizationEmail"  
+                                            value={formData.organizationEmail}  
                                             onChange={handleChange}
                                             className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                                transition-all duration-300 hover:shadow-md hover:border-gray-400 
@@ -360,6 +410,8 @@ const RegisterOrganization = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {renderSecuritySection()}
 
                             <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-[#1E232C] pb-2 border-b">Verification Documents</h3>

@@ -6,13 +6,14 @@ const { addQuestionPaperController } = require("../controllers/addQuestionPaperC
 const { registerOrganization } = require("../controllers/registerOrganization.controller.js")
 const { addAdminTeacher } = require("../controllers/addAdminTeacher.controller.js")
 const QuestionPaper = require('../schema/organization/addQuestionPaperSchema.js');
-
+const { organizationLoginController } = require("../controllers/organizationLogin.controller.js")
 const uploader = require('../middlewares/multerMiddleware.js');
 const adminRouter = express.Router();
 
 
 adminRouter.post("/addStudent", addAdminStudent);
-adminRouter.post("/add-question-paper", uploader.single('file'),addQuestionPaperController);
+adminRouter.post("/add-question-paper", uploader.single('file'), addQuestionPaperController);
+adminRouter.post("/login", organizationLoginController);
 // Route to handle file + form data
 
 // adminRouter.post("/add-question-paper", uploader.single('file'), (req, res) => {
@@ -59,9 +60,9 @@ adminRouter.delete('/delete-paper/:paperId', async (req, res) => {
   try {
     const { paperId } = req.params;
     console.log('Attempting to delete paper:', paperId);
-    
+
     const deletedPaper = await QuestionPaper.findByIdAndDelete(paperId);
-    
+
     if (!deletedPaper) {
       console.log('Paper not found:', paperId);
       return res.status(404).json({
@@ -94,7 +95,7 @@ adminRouter.put('/update-paper/:paperId', async (req, res) => {
 
     const updatedPaper = await QuestionPaper.findByIdAndUpdate(
       paperId,
-      { 
+      {
         $set: {
           subjectName: req.body.subjectName,
           examDate: req.body.examDate,
@@ -106,12 +107,12 @@ adminRouter.put('/update-paper/:paperId', async (req, res) => {
           updatedAt: new Date()
         }
       },
-      { 
+      {
         new: true,
-        runValidators: true 
+        runValidators: true
       }
     );
-    
+
     if (!updatedPaper) {
       console.log('Paper not found for update:', paperId);
       return res.status(404).json({
@@ -130,8 +131,8 @@ adminRouter.put('/update-paper/:paperId', async (req, res) => {
     console.error('Update error:', error);
     res.status(500).json({
       success: false,
-      message: error.name === 'ValidationError' 
-        ? 'Invalid data provided' 
+      message: error.name === 'ValidationError'
+        ? 'Invalid data provided'
         : 'Error updating paper',
       error: error.message
     });

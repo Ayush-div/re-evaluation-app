@@ -41,8 +41,15 @@ async function createTeacher(teacherDetails) {
                 Field: field,
                 message: `${field} already exists`
             };
+        } else if (error.name == "ValidationError") {
+            console.log("here in validation errors ")
+            const validationErrors = Object.keys(error.errors).map(field => ({
+                field: field,
+                message: error.errors[field].message
+            }));
+            console.log("Validation errors:", validationErrors);
+            throw { reason: validationErrors[0].message };
         }
-
         return {
             success: false,
             error: true,

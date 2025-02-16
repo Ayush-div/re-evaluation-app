@@ -1,10 +1,10 @@
 
 // import { Organization } from "../schema/organization/organisationRegisterSchema";
-const { Organization } = require("../schema/organization/organisationRegisterSchema.js")
+const { Organization } = require("../schema/organization/organizationRegisterSchema.js")
 async function findOrganization(parameters) {
     try {
         const response = await Organization.findOne({ ...parameters });
-        // console.log("find ORGANISATION RESPONSE")
+        // console.log("find ORGANIzATION RESPONSE")
         // console.log("response")
         // console.log(response)
         return response;
