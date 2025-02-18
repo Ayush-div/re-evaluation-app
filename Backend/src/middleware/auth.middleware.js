@@ -1,35 +1,56 @@
 const jwt = require('jsonwebtoken');
-const { Student } = require('../schema/student/studentSchema');
+const { Teacher } = require('../schema/teacher/teacher.schema');
+const { Student } = require('../schema/student/studentSchema.js');
+const { Organization } = require('../schema/organization/organizationSchema.js');
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (userType) => async (req, res, next) => {
     try {
-        // Get token from Authorization header
-        const authHeader = req.headers.authorization;
-        if (!authHeader?.startsWith('Bearer ')) {
+        const token = req.cookies.accessToken;
+        
+        if (!token) {
             return res.status(401).json({
                 success: false,
-                message: 'Authorization header required'
+                message: 'Authentication token missing'
             });
         }
 
-        const token = authHeader.split(' ')[1];
-        
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const student = await Student.findById(decoded.id)
+
+            let UserModel;
+            let userKey;
+            switch (userType) {
+                case 'teacher':
+                    UserModel = Teacher;
+                    userKey = 'teacher';
+                    break;
+                case 'student':
+                    UserModel = Student;
+                    userKey = 'student';
+                    break;
+                case 'organization':
+                    UserModel = Organization;
+                    userKey = 'organization';
+                    break;
+                default:
+                    throw new Error('Invalid user type');
+            }
+
+            const user = await UserModel.findById(decoded.id)
                 .select('-password')
                 .lean();
 
-            if (!student) {
+            if (!user) {
                 return res.status(401).json({
                     success: false,
                     message: 'User not found'
                 });
             }
 
-            req.user = student;
+            req[userKey] = user;
             next();
         } catch (jwtError) {
+            res.clearCookie('accessToken');
             return res.status(401).json({
                 success: false,
                 message: 'Invalid or expired token'

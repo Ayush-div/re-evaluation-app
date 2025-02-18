@@ -91,4 +91,4 @@ studentSchema.pre('save', async function () {
 })
 const Student = mongoose.model("student", studentSchema); // collection
 
-module.exports = Student;
+module.exports = {Student};

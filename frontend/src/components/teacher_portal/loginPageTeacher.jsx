@@ -54,9 +54,21 @@ const LoginCardTeacher = () => {
             const response = await axios.post('/api/teacher/login', {
                 email: formData.email, 
                 password: formData.password,
+            }, {
+                withCredentials: true 
             });
 
+            console.log('Full Teacher Login Response:', response.data);
+
             if (response.data.success) { 
+                const teacherData = response.data.teacher;
+                console.log('Teacher Data:', teacherData);
+
+                localStorage.setItem('userRole', 'teacher');
+                localStorage.setItem('teacherData', JSON.stringify(teacherData));
+                
+                axios.defaults.withCredentials = true;
+                
                 navigate('/teacher');
             } else {
                 setErrorMessage(response.data.message || 'Login failed');
@@ -64,7 +76,7 @@ const LoginCardTeacher = () => {
             }
         } catch (error) {
             console.error('Login error:', error);
-            setErrorMessage(error.response?.data?.message || 'Invalid email or password');
+            setErrorMessage(error.response?.data?.message || error.message || 'Invalid email or password');
             setTimeout(() => setErrorMessage(''), 3000);
         }
     };

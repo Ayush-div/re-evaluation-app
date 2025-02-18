@@ -49,15 +49,30 @@ const LoginOrganization = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/organization/login', formData);
+            const response = await axios.post('/api/organization/login', formData, {
+                withCredentials: true 
+            });
+            
+            console.log('Full Organization Login Response:', response.data);
+            
             if (response.data.success) {
+                const organizationData = response.data.organization;
+                console.log('Organization Data:', organizationData);
+
+                localStorage.setItem('userRole', 'organization');
+                localStorage.setItem('organizationData', JSON.stringify(organizationData));
+                
+                axios.defaults.withCredentials = true;
+                
                 navigate('/organization');
             } else {
                 setErrorMessage(response.data.message);
+                setTimeout(() => setErrorMessage(''), 3000);
             }
         } catch (error) {
-            setErrorMessage('Login failed. Please try again.');
             console.error('Login error:', error);
+            setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');
+            setTimeout(() => setErrorMessage(''), 3000);
         }
     };
 

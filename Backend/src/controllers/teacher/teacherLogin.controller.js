@@ -1,33 +1,31 @@
 const { loginTeacherService } = require("../../services/teacher/teacherLogin.service.js");
 
-async function loginTeacherController(req,res){
-    console.log(req);
-    try{
-        console.log(req)
-        const response = await loginTeacherService(req.body);
-        res.cookie('authToken', response, {
+async function loginTeacherController(req, res) {
+    try {
+        const result = await loginTeacherService(req.body);
+        
+        // Set token in HTTP-only cookie
+        res.cookie('accessToken', result.token, {
             httpOnly: true,
-            secure: false, 
-            maxAge: 7*24*60*60*1000
-        })
+            secure: process.env.NODE_ENV === 'production', // true in production
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged in successfully",
+            teacher: result.teacher
+        });
         
-        return res.json({
-            message : "Logged In successfully",
-            data : response,
-            error : {},
-            success : true
-        })
-        
-    } catch(error){
-        console.log("controller Login Error : ",error)
-        res.json({ 
-            message : error.reason,
-            Success : false,
-            data : {},
-            error : error
-        })
+    } catch(error) {
+        console.log("controller Login Error : ", error);
+        return res.status(error.statusCode || 500).json({ 
+            success: false,
+            message: error.reason || "Login failed",
+            error: error
+        });
     }
-    
 }
 
 module.exports = {

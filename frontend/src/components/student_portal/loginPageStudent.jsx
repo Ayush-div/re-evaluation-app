@@ -57,46 +57,25 @@ const LoginCardStudent = () => {
                 email: formData.email,
                 rollNumber: formData.rollNumber,
                 password: formData.password,
+            }, {
+                withCredentials: true 
             });
 
-            console.log('Login response:', response.data); // Debug log
+            console.log('Full Student Login Response:', response.data);
 
             if (response.data.success) {
-                // Store token from the correct location in response
-                const token = response.data.data.accessToken;
-                if (!token) {
-                    throw new Error('No access token received');
-                }
+                const studentData = response.data.student;
+                console.log('Student Data:', studentData);
 
-                localStorage.setItem('accessToken', token);
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-                // Store user data if needed
-                localStorage.setItem('userData', JSON.stringify(response.data.data.student));
-
+                localStorage.setItem('userRole', 'student');
+                localStorage.setItem('studentData', JSON.stringify(studentData));
+                
+                axios.defaults.withCredentials = true;
+                
                 navigate('/student');
+            } else {
+                throw new Error(response.data.message || 'Login failed');
             }
-            else {
-                // show response.data.message into frontend UI 
-                console.log("Login Unsuccessful")
-                setErrorMessage(response.data.message);
-                setTimeout(() => setErrorMessage(''), 3000);
-            }
-            // if (response.data.success && response.data.accessToken && response.data.refreshToken) {
-            //     // Store tokens
-            //     localStorage.setItem('accessToken', response.data.accessToken);
-            //     localStorage.setItem('refreshToken', response.data.refreshToken);
-
-            //     // Store user info
-            //     localStorage.setItem('user', JSON.stringify(response.data.user));
-
-            //     // Set default authorization header
-            //     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
-
-            //     setErrorMessage('');
-            // } else {
-            //     setErrorMessage(response.data.message || 'Invalid login response');
-            // }
         } catch (error) {
             console.error('Login error:', error);
             setErrorMessage(error.response?.data?.message || 'Login failed. Please try again.');

@@ -1,34 +1,28 @@
-const { organizationLoginService } = require("../services/organizationLogin.service.js")
-async function organizationLoginController(req, res) {
-    console.log(req);
+const { organizationLoginService } = require("../services/organizationLogin.service.js");
+
+const organizationLoginController = async (req, res) => {
     try {
-        console.log(req)
-        const response = await organizationLoginService(req.body);
-        res.cookie('authToken', response, {
+        const result = await organizationLoginService(req.body);
+        
+        res.cookie('accessToken', result.token, {
             httpOnly: true,
-            secure: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 
+        });
 
-        return res.json({
-            message: "Logged In successfully",
-            data: response,
-            error: {},
-            success: true
-        })
-
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            organization: result.organization
+        });
     } catch (error) {
-        console.log("controller Login Error : ", error)
-        res.json({
-            message: error.reason,
-            Success: false,
-            data: {},
-            error: error
-        })
+        console.error("controller Login Error : ", error);
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: error.reason || "Internal Server Error"
+        });
     }
+};
 
-}
-
-module.exports = {
-    organizationLoginController
-}
+module.exports = { organizationLoginController };
