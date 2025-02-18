@@ -115,7 +115,23 @@ const reevaluationSchema = new mongoose.Schema({
     }],
     assignedAt: Date,
     completedAt: Date,
-    amount: Number
+    amount: Number,
+    questionPaperId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'QuestionPaper',
+        required: true
+    },
+    workflowStages: [{
+        stage: {
+            type: String,
+            enum: ['submitted', 'payment_completed', 'org_reviewed', 'teacher_assigned', 'under_review', 'completed']
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        },
+        notes: String
+    }]
 }, { timestamps: true });
 
 const Reevaluation = mongoose.model('Reevaluation', reevaluationSchema);

@@ -72,6 +72,20 @@ const teacherSchema = new mongoose.Schema(
         subjects: [{
             type: String,
             required: true
+        }],
+        videoSolutions: [{
+            questionPaperId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'QuestionPaper'
+            },
+            questionId: String,
+            videoUrl: String,
+            title: String,
+            description: String,
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
         }]
     },
     { timestamps: true }

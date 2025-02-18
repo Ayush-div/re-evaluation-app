@@ -2,7 +2,7 @@ const { registerAdminStudent } = require("../services/adminStudentService");
 
 async function addAdminStudent(req, res) {
     try {
-        // console.log("Ayush Divedi : ", req.body)
+        console.log("hi there from adminstudentcontroller.js")
         const response = await registerAdminStudent(req.body);
         return res.json({
             message: "successfully Added student in adminStudentController file",

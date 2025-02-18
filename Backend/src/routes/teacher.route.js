@@ -130,6 +130,29 @@ teacherRouter.get('/uploaded-videos', async (req, res) => {
   }
 });
 
+teacherRouter.get('/assigned-reevaluations', async (req, res) => {
+  try {
+    const applications = await ReevaluationApplication.find({
+      assignedTeacher: req.teacher._id,
+      status: { $in: ['assigned', 'in_review'] }
+    })
+      .populate('studentId', 'name rollNumber')
+      .populate('paperId', 'subjectName');
+
+    res.json({
+      success: true,
+      data: applications
+    });
+  } catch (error) {
+    console.error('Error fetching assigned re-evaluations:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching assigned re-evaluations',
+      error: error.message
+    });
+  }
+});
+
 // teacher profile ke liye
 // teacherRouter.get('/profile', authenticateTeacher, async (req, res) => {
 //   try {

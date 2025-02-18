@@ -97,7 +97,38 @@ const organizationSchema = new mongoose.Schema({
     reevaluations: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reevaluation'
-    }]
+    }],
+    questionPapers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'QuestionPaper'
+    }],
+    financials: {
+        totalEarnings: {
+            type: Number,
+            default: 0
+        },
+        transactions: [{
+            type: {
+                type: String,
+                enum: ['payment', 'refund']
+            },
+            amount: Number,
+            studentId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'student'
+            },
+            reevaluationId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Reevaluation'
+            },
+            transactionId: String,
+            status: String,
+            date: {
+                type: Date,
+                default: Date.now
+            }
+        }]
+    }
 }, { timestamps: true });
 
 organizationSchema.pre('save', async function () {

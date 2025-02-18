@@ -61,7 +61,23 @@ const studentSchema = new mongoose.Schema({
     // reevaluations: [{
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'Reevaluation'
-    // }]
+    // }],
+    accessiblePapers: [{
+        questionPaperId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'QuestionPaper'
+        },
+        hasAnswerSheetAccess: {
+            type: Boolean,
+            default: false
+        },
+        answerSheetUrl: String,
+        paymentStatus: {
+            type: String,
+            enum: ['pending', 'completed'],
+            default: 'pending'
+        }
+    }]
 
 }, { timestamps: true })
 

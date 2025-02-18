@@ -20,13 +20,34 @@ studentRouter.post('/resetNewPasswordStudent',)
 studentRouter.get('/get-papers-for-reevaluation', getPapersController)
 studentRouter.post('/apply-reevaluation',applyForReevaluationController)
 
+studentRouter.post('/apply-reevaluation', async (req, res) => {
+  try {
+    const { subject, selectedQuestions, paymentId } = req.body;
+    
+    const application = new ReevaluationApplication({
+      studentId: req.student._id, // Assuming you have student info in req after auth
+      paperId: subject.id,
+      subject: subject.name,
+      selectedQuestions,
+      paymentId
+    });
 
-// studentRouter.get('/get-papers-for-reevaluation',(req,res)=>{
-//     console.log("hello world !!!");
-//     res.send("Hii there!!!");
-// })
+    await application.save();
 
-
+    res.json({
+      success: true,
+      message: 'Re-evaluation application submitted successfully',
+      data: application
+    });
+  } catch (error) {
+    console.error('Error submitting re-evaluation application:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error submitting re-evaluation application',
+      error: error.message
+    });
+  }
+});
 
 studentRouter.post('/orders', async(req, res) => {
     const razorpay = new Razorpay({
