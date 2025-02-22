@@ -5,7 +5,7 @@ const { createOtp } = require('../controllers/createOtpController');
 const { verifyOtp } = require('../controllers/veriftOtpController');
 const { questionPaperStudent } = require('../controllers/questionPaperController');
 const { getPapersController } = require("../controllers/getPapers.controller.js")
-const { applyForReevaluationController } = require('../controllers/addReevaluationDetailsStudentController.js')
+// const { applyForReevaluationController } = require('../controllers/addReevaluationDetailsStudentController.js')
 const studentRouter = express.Router();
 const { authMiddleware } = require("../middlewares/auth.middleware.js")
 const Razorpay = require('razorpay');
@@ -35,6 +35,12 @@ studentRouter.post('/apply-reevaluation', authMiddleware('student'), async (req,
             });
         }
 
+        // Get the student with organization details
+        const student = await Student.findById(req.student._id).lean();
+        if (!student || !student.organizationId) {
+            throw new Error('Student organization details not found');
+        }
+
         // Transform selectedQuestions into proper format
         const formattedQuestions = selectedQuestions.map(questionId => ({
             questionId: questionId,
@@ -43,23 +49,23 @@ studentRouter.post('/apply-reevaluation', authMiddleware('student'), async (req,
             customDescription: req.body.customIssueDescriptions?.[questionId] || ''
         }));
 
-        // Create the application first
+        // Create the application with organizationId
         const application = new ReevaluationApplication({
             studentId: req.student._id,
             paperId: subject.id,
             subject: subject.name,
             selectedQuestions: formattedQuestions,
-            paymentId
+            paymentId,
+            organizationId: student.organizationId  // Add organizationId from student record
         });
-
-        // Save the application to get its _id
+        
         const savedApplication = await application.save();
         console.log("Saved application:", savedApplication);
 
-        // Update student record with just the application ID
+        // Update student record
         await Student.findByIdAndUpdate(
             req.student._id,
-            { $push: { reevaluationRequests: savedApplication._id } }, // Push only the ID
+            { $push: { reevaluationRequests: savedApplication._id } },
             { new: true }
         );
 
