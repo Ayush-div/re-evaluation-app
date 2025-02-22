@@ -50,7 +50,7 @@ const AppliedForReevaluationSuccess = () => {
           transition={{ delay: 0.4 }}
           className="text-[#6A707C] text-center mb-8"
         >
-          Application successful. Please press below button to show questionPapers.
+          Application successful. Please press below button to know your application status.
         </motion.p>
 
         <motion.button
@@ -59,13 +59,13 @@ const AppliedForReevaluationSuccess = () => {
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/student/question-papers')}
+          onClick={() => navigate('/student/check-status')}
           className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px] 
                     transition-all duration-300 
                     hover:bg-gray-800 hover:shadow-lg
                     focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
         >
-          Go to questionpapers
+          Go to Check Status Page
         </motion.button>
       </motion.div>
     </div>

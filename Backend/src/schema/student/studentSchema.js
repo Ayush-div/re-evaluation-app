@@ -57,7 +57,7 @@ const studentSchema = new mongoose.Schema({
     },
     reevaluationRequests: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Reevaluation'
+        ref: 'ReevaluationApplication'
     }],
     // reevaluations: [{
     //     type: mongoose.Schema.Types.ObjectId,

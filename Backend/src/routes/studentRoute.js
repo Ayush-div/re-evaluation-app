@@ -84,6 +84,45 @@ studentRouter.post('/apply-reevaluation', authMiddleware('student'), async (req,
     }
 });
 
+studentRouter.get('/reevaluation-status', authMiddleware('student'), async (req, res) => {
+  try {
+    console.log("Fetching applications for student:", req.student._id);
+
+    // Find the student with their reevaluation requests populated
+    const student = await Student.findById(req.student._id)
+      .populate({
+        path: 'reevaluationRequests',
+        populate: [
+          {
+            path: 'assignedTeacher',
+            select: 'teacherName'
+          },
+          {
+            path: 'organizationId',
+            select: 'organizationName'
+          }
+        ]
+      }).lean();
+
+    if (!student) {
+      throw new Error('Student not found');
+    }
+
+    res.json({
+      success: true,
+      message: 'Reevaluation applications fetched successfully',
+      data: student.reevaluationRequests || []
+    });
+  } catch (error) {
+    console.error('Error fetching reevaluation status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching reevaluation status',
+      error: error.message
+    });
+  }
+});
+
 studentRouter.post('/orders', async (req, res) => {
     const razorpay = new Razorpay({
         key_id: 'rzp_test_Y61gV72b1PxhpF',
@@ -140,12 +179,5 @@ studentRouter.post('/orders2', async (req, res) => {
 studentRouter.post('/', (_, res) => {
     res.send("registered in");
 })
-
-
-
-
-
-
-
 
 module.exports = studentRouter

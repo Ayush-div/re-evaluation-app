@@ -153,7 +153,7 @@ const organizationSchema = new mongoose.Schema({
     reevaluations: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Reevaluation'
+            ref: 'ReevaluationApplication'
         }],
         default: [] // Set default as empty array
     },
@@ -174,7 +174,7 @@ const organizationSchema = new mongoose.Schema({
             },
             reevaluationId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Reevaluation'
+                ref: 'ReevaluationApplication'
             },
             transactionId: String,
             status: String,
