@@ -24,7 +24,8 @@ const studentSchema = new mongoose.Schema({
     rollNumber: {
         type: String,
         required: [true, "Roll number is Required!"],
-        unique: [true, "rollnumber must be unique"],
+        unique: true,
+        sparse: true,  // allow duplicate null values
     },
     mobileNumber: {
         type: String,
@@ -76,6 +77,29 @@ const studentSchema = new mongoose.Schema({
             type: String,
             enum: ['pending', 'completed'],
             default: 'pending'
+        }
+    }],
+    doubts: [{
+        questionId: String,
+        paperId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'QuestionPaper'
+        },
+        subjectName: String,
+        doubtType: {
+            type: String,
+            enum: ['Calculation Errors', 'Unmarked Answers', 'Incorrect Marking', 'Others']
+        },
+        description: String,
+        remarks: String,
+        status: {
+            type: String,
+            enum: ['pending', 'in_review', 'resolved'],
+            default: 'pending'
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
         }
     }]
 

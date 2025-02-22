@@ -10,16 +10,24 @@ const VideoSolutions = () => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [uploadedVideos, setUploadedVideos] = useState([]);
   const solutionsRef = useRef(null);
 
   useEffect(() => {
     fetchAvailablePapers();
+    fetchUploadedVideos();
   }, []);
 
   const fetchAvailablePapers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/students/get-papers-for-reevaluation');
+      const response = await axios.get('/api/students/get-papers-for-reevaluation', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(response)
       if (response.data?.data) {
         setAvailablePapers(response.data.data);
       }
@@ -31,10 +39,26 @@ const VideoSolutions = () => {
     }
   };
 
+  const fetchUploadedVideos = async () => {
+    try {
+      const response = await axios.get('/api/students/get-uploaded-videos', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.data?.videos) {
+        setUploadedVideos(response.data.videos);
+      }
+    } catch (err) {
+      console.error('Error fetching uploaded videos:', err);
+    }
+  };
+
   const handlePaperSelect = (paper) => {
     setSelectedPaper(paper);
     setTimeout(() => {
-      solutionsRef.current?.scrollIntoView({ 
+      solutionsRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
@@ -62,8 +86,8 @@ const VideoSolutions = () => {
               key={paper._id}
               onClick={() => handlePaperSelect(paper)}
               className={`relative p-4 text-left rounded-lg border transition-all duration-300
-                ${selectedPaper?._id === paper._id 
-                  ? 'border-black bg-gray-50' 
+                ${selectedPaper?._id === paper._id
+                  ? 'border-black bg-gray-50'
                   : 'border-gray-200 hover:border-black'}`}
             >
               <h4 className="font-medium text-[#1E232C]">{paper.subjectName}</h4>
@@ -122,7 +146,7 @@ const VideoSolutions = () => {
                 </h4>
                 <span className="text-sm text-gray-500">{question.marks} marks</span>
               </div>
-              
+
               {question.videoSolution ? (
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
                   <div>
@@ -152,7 +176,7 @@ const VideoSolutions = () => {
                   {question.subparts.map(part => (
                     <div key={part.id} className="rounded-lg bg-gray-50 p-4 border border-gray-200">
                       <h5 className="text-sm font-medium mb-2 text-gray-800">Part {part.id}</h5>
-                      
+
                       {part.videoSolution ? (
                         <div className="flex items-center justify-between p-2 bg-white rounded-lg">
                           <div>
@@ -225,10 +249,57 @@ const VideoSolutions = () => {
       ...(videoSolution.title && { title: videoSolution.title }),
       ...(videoSolution.description && { description: videoSolution.description })
     };
-    
+
     setSelectedVideo(formattedVideo);
     setShowVideoModal(true);
   };
+
+  const renderUploadedVideosTab = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-bold text-[#1E232C] mt-4">Uploaded Solution Videos</h2>
+        <button
+          onClick={() => setActiveTab('dashboard')}
+          className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-all"
+        >
+          Back to Dashboard
+        </button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {uploadedVideos.map((video) => (
+          <div key={video._id} className="bg-white rounded-lg border border-[#DADADA] p-4 hover:shadow-md transition-all">
+            <div>
+              <h3 className="font-bold text-[#1E232C]">{video.subject || "Subject N/A"}</h3>
+              <p className="text-sm text-gray-600">
+                Paper: {video.paperName || "N/A"} <br />
+                Question: {video.questionNumber || "N/A"}
+                {video.partNumber && `, Part: ${video.partNumber}`}
+                {video.subpartNumber && `, Subpart: ${video.subpartNumber}`}
+              </p>
+              <p className="text-xs text-gray-500">
+                Uploaded on: {new Date(video.uploadedAt).toLocaleDateString()}
+              </p>
+              {video.uploadedBy && video.uploadedBy.name && (
+                <p className="text-xs text-gray-500">
+                  Uploaded by: {video.uploadedBy.name}
+                </p>
+              )}
+            </div>
+            <div className="mt-2">
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                View Video
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
@@ -259,6 +330,7 @@ const VideoSolutions = () => {
           <>
             {renderPaperSelection()}
             {renderQuestionSelection()}
+            {renderUploadedVideosTab()}
           </>
         )}
       </div>

@@ -56,10 +56,10 @@ const teacherSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        orgID: {
-            type: String,
-            required: true
-        },
+        // orgID: {
+        //     type: String,
+        //     required: true
+        // },
         organizationId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Organization',
@@ -73,20 +73,10 @@ const teacherSchema = new mongoose.Schema(
             type: String,
             required: true
         }],
-        videoSolutions: [{
-            questionPaperId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'QuestionPaper'
-            },
-            questionId: String,
-            videoUrl: String,
-            title: String,
-            description: String,
-            uploadedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }]
+        videoSolutions: {
+            type: [mongoose.Schema.Types.Mixed],
+            default: []
+        }
     },
     { timestamps: true }
 );

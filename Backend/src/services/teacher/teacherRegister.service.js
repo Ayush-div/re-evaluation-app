@@ -1,8 +1,10 @@
 const { findTeacher, createTeacher } = require("../../repositories/teacher/teacherRegister.repository.js");
 async function registerTeacher(teacherDetails) {
+    console.log(teacherDetails)
     const teacher = await findTeacher({
         // teacherName: teacherDetails.teacherName,
-        email: teacherDetails.email
+        email: teacherDetails.email,
+        organizationId: teacherDetails.orgID
     });
 
     if (!teacher) {
@@ -10,17 +12,18 @@ async function registerTeacher(teacherDetails) {
     }
     console.log("register service : ", teacherDetails)
 
-    const newTeacher = await createTeacher({
-        phoneNumber: teacherDetails.phoneNumber,
-        teacherName: teacherDetails.teacherName,
-        qualification: teacherDetails.qualification,
-        email: teacherDetails.email,
-        password: teacherDetails.password,
-        department: teacherDetails.department,
-        role: teacherDetails.role,
-        document: teacherDetails.document,
-        organization: teacherDetails.organization,
-        orgID: teacherDetails.orgID
+    const newTeacher = await createTeacher({  
+            phoneNumber: teacherDetails.phoneNumber,
+            teacherName: teacherDetails.teacherName,
+            qualification: teacherDetails.qualification,
+            email: teacherDetails.email,
+            password: teacherDetails.password,
+            department: teacherDetails.department,
+            role: teacherDetails.role,
+            document: teacherDetails.document,
+            organization: teacherDetails.organization,
+            organizationId: teacherDetails.orgID
+        
     })
 
     console.log("Hii there from teacherregistractionservice.js : ", newTeacher.Field);

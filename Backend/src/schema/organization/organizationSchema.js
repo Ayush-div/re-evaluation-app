@@ -1,11 +1,63 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const adminStudent = require("../organization/addStudentAdminSchema.js");
+const questionPaperSchema = require("../questionPaper.schema.js");
 
 const departmentSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Department name is required'],
         trim: true
+    }
+});
+
+const organizationStudentSchema = new mongoose.Schema({
+    email: {
+        trim: true,
+        unique: [true, "This Email is already in use"],
+        required: [true, "Email should be required"],
+        type: String,
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+    },
+    rollNumber: {
+        type: String,
+        required: [true, "Roll Number is required"],
+        unique: true,
+        trim: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const organizationTeacherSchema = new mongoose.Schema({
+    email: {
+        trim: true,
+        unique: [true, "This Email is already in use"],
+        required: [true, "Email should be required"],
+        type: String,
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+    },
+    fullName: {
+        type: String,
+        required: [true, "Full Name is required"],
+        trim: true,
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    department: {
+        type: String,
+        default: 'Not Specified'
+    },
+    subjects: [{
+        type: String
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
@@ -84,24 +136,19 @@ const organizationSchema = new mongoose.Schema({
         minlength: [6, "Password should be minimum six character long"],
         type: String,
     },
-    
+
     // Relationships
-    teachers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher'
-    }],
-    students: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'student'
-    }],
+    teachers: [organizationTeacherSchema], // Update teachers field to use embedded schema
+    students: [organizationStudentSchema], // Changed from ObjectId array to embedded documents
+    questionPapers:[questionPaperSchema],
     reevaluations: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reevaluation'
     }],
-    questionPapers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'QuestionPaper'
-    }],
+    // questionPapers: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'QuestionPaper'
+    // }],
     financials: {
         totalEarnings: {
             type: Number,
@@ -128,7 +175,12 @@ const organizationSchema = new mongoose.Schema({
                 default: Date.now
             }
         }]
-    }
+    },
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Organization',
+        auto: true
+    },
 }, { timestamps: true });
 
 organizationSchema.pre('save', async function () {

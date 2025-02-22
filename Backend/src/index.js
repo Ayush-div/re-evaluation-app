@@ -6,9 +6,16 @@ const mongoose = require('mongoose');
 const isLoggedIn = require('./validation/authValidator.js');
 // const uploader = require('./middlewares/multerMiddlewares.js');
 // const cloudinary = require('./config/cloudinaryConfig.js');
+const cors = require("cors");
+
 const fs = require('fs/promises');
 const app = express()
-
+app.use(
+    cors({
+      origin: "http://localhost:5173", // Allow only your frontend
+      credentials: true, // Allow cookies and authorization headers
+    })
+  );
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.text());
@@ -21,7 +28,7 @@ const teacherRouter = require('./routes/teacher.route.js')
 
 app.use('/api/students', studentRouter)
 app.use('/api/organization', adminRouter)
-app.use('/api/teacher', teacherRouter)  
+app.use('/api/teacher', teacherRouter)
 app.use('/api/search-organization', searchOrganizationRouter);
 
 app.get('/api/test', isLoggedIn, (req, res) => {
@@ -58,3 +65,14 @@ app.listen((serverConfig.PORT), async () => {
     // await fs.unlink(req.file.path)
     // return res.json({ message: 'OK', url: result.secure_url });
 })
+
+// don't use this -> (this will generate a error which anyone can't solve bhai )
+// app.listen(async () => {
+//     try {
+//         await connectDB();
+//         console.log(`Server started at PORT ${serverConfig.PORT || 5000}`);
+//     } catch (error) {
+//         console.error('Failed to start server:', error);
+//         process.exit(1);
+//     }
+// });

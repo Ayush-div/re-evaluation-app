@@ -11,24 +11,24 @@ export default function RegisterCardStudent() {
   const organization = location.state?.organization
   // console.log("here in registerPageStudent")
   // console.log(organization)
-  const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const userInfo = await axios.get(
-          'https://www.googleapis.com/oauth2/v3/userinfo',
-          {
-            headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
-          }
-        );
-        console.log('Full Google Response:', userInfo.data);
-        // userInfo.data will now contain: email, name, picture, given_name, family_name, etc.
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    },
-    onError: (error) => console.error('Login Failed:', error),
-    scope: 'email profile', // Add this line to request email access
-  });
+  // const login = useGoogleLogin({
+  //   onSuccess: async (tokenResponse) => {
+  //     try {
+  //       const userInfo = await axios.get(
+  //         'https://www.googleapis.com/oauth2/v3/userinfo',
+  //         {
+  //           headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+  //         }
+  //       );
+  //       console.log('Full Google Response:', userInfo.data);
+  //       // userInfo.data will now contain: email, name, picture, given_name, family_name, etc.
+  //     } catch (error) {
+  //       console.error('Error fetching user info:', error);
+  //     }
+  //   },
+  //   onError: (error) => console.error('Login Failed:', error),
+  //   scope: 'email profile', // Add this line to request email access
+  // });
 
   const [formData, setFormData] = useState({
     rollNumber: '',

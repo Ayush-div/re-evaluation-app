@@ -2,7 +2,19 @@ const { getPapersService } = require("../services/getPapers.service.js");
 
 async function getPapersController(req, res) {
     try {
-        const response = await getPapersService();
+        console.log("received req org is ");
+        console.log(req.organization);
+
+        if (!req.organization || !req.organization.questionPapers) {
+            return res.status(404).json({
+                message: "No question papers found for this organization",
+                Success: false,
+                data: [],
+                statusCode: 404
+            });
+        }
+
+        const response = req.organization.questionPapers;
         console.log("Search successful, found Question Papers -> :", response.length);
 
         return res.json({

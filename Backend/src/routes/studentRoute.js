@@ -7,8 +7,10 @@ const { questionPaperStudent } = require('../controllers/questionPaperController
 const { getPapersController } = require("../controllers/getPapers.controller.js")
 const { applyForReevaluationController } = require('../controllers/addReevaluationDetailsStudentController.js')
 const studentRouter = express.Router();
-
+const { authMiddleware } = require("../middleware/auth.middleware.js")
 const Razorpay = require('razorpay');
+const { Student } = require('../schema/student/studentSchema.js');
+const ReevaluationApplication = require('../schema/re-evaluation/reevaluationApplication.schema.js'); // Ensure this model exists
 
 studentRouter.post('/forgot-password', createOtp)
 studentRouter.post('/createOtp', createOtp)
@@ -17,51 +19,69 @@ studentRouter.post('/register', createStudent)
 studentRouter.post('/login', LoginStudent)
 studentRouter.post('/question-paper', questionPaperStudent)
 studentRouter.post('/resetNewPasswordStudent',)
-studentRouter.get('/get-papers-for-reevaluation', getPapersController)
-studentRouter.post('/apply-reevaluation',applyForReevaluationController)
+studentRouter.get('/get-papers-for-reevaluation', authMiddleware('student'), getPapersController)
+// studentRouter.post('/apply-reevaluation', authMiddleware('student'), applyForReevaluationController)
 
-studentRouter.post('/apply-reevaluation', async (req, res) => {
-  try {
-    const { subject, selectedQuestions, paymentId } = req.body;
-    
-    const application = new ReevaluationApplication({
-      studentId: req.student._id, // Assuming you have student info in req after auth
-      paperId: subject.id,
-      subject: subject.name,
-      selectedQuestions,
-      paymentId
-    });
+studentRouter.post('/apply-reevaluation', authMiddleware('student'), async (req, res) => {
+    try {
+        // Log the incoming data to verify it’s coming through as expected
+        console.log("Received reevaluation request body:", req.body);
 
-    await application.save();
+        // Destructure expected fields
+        const { paper, selectedQuestions, paymentId } = req.body;
+        
+        if (!paper || !paper._id || !paper.subjectName || !paymentId) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields: ensure paper object and paymentId are provided"
+            });
+        }
+        
+        const application = new ReevaluationApplication({
+            studentId: req.student._id,
+            paperId: paper._id,
+            subject: paper.subjectName,
+            selectedQuestions,
+            paymentId
+        });
 
-    res.json({
-      success: true,
-      message: 'Re-evaluation application submitted successfully',
-      data: application
-    });
-  } catch (error) {
-    console.error('Error submitting re-evaluation application:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error submitting re-evaluation application',
-      error: error.message
-    });
-  }
+        await application.save();
+
+        // Optionally, store reference in student's reevaluationRequests
+        await Student.findByIdAndUpdate(
+            req.student._id,
+            { $push: { reevaluationRequests: application._id } },
+            { new: true }
+        );
+
+        res.json({
+            success: true,
+            message: 'Re-evaluation application submitted successfully',
+            data: application
+        });
+    } catch (error) {
+        console.error('Error submitting re-evaluation application:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error submitting re-evaluation application',
+            error: error.message
+        });
+    }
 });
 
-studentRouter.post('/orders', async(req, res) => {
+studentRouter.post('/orders', async (req, res) => {
     const razorpay = new Razorpay({
         key_id: 'rzp_test_Y61gV72b1PxhpF',
-        key_secret : 'ivZ5ELAJYV23wdXiOReb8Pjk'
+        key_secret: 'ivZ5ELAJYV23wdXiOReb8Pjk'
     })
-    
+
     const options = {
         amount: req.body.amount,
         currency: req.body.currency,
         receipt: "payment for reevaluation",
         payment_capture: 1
     }
-    
+
     try {
         const response = await razorpay.orders.create(options)
 
@@ -75,19 +95,19 @@ studentRouter.post('/orders', async(req, res) => {
     }
 })
 
-studentRouter.post('/orders2', async(req, res) => {
+studentRouter.post('/orders2', async (req, res) => {
     const razorpay = new Razorpay({
         key_id: 'rzp_test_Y61gV72b1PxhpF',
-        key_secret : 'ivZ5ELAJYV23wdXiOReb8Pjk'
+        key_secret: 'ivZ5ELAJYV23wdXiOReb8Pjk'
     })
-    
+
     const options = {
         amount: req.body.amount,
         currency: req.body.currency,
         receipt: "payment for Answer Sheet",
         payment_capture: 1
     }
-    
+
     try {
         const response = await razorpay.orders.create(options)
 

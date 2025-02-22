@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const path = require('path');
 
 const statsSchema = new mongoose.Schema({
     doubts: {
@@ -128,9 +127,4 @@ const questionPaperSchema = new mongoose.Schema({
     toJSON: { getters: true }
 });
 
-// questionPaperSchema.methods.canStudentAccess = async function(studentId) {
-//     return this.allowedStudents.includes(studentId);
-// };
-
-const QuestionPaper = mongoose.model("QuestionPaper", questionPaperSchema);
-module.exports = QuestionPaper;
+module.exports=questionPaperSchema

@@ -86,7 +86,7 @@ function TeacherDashboard() {
     try {
       setLoading(true);
       console.log("Fetching papers...");
-      const response = await axios.get('/api/students/get-papers-for-reevaluation');
+      const response = await axios.get('/api/teacher/papers');
       console.log("API Response:", response.data);
 
       if (response.data?.data) {
@@ -135,7 +135,9 @@ function TeacherDashboard() {
 
   const fetchUploadedVideos = async () => {
     try {
+      console.log("fetching uploded videos")
       const response = await axios.get('/api/teacher/uploaded-videos');
+      console.log("uploaded")
       setUploadedVideos(response.data.videos);
     } catch (error) {
       console.error('Error fetching uploaded videos:', error);
@@ -829,36 +831,32 @@ function TeacherDashboard() {
         <h2 className="text-lg font-bold text-[#1E232C] mt-4">Uploaded Solution Videos</h2>
         <button
           onClick={() => setActiveTab('dashboard')}
-          className="px-4 py-2 border rounded-md hover:border-black transition-all mt-4 cursor-pointer"
+          className="px-4 py-2 border rounded-md hover:bg-gray-100 transition-all"
         >
           Back to Dashboard
         </button>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {uploadedVideos.map((video) => (
           <div key={video._id} className="bg-white rounded-lg border border-[#DADADA] p-4 hover:shadow-md transition-all">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-medium text-[#1E232C]">
-                  {video.subject} - Question {video.questionNumber}
-                </h3>
-                <p className="text-sm text-gray-500">
-                  {video.partNumber ? `Part ${video.partNumber}` : 'Full Question'}
-                  {video.subpartNumber ? ` - Subpart ${video.subpartNumber}` : ''}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Uploaded: {new Date(video.uploadedAt).toLocaleDateString()}
-                </p>
-              </div>
+            <div>
+              <h3 className="font-bold text-[#1E232C]">{video.subject || "Subject N/A"}</h3>
+              <p className="text-sm text-gray-600">
+                Paper: {video.paperName || "N/A"} <br />
+                Question: {video.questionNumber || "N/A"}
+                {video.partNumber && `, Part: ${video.partNumber}`}
+                {video.subpartNumber && `, Subpart: ${video.subpartNumber}`}
+              </p>
+              <p className="text-xs text-gray-500">Uploaded on: {new Date(video.uploadedAt).toLocaleDateString()}</p>
+            </div>
+            <div className="mt-2">
               <a
                 href={video.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-800 justify-center "
+                className="text-blue-600 hover:underline"
               >
-                <FaPlay className="w-4 h-4" />
-                <span>View</span>
+                View Video
               </a>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import axiosInstance from '../../config/axios';
+import axios from "axios"
 
 const AddTeacherAdmin = () => {
   const navigate = useNavigate();
@@ -13,23 +14,29 @@ const AddTeacherAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/organization/addTeacher', {
-        fullName: formData.fullName,
-        email: formData.email
-      });
-
+      const response = await axios.post('/api/organization/addTeacher', formData);
 
       if (response.data.Success) {
         console.log("Teacher added successfully");
-        navigate('/organization/added-teacher-success', { state: { role: 'organization' } });
-      } else if (response.data.message === "Teacher with the given fullName and email already exists") {
-        setErrorMessage('Teacher already exists with this email');
-        setTimeout(() => setErrorMessage(''), 3000);
+        navigate('/organization/added-teacher-success', {state:{role:'organization'}});
+      }else {
+        console.log("failed from addTeacherAdmin.js")
       }
     } catch (error) {
-      console.error('Error adding teacher:', error);
-      setErrorMessage('Error adding teacher. Please try again.');
-      setTimeout(() => setErrorMessage(''), 3000);
+      console.log(error)
+      console.error('Error details:', error.response);
+
+      setErrorMessage(
+        error.response?.data?.message || 
+        'Failed to add teacher. Please check your authentication.'
+      );
+      
+      // If unauthorized, redirect to login
+      if (error.response?.status === 401) {
+        setTimeout(() => {
+          navigate('/organization/login');
+        }, 3000);
+      }
     }
   };
 
