@@ -112,25 +112,6 @@ const AddQuestionPaper = () => {
         }));
     };
 
-    const handleSubmitExamDetails = async (e) => {
-        e.preventDefault();
-        // Temporarily remove API call and just show the question builder
-        // setShowQuestionBuilder(true);
-        // //agar api call rakhni hai toh keep this syntax=> 
-        
-        try {
-            console.log(e.target.value)
-            const response = await axios.post('/api/organization/add-question-paper', examDetails);
-            console.log('Response:', response);  // Add this for debugging
-            setShowQuestionBuilder(true);  // Move this inside try block
-        } catch (error) {
-            console.error('Error saving exam details:', error);
-            alert('Failed to save exam details. Please try again.');
-        }
-    };
-
-    console.log('showQuestionBuilder:', showQuestionBuilder);
-
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -169,71 +150,74 @@ const AddQuestionPaper = () => {
 
     const handleFinalSubmit = async () => {
         try {
+            if (!selectedFile) {
+                alert('Please upload a question paper PDF');
+                return;
+            }
 
             const formData = new FormData();
-    
-            console.log("Exam Details:", examDetails);
-            console.log("Questions:", questions);
-            console.log("Selected File:", selectedFile);
-    
-            if (examDetails && Object.keys(examDetails).length > 0) {
-                formData.append('examDetails', JSON.stringify(examDetails));
-            } else {
-                console.warn("⚠️ examDetails is empty or undefined!");
-            }
-    
-            if (questions.length > 0) {
-                formData.append('questions', JSON.stringify(questions));
-            } else {
-                console.warn("⚠️ questions array is empty!");
-            }
-    
             
+            // Make sure to append the file with the name 'file'
+            formData.append('file', selectedFile);
+            
+            // Add other data
+            formData.append('subjectName', examDetails.subject);
+            formData.append('examDate', examDetails.examDate);
+            formData.append('totalMarks', examDetails.totalMarks);
+            formData.append('duration', examDetails.duration);
+            formData.append('department', examDetails.department);
+            formData.append('semester', examDetails.semester);
+            formData.append('questions', JSON.stringify(questions));
 
-            if (selectedFile) {
-                console.log("Selected File Name:", selectedFile.name);
-                formData.append('file', selectedFile);
-            } else {
-                console.warn("⚠️ No file selected!");
+            // Log formData contents
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
             }
-    
-            console.log("Final FormData Entries:");
-            for (let pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
-    
-            // ✅ Send request
-            const response = await axios.post('/api/organization/add-question-paper', formData, {
-                // headers: {
-                //     'Content-Type': 'multipart/form-data'
-                // }
-            });
-    
-            console.log("🚀 Response received:", response.data);
-    
+
+            const response = await axios.post(
+                '/api/organization/add-question-paper',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    withCredentials: true
+                }
+            );
+
             if (response.data.success) {
-                console.log('✅ Question paper submitted successfully!');
+                alert('Question paper submitted successfully!');
                 navigate('/organization/question-papers');
-            } else {
-                console.warn("⚠️ Backend did not return success:", response.data);
-                alert('⚠️ Failed to submit question paper.');
             }
-    
         } catch (error) {
-            console.error('🚨 Submission failed:', error);
-    
-            if (error.response) {
-                console.error("Backend responded with an error:", error.response.data);
-                alert(`❌ Error: ${error.response.data.message || "Unknown server error"}`);
-            } else if (error.request) {
-                console.error("No response received from backend:", error.request);
-                alert('⚠️ No response from server. Please check if the backend is running.');
-            } else {
-                console.error("Axios error:", error.message);
-                alert(`❌ Request failed: ${error.message}`);
-            }
+            console.error('Submission error:', error);
+            alert(error.response?.data?.message || 'Failed to submit question paper');
         }
     };
+
+    const handleInitialSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // Map frontend field names to match backend
+            const formData = {
+                subjectName: examDetails.subject,
+                examDate: examDetails.examDate,
+                totalMarks: parseInt(examDetails.totalMarks),
+                duration: parseInt(examDetails.duration),
+                department: examDetails.department,
+                semester: parseInt(examDetails.semester)
+            };
+
+            // We only need to set showQuestionBuilder to true here
+            // No need for API call at this stage
+            setShowQuestionBuilder(true);
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to proceed. Please check all fields.');
+        }
+    };
+
         
     
     
@@ -326,7 +310,7 @@ const AddQuestionPaper = () => {
 
                 {/* Exam Details Form */}
                 {!showQuestionBuilder && (
-                    <form onSubmit={handleSubmitExamDetails} className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-6">
+                    <form onSubmit={handleInitialSubmit} className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-[#1E232C] mb-2">

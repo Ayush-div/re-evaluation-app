@@ -1,12 +1,15 @@
-const { findStudent, createStudent } = require("../repositories/studentRepository")
+const { findStudent, createStudent } = require("../repositories/studentRepository.js")
 
 async function registerStudent(studentDetails) {
+    console.log("in details")
+    console.log(studentDetails)
     const student = await findStudent({
         rollNumber: studentDetails.rollNumber,
-        email: studentDetails.email
+        email: studentDetails.email,
+        organizationId: studentDetails.orgID
     });
 
-    if (!student) { 
+    if (!student) {
         throw { reason: "Please check your Email or RollNumber it does not exist in Organization", statuscode: 400 }
     }
     // console.log("here in the studentregisterservice")
@@ -28,7 +31,7 @@ async function registerStudent(studentDetails) {
     })
 
     console.log("Hii there from studentregistractioncontoller.js : ", newStudent);
-
+    console.log(newStudent)
     if (newStudent.Field == 'email') {
         throw { reason: "Please enter correct email it is already in use", statusCode: 500 }
     }

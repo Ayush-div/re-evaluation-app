@@ -1,43 +1,43 @@
-const { findQuestionPaper } = require("../repositories/getPapers.repository.js")
+// const { findQuestionPaper } = require("../repositories/getPapers.repository.js")
 
-async function getPapersService() {
+// async function getPapersService({details}) {
 
-    const questionPapers = await findQuestionPaper()
+//     const questionPapers = await findQuestionPaper({details})
 
-    if (!questionPapers) {
-        throw new Error("No questionPaperss Found");
-    }
+//     if (!questionPapers) {
+//         throw new Error("No questionPaperss Found");
+//     }
 
-    console.log("questionPapers  ->>>>!! (in getPapers.service.js)")
-    return questionPapers
-}
-
-
-
-module.exports = {
-    getPapersService
-}
+//     console.log("questionPapers  ->>>>!! (in getPapers.service.js)")
+//     return questionPapers
+// }
 
 
-// my service
 
-/*
-const { getQuestionPaperFromDb } = require("../repositories/QuestionPaperRepository");
-async function getQuestionPaperService() {
-    try{
-        const response = getQuestionPaperFromDb();
-        return response;
-    } catch(error){
-        console.log("Error found by ayush : ",error);
-    }
+// module.exports = {
+//     getPapersService
+// }
+
+
+// // my service
+
+// /*
+// const { getQuestionPaperFromDb } = require("../repositories/QuestionPaperRepository");
+// async function getQuestionPaperService() {
+//     try{
+//         const response = getQuestionPaperFromDb();
+//         return response;
+//     } catch(error){
+//         console.log("Error found by ayush : ",error);
+//     }
   
-}
+// }
 
 
-module.exports = {
-    getQuestionPaperService,
-};
+// module.exports = {
+//     getQuestionPaperService,
+// };
 
 
 
-*/
+// */

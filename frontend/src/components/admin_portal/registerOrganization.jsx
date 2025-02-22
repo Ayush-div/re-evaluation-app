@@ -114,11 +114,12 @@ const RegisterOrganization = () => {
 
         try {
             console.log("Submitting data:", formData); 
+            console.log("registering organization")
             const response = await axios.post('/api/organization/register', {
                 orgName: formData.orgName,
                 orgLocation: formData.orgLocation,
                 departments: formData.departments,
-                noOfStudents: formData.noOfStudents,
+                // noOfStudents: formData.noOfStudents,
                 organizationEmail: formData.organizationEmail, 
                 organizaitonWebsite: formData.organizaitonWebsite,
                 bankDetails: formData.bankDetails,
@@ -413,7 +414,7 @@ const RegisterOrganization = () => {
 
                             {renderSecuritySection()}
 
-                            <div className="space-y-4">
+                            {/* <div className="space-y-4">
                                 <h3 className="text-lg font-semibold text-[#1E232C] pb-2 border-b">Verification Documents</h3>
                                 <div>
                                     <label className="block text-[#1E232C] font-medium text-sm mb-2">Verification Documents (optional)</label>
@@ -427,7 +428,7 @@ const RegisterOrganization = () => {
                              focus:outline-none focus:border-[#000000] focus:shadow-lg"
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className="flex justify-end gap-4 pt-4 border-t border-[#DADADA]">
                                 <button

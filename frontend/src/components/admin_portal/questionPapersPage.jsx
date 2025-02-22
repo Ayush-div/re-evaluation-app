@@ -18,14 +18,25 @@ const QuestionPapersPage = () => {
   const fetchQuestionPapers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/organization/get-all-papers');
+      const response = await axios.get('/api/organization/get-all-papers', {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      
+      console.log('Response:', response);
       if (response.data.success) {
-        console.log('Fetched papers:', response.data.data);
-        setQuestionPapers(response.data.data);
+        setQuestionPapers(response.data.data || []);
+      } else if (response.data.message === 'No papers found for this organization') {
+        setQuestionPapers([]);
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch papers');
       }
     } catch (err) {
       console.error('Fetch error:', err);
-      setError('Failed to load question papers');
+      setQuestionPapers([]);
     } finally {
       setLoading(false);
     }
@@ -693,29 +704,31 @@ const QuestionPapersPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button 
-            onClick={fetchQuestionPapers}
-            className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#F7F8F9] font-['Urbanist'] p-6">
       <div className="max-w-7xl mx-auto">
         {renderHeader()}
-        <div className="grid gap-4">
-          {questionPapers.map(renderPaperCard)}
-        </div>
+        {questionPapers.length > 0 ? (
+          <div className="grid gap-4">
+            {questionPapers.map(renderPaperCard)}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Question Papers Yet</h3>
+            <p className="text-gray-500 mb-6">Get started by creating your first question paper</p>
+            <Link to="/organization/create-question-paper">
+              <button className="px-6 py-2 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all inline-flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Create Question Paper</span>
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
       <EditModal />
     </div>

@@ -16,6 +16,8 @@ async function registerOrganizationService(organizationDetails) {
         throw { reason: "Organization already exists", statuscode: 400 }
     }
 
+    console.log("organization details from service")
+    console.log(organizationDetails)
 
     const newOrganization = await createOrganization({
         orgName: organizationDetails.orgName,

@@ -61,20 +61,19 @@ const LoginCardStudent = () => {
                 withCredentials: true 
             });
 
-            console.log('Full Student Login Response:', response.data);
-
             if (response.data.success) {
                 const studentData = response.data.student;
-                console.log('Student Data:', studentData);
+                console.log('Student Data with org:', studentData);
 
+                // Store complete student data including organization info
                 localStorage.setItem('userRole', 'student');
-                localStorage.setItem('studentData', JSON.stringify(studentData));
-                
-                axios.defaults.withCredentials = true;
+                localStorage.setItem('studentData', JSON.stringify({
+                    ...studentData,
+                    organizationId: studentData.organizationId,
+                    organizationName: studentData.organizationName
+                }));
                 
                 navigate('/student');
-            } else {
-                throw new Error(response.data.message || 'Login failed');
             }
         } catch (error) {
             console.error('Login error:', error);

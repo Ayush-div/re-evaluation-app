@@ -1,49 +1,44 @@
 const serverConfig = require("../config/serverConfig");
-const { findStudent } = require("../repositories/studentLoginRepository")
-const Student = require('../schema/student/studentSchema')
+const { Student } = require('../schema/student/studentSchema');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-async function loginStudent(studentDetails) {
-    const plainPassword = studentDetails.password;
-    const email = studentDetails.email;
-    const rollNumber = studentDetails.rollNumber;
+const loginStudent = async ({ email, rollNumber, password }) => {
+    try {
+        // Find student and populate organization data
+        console.log("here in the service")
+        const student = await Student.findOne({ email, rollNumber })
+            .populate('organizationId', 'name email _id')
+            .select('+password');
 
-    const student = await findStudent({ rollNumber, email });
-    console.log("Service login : ", student)
-    
-    if (!student) { 
-        throw { reason: "student with given rollno/Email does not exists", statuscode: 400 }
-    }
-
-    const isPasswordValidated = await bcrypt.compare(plainPassword, student.password);
-
-    if (!isPasswordValidated) {
-        throw { reason: "Invalid Password, please try again", statusCode: 401 };
-    }
-
-    const token = jwt.sign(
-        { 
-            email: student.email, 
-            id: student._id,
-            rollNumber: student.rollNumber 
-        }, 
-        serverConfig.JWT_SECRET, 
-        { expiresIn: serverConfig.JWT_EXPIRY }
-    );
-
-    return {
-        token,
-        student: {
-            id: student._id,
-            email: student.email,
-            name: student.studentName,
-            rollNumber: student.rollNumber,
-            organization: student.organizationId
+        if (!student) {
+            throw { reason: "Student not found" };
         }
-    };
-}
 
-module.exports = {
-    loginStudent
-}
+        const isPasswordValid = await bcrypt.compare(password, student.password);
+        if (!isPasswordValid) {
+            throw { reason: "Invalid password" };
+        }
+
+        // Create token
+        const token = jwt.sign(
+            { id: student._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        // Remove password from response
+        const studentData = student.toObject();
+        delete studentData.password;
+
+        return {
+            token,
+            student: studentData // Now includes populated organization data
+        };
+    } catch (error) {
+        console.error('Login service error:', error);
+        throw error;
+    }
+};
+
+module.exports = { loginStudent };

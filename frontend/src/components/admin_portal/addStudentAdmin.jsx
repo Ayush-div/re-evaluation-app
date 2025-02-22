@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { UNSAFE_NavigationContext, useNavigate } from 'react-router-dom';
+import axios from "axios"
 
 const AddStudentAdmin = () => {
   const navigate = useNavigate();
@@ -8,29 +8,40 @@ const AddStudentAdmin = () => {
     rollNumber: '',
     email: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      console.log(formData);
-      const response = await axios.post('/api/organization/addStudent', formData);
-      console.log("API response:", response);
+        console.log('Submitting form data:', formData);
+        
+        const response = await axios.post('/api/organization/addStudent', formData);
+        console.log('Response:', response);
 
-      if (response?.data?.Success) {
-        navigate('/organization/added-student-success');
-      } else if (response?.data?.message === "Student with the given rollnumber and email already exists") {
-        setErrorMessage('Student already exists with this roll number or email');
-        setTimeout(() => setErrorMessage(''), 3000);
-      } else {
-        setErrorMessage(response?.data?.message || 'Unexpected error');
-        setTimeout(() => setErrorMessage(''), 3000);
-      }
+        if (response.data.success) {
+            // ...existing success handling...
+            console.log("here i am ")
+            navigate('/organization/added-student-success')
+        }
     } catch (error) {
-      console.log(error.message)
-      console.error('Error adding student:', error.response || error);
-      setErrorMessage('Error adding student. Please try again.');
-      setTimeout(() => setErrorMessage(''), 3000);
+        console.error('Full error:', error);
+        setErrorMessage(
+            error.response?.data?.message || 
+            'Network error - please try again'
+        );
+        
+        // If unauthorized, check if user is logged in
+        if (error.response?.status === 401) {
+            const orgData = localStorage.getItem('organizationData');
+            if (!orgData) {
+                navigate('/organization/login');
+            }
+        }
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -52,18 +63,24 @@ const AddStudentAdmin = () => {
 
       <div className="max-w-[1440px] mx-auto px-6 py-8">
         <div className="max-w-xl mx-auto">
+          {successMessage && (
+            <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+              {successMessage}
+              <div className="text-sm mt-2">
+                Redirecting to student management...
+              </div>
+            </div>
+          )}
+
+          {errorMessage && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {errorMessage}
+            </div>
+          )}
+
           <div className="bg-white rounded-t-[12px] border border-b-0 border-[#DADADA] p-6">
             <h2 className="text-xl font-bold text-[#1E232C]">Student Information</h2>
             <p className="text-[#6A707C] text-sm mt-1">Add a new student to the system</p>
-            {errorMessage && (
-              <div
-                id="error-message"
-                className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg"
-                style={{ animation: 'fadeOut 2s forwards' }}
-              >
-                {errorMessage}
-              </div>
-            )}
           </div>
 
           <div className="bg-white rounded-b-[12px] border border-[#DADADA] p-6">
@@ -81,6 +98,7 @@ const AddStudentAdmin = () => {
                              focus:outline-none focus:border-[#000000] focus:shadow-lg"
                     placeholder="Enter student's roll number"
                     required
+                    disabled={loading}
                   />
                 </div>
 
@@ -96,6 +114,7 @@ const AddStudentAdmin = () => {
                              focus:outline-none focus:border-[#000000] focus:shadow-lg"
                     placeholder="Enter email address"
                     required
+                    disabled={loading}
                   />
                   <p className="text-[#6A707C] text-xs mt-1">Student will receive login credentials on this email</p>
                 </div>
@@ -108,17 +127,20 @@ const AddStudentAdmin = () => {
                   className="px-6 py-3 border border-[#DADADA] rounded-[8px] text-[#1E232C]
                            transition-all duration-300
                            hover:border-black hover:shadow-md"
+                  disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-black text-white rounded-[8px] 
+                  className={`px-6 py-3 bg-black text-white rounded-[8px] 
                             transition-all duration-300
                             hover:bg-gray-800 hover:scale-[1.02]
-                            active:scale-[0.98]"
+                            active:scale-[0.98]
+                            disabled:opacity-50 disabled:cursor-not-allowed`}
+                  disabled={loading}
                 >
-                  Add Student
+                  {loading ? 'Adding Student...' : 'Add Student'}
                 </button>
               </div>
             </form>

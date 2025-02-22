@@ -1,8 +1,60 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowIcon from '../../../public/icons/arrow';
+import axios from 'axios';
 
 const AdminDashboard = () => {
+  // Move ALL hooks to the top level
+  const navigate = useNavigate();
+  const [orgData, setOrgData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState({
+    requestId: null,
+    teacherId: null,
+    teacherName: null
+  });
+  const [editedPaper, setEditedPaper] = useState(null); // If you need this state
+  const [marksValidation, setMarksValidation] = useState({
+    isValid: true,
+    currentTotal: 0,
+    difference: 0
+  });
+
+  useEffect(() => {
+    const storedOrgData = localStorage.getItem('organizationData');
+    if (!storedOrgData) {
+      navigate('/organization/login');
+      return;
+    }
+
+    try {
+      const parsedOrgData = JSON.parse(storedOrgData);
+      console.log(parsedOrgData.organizationName)
+      // Make sure we're accessing the correct property path
+      if (!parsedOrgData.organizationName) {
+        throw new Error('Invalid organization data structure');
+      }
+      setOrgData(parsedOrgData);
+    } catch (error) {
+      console.error('Error parsing organization data:', error);
+      navigate('/organization/login');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#6A707C]">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   const stats = {
     totalReEvaluations: 156,
     activeTeachers: 45,
@@ -107,13 +159,6 @@ const AdminDashboard = () => {
     }
   ];
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState({
-    requestId: null,
-    teacherId: null,
-    teacherName: null
-  });
-
   const handleAutoAssign = (requestId) => {
     // Logic to automatically assign to available teachers
     console.log("Auto-assigning request:", requestId);
@@ -139,6 +184,25 @@ const AdminDashboard = () => {
 
     setShowConfirmModal(false);
     setSelectedAssignment({ requestId: null, teacherId: null, teacherName: null });
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear cookies
+      await axios.post('/api/organization/logout', {}, { withCredentials: true });
+      
+      // Clear local storage
+      localStorage.removeItem('organizationData');
+      localStorage.removeItem('accessToken');
+      
+      // Redirect to login page
+      navigate('/organization/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still clear local storage and redirect even if API call fails
+      localStorage.clear();
+      navigate('/organization/login');
+    }
   };
 
   const renderConfirmationModal = () => {
@@ -170,43 +234,56 @@ const AdminDashboard = () => {
     );
   };
 
+  const renderGreeting = () => (
+    <div className="pt-8 pb-6 flex justify-between items-center">
+      <div>
+        <h1 className="text-2xl font-bold text-[#1E232C]">
+          {/* <h1>{orgData}</h1> */}
+          Welcome, {orgData?.organizationName || 'Organization'} 👋
+        </h1>
+        <p className="text-[#6A707C] mt-2">
+          Here's your organization's overview
+        </p>
+      </div>
+      <div className="flex gap-4">
+        <Link to='/organization/generate-report'>
+          <button className="px-4 py-2 border border-[#DADADA] rounded-[8px] hover:border-black transition-all">
+            Generate Report
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+
+  const renderNavbar = () => (
+    <nav className="bg-white shadow-md w-full sticky top-0 z-10">
+      <div className="max-w-[1440px] mx-auto px-6">
+        <div className="flex justify-between items-center h-16">
+          <div className="text-xl font-bold text-[#1E232C]">
+            {orgData?.organizationName || 'Organization'} Dashboard
+          </div>
+          <div className="flex items-center space-x-6">
+            <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">
+              Settings
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="text-[#6A707C] hover:text-red-500 hover:scale-[1.1] duration-300"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
-      <nav className="bg-white shadow-md w-full sticky top-0 z-10">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex justify-between items-center h-16">
-            <div className="text-xl font-bold text-[#1E232C]">
-              Organization Dashboard
-            </div>
-            <div className="flex items-center space-x-6">
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Settings</button>
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Reports</button>
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Logout</button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      {renderNavbar()}
       <div className="max-w-[1440px] mx-auto px-6">
         {/* Greeting & Quick Actions */}
-        <div className="pt-8 pb-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-[#1E232C]">
-              Welcome, Admin! 👋
-            </h1>
-            <p className="text-[#6A707C] mt-2">
-              Here's your organization's overview
-            </p>
-          </div>
-          <div className="flex gap-4 cursor-pointer">
-            <Link to='/organization/generate-report'>
-              <button className="cursor-pointer px-4 py-2 border border-[#DADADA] rounded-[8px] hover:border-black transition-all">
-                Generate Report
-              </button>
-            </Link>
-          </div>
-        </div>
+        {renderGreeting()}
 
         {/* Main Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -491,8 +568,7 @@ const AdminDashboard = () => {
       </div>
       {((selectedAssignment.teacherName != 'Select Teacher')) ? renderConfirmationModal() : null}
     </div>
-    // </div>
   )
 }
 
-export default AdminDashboard
+export default AdminDashboard;

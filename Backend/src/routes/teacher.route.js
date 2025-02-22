@@ -5,6 +5,10 @@ const { uploadSolution } = require("../controllers/uploadVideoSolution.controlle
 const { createTeacher } = require("../controllers/teacher/teacherRegistration.controller.js")
 const uploader = require('../middlewares/multerMiddleware.js');
 const { loginTeacherController } = require("../controllers/teacher/teacherLogin.controller.js")
+const { authMiddleware } = require("../middleware/auth.middleware.js");
+const { getPapersController } = require("../controllers/getPapers.controller.js");
+// const { getTeacherUploadedVideos } = require("../controllers/teacher/getTeacherUploadedVideos.controller.js");
+const { Teacher } = require("../schema/teacher/teacher.schema.js");
 // console.log("here in route");
 
 teacherRouter.post('/register', createTeacher)
@@ -14,33 +18,7 @@ teacherRouter.post('/login', loginTeacherController)
 //     res.send("registered in");
 // })
 
-teacherRouter.get('/papers', async (req, res) => {
-  try {
-    const papers = await QuestionPaper.find({})
-      .lean()
-      .select('-__v')
-      .sort({ examDate: -1 });
-
-    if (!papers || papers.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'No papers found'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: papers
-    });
-  } catch (error) {
-    console.error('Error fetching papers:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching papers',
-      error: error.message
-    });
-  }
-});
+teacherRouter.get('/papers', authMiddleware('teacher'), getPapersController);
 
 teacherRouter.get('/papers/:paperId/questions', async (req, res) => {
   try {
@@ -68,64 +46,28 @@ teacherRouter.get('/papers/:paperId/questions', async (req, res) => {
   }
 });
 
-teacherRouter.get('/uploaded-videos', async (req, res) => {
+teacherRouter.get('/uploaded-videos', authMiddleware('teacher'), async (req, res) => {
   try {
-    const papers = await QuestionPaper.find({});
-    const videos = [];
-
-    papers.forEach(paper => {
-      paper.questions.forEach(question => {
-        if (question.videoSolution) {
-          videos.push({
-            _id: question._id,
-            subject: paper.subjectName,
-            questionNumber: question.id,
-            url: question.videoSolution.url,
-            uploadedAt: question.videoSolution.uploadedAt,
-            uploadedBy: question.videoSolution.uploadedBy
-          });
-        }
-
-        question.subparts?.forEach(subpart => {
-          if (subpart.videoSolution) {
-            videos.push({
-              _id: subpart._id,
-              subject: paper.subjectName,
-              questionNumber: question.id,
-              partNumber: subpart.id,
-              url: subpart.videoSolution.url,
-              uploadedAt: subpart.videoSolution.uploadedAt,
-              uploadedBy: subpart.videoSolution.uploadedBy
-            });
-          }
-
-          subpart.subsubparts?.forEach(subsubpart => {
-            if (subsubpart.videoSolution) {
-              videos.push({
-                _id: subsubpart._id,
-                subject: paper.subjectName,
-                questionNumber: question.id,
-                partNumber: subpart.id,
-                subpartNumber: subsubpart.id,
-                url: subsubpart.videoSolution.url,
-                uploadedAt: subsubpart.videoSolution.uploadedAt,
-                uploadedBy: subsubpart.videoSolution.uploadedBy
-              });
-            }
-          });
-        });
+    const teacher = await Teacher.findById(req.teacher._id).lean();
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: "Teacher not found"
       });
-    });
-
+    }
+    // Sort videos by uploadedAt descending
+    const videos = (teacher.videoSolutions || []).sort(
+      (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
+    );
     res.json({
       success: true,
-      videos: videos.sort((a, b) => b.uploadedAt - a.uploadedAt)
+      videos
     });
   } catch (error) {
-    console.error('Error fetching uploaded videos:', error);
+    console.error("Error fetching uploaded videos:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching uploaded videos'
+      message: "Error fetching uploaded videos"
     });
   }
 });
@@ -178,6 +120,7 @@ teacherRouter.get('/assigned-reevaluations', async (req, res) => {
 //   }
 // });
 
-teacherRouter.post('/upload-solution', uploader.single('video'), uploadSolution);
+teacherRouter.post('/upload-solution', authMiddleware('teacher'), uploader.single('video'), uploadSolution);
+
 
 module.exports = teacherRouter;

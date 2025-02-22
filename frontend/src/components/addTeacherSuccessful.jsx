@@ -60,7 +60,7 @@ const AddedTeacherSuccess = () => {
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => role === "organization" ? navigate('/organization') : navigate('/teacher')}
+          onClick={() => navigate('/organization')}
           className="w-full h-[50px] bg-black text-white rounded-[8px] px-4 py-2 text-[14px]
         transition-all duration-300
         hover:bg-gray-800 hover:shadow-lg

@@ -1,20 +1,35 @@
 const { Teacher } = require("../../schema/teacher/teacher.schema.js");
 const { adminTeacher } = require("../../schema/organization/addTeacherAdmin.schema.js");
+const { Organization } = require("../../schema/organization/organizationSchema.js");
 
+/* 
+  Finds a teacher within the organization's embedded teachers array
+  Expects an object with { organizationId, email }
+*/
 async function findTeacher(parameters) {
     try {
-        const response = await adminTeacher.findOne({ ...parameters });
-        console.log("here in repo of teacher register");
-        console.log(response);
-        return response;
+        console.log("object id is this ")
+        console.log(parameters.organizationId)
+        const organization = await Organization.findById(parameters.organizationId);
+        if (!organization) {
+            throw new Error("Organization not found");
+        }
+        const teacher = organization.teachers.find(t => t.email === parameters.email);
+        console.log("Teacher found in organization:", teacher);
+        return teacher;
     } catch (error) {
-        console.log(error);
+        console.error("Error in findTeacher:", error);
         throw error;
     }
 }
 
+/* 
+  Creates a teacher by pushing teacherDetails into the organization's teachers array.
+  Expects organizationId separately and teacherDetails containing required teacher data.
+*/
 async function createTeacher(teacherDetails) {
     try {
+        
         console.log("Creating teacher with details:", teacherDetails);
 
         if (!teacherDetails.email || !teacherDetails.phoneNumber) {
