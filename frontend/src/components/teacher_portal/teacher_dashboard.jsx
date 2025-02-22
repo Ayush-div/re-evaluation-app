@@ -10,6 +10,7 @@ function TeacherDashboard() {
   const navigate = useNavigate();
   const [isDoubtModalOpen, setIsDoubtModalOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [Reviewmodelid, setReviewModelId] = useState("");
   const [selectedDoubt, setSelectedDoubt] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -201,6 +202,7 @@ function TeacherDashboard() {
   const handleViewDoubt = (doubt) => {
     setSelectedDoubt(doubt);
     setIsReviewModalOpen(true);
+    setReviewModelId(doubt._id);
     setReviewData({
       marks: '',
       comments: '',
@@ -945,6 +947,7 @@ console.log("sorted requests are -> ")
           <div key={request._id}
             className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all"
           >
+            {/* {request._id} */}
             {/* Request Header */}
             <div className="flex justify-between items-start mb-3">
               <div>
@@ -1209,6 +1212,7 @@ console.log("sorted requests are -> ")
               selectedDoubt={selectedDoubt}
               reviewData={reviewData}
               setReviewData={setReviewData}
+              doubtid = {Reviewmodelid}
             />
           </>
         ) : (
