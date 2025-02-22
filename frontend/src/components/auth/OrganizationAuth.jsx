@@ -7,27 +7,15 @@ const OrganizationAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Get organization data from both state and localStorage
   const orgData = location.state?.organization || JSON.parse(localStorage.getItem('selectedOrg'));
-
   useEffect(() => {
-    if (!orgData) {
-      console.log('No organization selected, redirecting...');
-      navigate('/search-organization', {
-        state: { role: 'organization' }
-      });
-    } else {
-      console.log('Organization data:', orgData);
-    }
-  }, [orgData, navigate]);
-
-  // Only render content if we have organization data
-  if (!orgData) return null;
+    console.log(orgData ? 'Organization data available:' : 'No organization data found');
+    console.log(orgData)
+  }, [orgData]);
 
   return (
     <div className="h-full flex justify-center font-['Urbanist'] bg-[#F7F8F9] ">
       <div className="flex flex-col gap-4 max-w-4xl w-full p-6 ">
-        {/* Back Button */}
         <Link to="/" className="text-[#6A707C] hover:text-black transition-all flex items-center gap-2 mb-8">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

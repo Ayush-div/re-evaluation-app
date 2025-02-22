@@ -5,10 +5,9 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const handleRoleSelect = (roleType) => {
-    // When user clicks a role card, we pass the role type via navigation state
     console.log(`${roleType}/${roleType}-auth`)
     navigate(`${roleType}/${roleType}-auth`, { 
-      state: { role: roleType } // This is where the role is initially set
+      state: { role: roleType } 
     });
   };
 
@@ -31,7 +30,7 @@ const LandingPage = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
       ), 
-      onClick: () => handleRoleSelect('teacher') // Passing 'teacher' as role
+      onClick: () => handleRoleSelect('teacher') 
     },
     {
       title: "Student",
@@ -41,13 +40,12 @@ const LandingPage = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
       ),
-      onClick: () => handleRoleSelect('student') // Passing 'student' as role
+      onClick: () => handleRoleSelect('student') 
     }
   ]
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
       <nav className="bg-white shadow-md w-full sticky top-0 z-10">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex justify-between items-center h-16">
@@ -64,7 +62,6 @@ const LandingPage = () => {
       </nav>
 
       <div className="max-w-[1440px] mx-auto px-6">
-        {/* Hero Section */}
         <div className="text-center pt-16 pb-12">
           <h1 className="text-4xl font-bold text-[#1E232C] mb-4">
             Welcome to Re-evaluation Portal
@@ -75,12 +72,11 @@ const LandingPage = () => {
         </div>
 
 
-        {/* Role Selection Cards */}
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto pb-16">
           {roles.map((role, index) => (
             <div
               key={index}
-              onClick={role.onClick}  // Changed from Link to div with onClick
+              onClick={role.onClick} 
               className="group bg-white p-8 rounded-[16px] border border-[#DADADA] 
                         cursor-pointer select-none
                         transition-all duration-300 
@@ -107,7 +103,6 @@ const LandingPage = () => {
           ))}
         </div>
 
-        {/* Footer Section */}
         <div className="border-t border-[#DADADA] py-8 text-center">
           <p className="text-[#6A707C]">
             Need help? Contact our support team
