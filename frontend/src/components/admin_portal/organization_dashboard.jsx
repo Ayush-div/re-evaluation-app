@@ -22,6 +22,7 @@ const AdminDashboard = () => {
   });
   const [reevaluationRequests, setReevaluationRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(true);
+  const [availableTeachers, setAvailableTeachers] = useState([]);
 
   useEffect(() => {
     const storedOrgData = localStorage.getItem('organizationData');
@@ -66,6 +67,26 @@ const AdminDashboard = () => {
     };
 
     fetchReevaluationRequests();
+  }, []);
+
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        console.log("fetching teachers")
+        const response = await axios.get('/api/organization/authorized-teachers', {
+          withCredentials: true
+        });
+        console.log("response of authorized teacher is - > ")
+        console.log(response)
+        if (response.data.success) {
+          setAvailableTeachers(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching teachers:', error);
+      }
+    };
+
+    fetchTeachers();
   }, []);
 
   if (loading) {
@@ -390,8 +411,11 @@ const AdminDashboard = () => {
                     focus:outline-none focus:border-black bg-white"
                 >
                   <option value="">Assign to Teacher</option>
-                  <option value="1">Dr. Smith (Mathematics)</option>
-                  <option value="2">Prof. Johnson (Mathematics)</option>
+                  {availableTeachers.map(teacher => (
+                    <option key={teacher._id} value={teacher._id}>
+                      {teacher.teacherName} ({teacher.department})
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
