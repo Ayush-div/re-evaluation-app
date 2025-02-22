@@ -192,4 +192,32 @@ teacherRouter.get('/profile', authMiddleware('teacher'), async (req, res) => {
   }
 });
 
+teacherRouter.put('/update-status/:id', async (req, res) => {
+  try {
+      console.log("Updating status for applicationd dfghgfdffghfghdfgdgfdgdfgdsdfd");
+      const { status } = req.body;
+      const validStatuses = ['pending', 'in_review', 'completed', 'rejected'];
+
+      if (!validStatuses.includes(status)) {
+          return res.status(400).json({ message: 'Invalid status value' });
+      }
+
+      const application = await ReevaluationApplication.findByIdAndUpdate(
+          req.params.id,
+          { status },
+          { new: true } // Returns the updated document
+      );
+
+      if (!application) {
+          return res.status(404).json({ message: 'Application not found' });
+      }
+
+      res.status(200).json({ message: 'Status updated successfully', application });
+  } catch (error) {
+      console.error('Error updating status:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 module.exports = teacherRouter;

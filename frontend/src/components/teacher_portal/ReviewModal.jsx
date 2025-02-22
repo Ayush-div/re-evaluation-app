@@ -1,8 +1,26 @@
 import React from 'react';
-
-function ReviewModal({ isOpen, onClose, selectedDoubt, reviewData, setReviewData }) {
+import axios from 'axios';
+function ReviewModal({ isOpen, onClose, selectedDoubt, reviewData, setReviewData , doubtid}) {
   if (!isOpen || !selectedDoubt) return null;
 
+  const updateApplicationStatus = async (doubtid, newStatus) => {
+    try {
+        console.log('doubtid:', doubtid);
+        
+        const response = await axios.put(
+            `/api/teacher/update-status/${doubtid}`,
+            { status: newStatus }
+        );
+        console.log('Status updated:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating status:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+  
   const issueCategories = {
     'Calculation Errors': 'bg-orange-100 text-orange-800',
     'Unmarked Answers': 'bg-purple-100 text-purple-800',
@@ -111,7 +129,9 @@ function ReviewModal({ isOpen, onClose, selectedDoubt, reviewData, setReviewData
               <div className="flex gap-3">
                 <button 
                   onClick={() => {
-                    console.log('Submitting review:', reviewData);
+                    console.log("selectedDoubt.questionID___________________________", selectedDoubt.questionId);
+                    
+                    updateApplicationStatus(doubtid, reviewData.status);
                     onClose();
                   }}
                   className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
@@ -119,7 +139,9 @@ function ReviewModal({ isOpen, onClose, selectedDoubt, reviewData, setReviewData
                   Submit Review
                 </button>
                 <button 
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                  }}
                   className="px-4 py-2 border border-gray-300 rounded-md hover:border-black"
                 >
                   Cancel
