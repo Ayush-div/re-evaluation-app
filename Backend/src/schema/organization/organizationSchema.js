@@ -13,23 +13,23 @@ const departmentSchema = new mongoose.Schema({
 
 const organizationStudentSchema = new mongoose.Schema({
     email: {
-        trim: true,
-        unique: [true, "This Email is already in use"],
+        trim: true, unique: [true, "This Email is already in use"],
         required: [true, "Email should be required"],
         type: String,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+        sparse: true // Allow null/undefined values to not be considered for uniqueness
     },
     rollNumber: {
-        type: String,
-        required: [true, "Roll Number is required"],
+        type: String,   required: [true, "Roll Number is required"],
         unique: true,
         trim: true,
+        sparse: true // Allow null/undefined values to not be considered for uniqueness
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
-});
+}, { _id: false }); // Add _id: false to prevent MongoDB from creating _id for subdocuments
 
 const organizationTeacherSchema = new mongoose.Schema({
     email: {
@@ -138,17 +138,25 @@ const organizationSchema = new mongoose.Schema({
     },
 
     // Relationships
-    teachers: [organizationTeacherSchema], // Update teachers field to use embedded schema
-    students: [organizationStudentSchema], // Changed from ObjectId array to embedded documents
-    questionPapers:[questionPaperSchema],
-    reevaluations: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Reevaluation'
-    }],
-    // questionPapers: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'QuestionPaper'
-    // }],
+    teachers: {
+        type: [organizationTeacherSchema],
+        default: [] // Set default as empty array
+    },
+    students: {
+        type: [organizationStudentSchema],
+        default: [] // Change from [] to undefined to prevent MongoDB from creating empty array with null values
+    },
+    questionPapers: {
+        type: [questionPaperSchema],
+        default: [] // Set default as empty array
+    },
+    reevaluations: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Reevaluation'
+        }],
+        default: [] // Set default as empty array
+    },
     financials: {
         totalEarnings: {
             type: Number,
@@ -183,11 +191,15 @@ const organizationSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-organizationSchema.pre('save', async function () {
+organizationSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        this.students = [];
+    }
     if (this.isModified('password')) {
         const hashedPassword = await bcrypt.hash(this.password, 10);
         this.password = hashedPassword;
     }
+    next();
 });
 
 const Organization = mongoose.model("Organization", organizationSchema);

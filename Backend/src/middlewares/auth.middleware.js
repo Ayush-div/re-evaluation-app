@@ -23,6 +23,7 @@ const authMiddleware = (userType) => async (req, res, next) => {
             switch (userType) {
                 case 'organization': {
                     console.log("new org")
+                    console.log(decoded.organizationId)
                     const organization = await Organization.findById(decoded.organizationId);
                     console.log(decoded.organizationId)
                     console.log(organization)

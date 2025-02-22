@@ -1,58 +1,55 @@
-
-// import { Organization } from "../schema/organization/organisationRegisterSchema";
 const { Organization } = require("../schema/organization/organizationSchema.js")
+
 async function findOrganization(parameters) {
     try {
         const response = await Organization.findOne({ ...parameters });
-        // console.log("find ORGANIzATION RESPONSE")
-        // console.log("response")
-        // console.log(response)
         return response;
     } catch (error) {
-        console.log("error in organizationregsiter.repository.js")
-        console.log(error)
+        console.error("Error in findOrganization:", error);
+        throw error;
     }
 }
 
 async function createOrganization(organizationDetails) {
-    console.log("here in the organizationregister.repository.js ->> ")
-    console.log(organizationDetails)
     try {
-        const response = await Organization.create(organizationDetails);
-        console.log(response)
-        console.log("here in organizationRegister.repositroy.js")
-        return response
+        // Only include essential fields for organization creation
+        const orgData = {
+            orgName: organizationDetails.orgName,
+            orgLocation: organizationDetails.orgLocation,
+            organizationEmail: organizationDetails.organizationEmail,
+            password: organizationDetails.password,
+            bankDetails: organizationDetails.bankDetails,
+            contactPerson: organizationDetails.contactPerson,
+            department:organizationDetails.department,
+            organizationWebsite: organizationDetails.organizationWebsite
+        };
+
+        const response = await Organization.create(orgData);
+        console.log("Organization created successfully:", response._id);
+        return response;
     } catch (error) {
-        console.log("error ")
-        console.log(error);
-        const errorCode = error?.code || error?.cause?.code
-        console.log(errorCode)
-        // console.log("i am here")
+        console.error("Error in createOrganization:", error);
+        const errorCode = error?.code || error?.cause?.code;
+
         if (errorCode === 11000) {
             // Duplicate key error
             const duplicateKey = error?.cause?.keyValue || error?.keyValue;
-            console.log('Duplicate Key:', duplicateKey);
-            // console.log("duplicate key error")
-            // throw new Error("Organization Already Exist. (from organization.register.repository.js)");
-
-            return { Field: Object.keys(duplicateKey)[0] }
-        } else if (error.name == "ValidationError") {
-            console.log("here in validation errors ")
+            return { Field: Object.keys(duplicateKey)[0] };
+        } 
+        
+        if (error.name === "ValidationError") {
             const validationErrors = Object.keys(error.errors).map(field => ({
-                field: field,
+                field,
                 message: error.errors[field].message
             }));
-            console.log("Validation errors:", validationErrors);
             throw { reason: validationErrors[0].message };
         }
-        else {
-            console.log("this is not duplicate error")
-            console.error('Error:', error);
-        }
+        
+        throw error;
     }
-
 }
 
 module.exports = {
-    findOrganization, createOrganization
+    findOrganization,
+    createOrganization
 }

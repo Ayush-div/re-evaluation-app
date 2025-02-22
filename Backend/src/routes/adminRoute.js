@@ -9,10 +9,12 @@ const QuestionPaper = require('../schema/organization/addQuestionPaperSchema.js'
 const { organizationLoginController } = require("../controllers/organizationLogin.controller.js")
 const uploader = require('../middlewares/multerMiddleware.js');
 const adminRouter = express.Router();
-const { authMiddleware } = require("../middleware/auth.middleware.js")
+const { authMiddleware } = require("../middlewares/auth.middleware.js")
 const { getPapersController } = require('../controllers/getPapers.controller.js');
 const { Organization } = require("../schema/organization/organizationSchema.js")
 const { getReevaluationRequestsController } = require("../controllers/getReevaluationRequests.controller.js")
+const { getAuthorizedTeachersController } = require('../controllers/getAuthorizedTeachers.controller.js');
+
 adminRouter.post("/addStudent",
   authMiddleware('organization'),
   addAdminStudent
@@ -51,6 +53,9 @@ adminRouter.post('/logout', (req, res) => {
 });
 
 adminRouter.get('/reevaluation-requests', authMiddleware('organization'), getReevaluationRequestsController)
+
+adminRouter.get('/authorized-teachers', authMiddleware('organization'), getAuthorizedTeachersController);
+
 
 // we will use this when we want to store the question papers separately.
 // adminRouter.get('/get-all-papers', authMiddleware('organization'), async (req, res) => {
