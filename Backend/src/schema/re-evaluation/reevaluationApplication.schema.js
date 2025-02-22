@@ -1,47 +1,54 @@
 const mongoose = require('mongoose');
 
-const reevaluationApplicationSchema = new mongoose.Schema({
-  studentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student',
-    required: true
-  },
-  paperId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'QuestionPaper',
-    required: true
-  },
-  subject: {
-    type: String,
-    required: true
-  },
-  selectedQuestions: [{
-    questionId: String,
-    issueType: String,
-    remarks: String,
-    customIssueDescription: String
-  }],
-  status: {
-    type: String,
-    enum: ['pending', 'assigned', 'in_review', 'completed'],
-    default: 'pending'
-  },
-  assignedTeacher: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher'
-  },
-  paymentId: {
-    type: String,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
+const selectedQuestionSchema = new mongoose.Schema({
+    questionId: {
+        type: String,
+        required: true
+    },
+    remarks: {
+        type: String,
+        default: ''
+    },
+    issueType: {
+        type: String,
+        default: ''
+    },
+    customDescription: {
+        type: String,
+        default: ''
+    }
 });
 
-module.exports = mongoose.model('ReevaluationApplication', reevaluationApplicationSchema);
+const reevaluationApplicationSchema = new mongoose.Schema({
+    studentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true
+    },
+    paperId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'QuestionPaper',
+        required: true
+    },
+    subject: {
+        type: String,
+        required: true
+    },
+    selectedQuestions: [selectedQuestionSchema],
+    paymentId: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'in_progress', 'completed', 'rejected'],
+        default: 'pending'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const ReevaluationApplication= mongoose.model('ReevaluationApplication', reevaluationApplicationSchema);
+module.exports =ReevaluationApplication

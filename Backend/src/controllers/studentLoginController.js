@@ -19,8 +19,8 @@ const LoginStudent = async (req, res) => {
             message: "Logged in successfully",
             student: {
                 ...result.student,
-                organizationId: result.student.organizationId._id, // Ensure organizationId is included
-                organizationName: result.student.organizationId.name // Optional: include org name
+                organizationId: result.student.organizationId, // Ensure organizationId is included
+                organizationName: result.student.organization // Optional: include org name
             }
         });
     } catch (error) {

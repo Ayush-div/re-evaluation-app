@@ -20,6 +20,8 @@ const AdminDashboard = () => {
     currentTotal: 0,
     difference: 0
   });
+  const [reevaluationRequests, setReevaluationRequests] = useState([]);
+  const [requestsLoading, setRequestsLoading] = useState(true);
 
   useEffect(() => {
     const storedOrgData = localStorage.getItem('organizationData');
@@ -44,6 +46,28 @@ const AdminDashboard = () => {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchReevaluationRequests = async () => {
+      try {
+        console.log("fetching reevaluation requests")
+        const response = await axios.get('/api/organization/reevaluation-requests', {
+          withCredentials: true
+        });
+        console.log("fetched all the requests")
+        console.log(response)
+        if (response.data.success) {
+          setReevaluationRequests(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching reevaluation requests:', error);
+      } finally {
+        setRequestsLoading(false);
+      }
+    };
+
+    fetchReevaluationRequests();
+  }, []);
+
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
@@ -63,6 +87,7 @@ const AdminDashboard = () => {
   }
 
   // Updated re-evaluation requests data with issue types
+  /*
   const reEvaluationRequests = [
     {
       id: "REV-2023-001",
@@ -78,6 +103,7 @@ const AdminDashboard = () => {
     },
     // Add more requests...
   ];
+  */
 
   // Issue type configuration with colors and labels
   const ISSUE_TYPES = {
@@ -278,6 +304,103 @@ const AdminDashboard = () => {
     </nav>
   );
 
+  const renderRequests = () => (
+    <div className="space-y-4">
+      {reevaluationRequests.map(request => (
+        <div key={request._id} className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
+            <div className="flex-grow w-full lg:w-auto">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
+                <h3 className="font-semibold text-[#1E232C]">
+                  {request.subject}
+                </h3>
+                <span className="text-sm text-[#6A707C]">
+                  {request.selectedQuestions.length} question(s) selected
+                </span>
+              </div>
+              
+              {/* Student Info */}
+              <div className="flex items-center gap-2 mb-3">
+                <svg className="w-4 h-4 text-[#6A707C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <p className="text-sm text-[#6A707C]">
+                  {request.studentId.studentName} ({request.studentId.rollNumber})
+                </p>
+              </div>
+
+              {/* Questions and Doubts Section */}
+              <div className="space-y-3">
+                {request.selectedQuestions.map((question, index) => (
+                  <div key={index} className="bg-white p-3 rounded-md border border-[#DADADA]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-medium text-[#1E232C]">
+                        Question {question.questionId}
+                      </span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        question.issueType === 'Calculation Errors' ? 'bg-orange-100 text-orange-800' :
+                        question.issueType === 'Unmarked Answers' ? 'bg-purple-100 text-purple-800' :
+                        question.issueType === 'Incorrect Marking' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {question.issueType}
+                      </span>
+                    </div>
+                    
+                    {question.remarks && (
+                      <div className="text-sm text-[#6A707C] mt-2">
+                        <p className="font-medium text-[#1E232C] text-xs mb-1">Student's Remarks:</p>
+                        <p className="bg-gray-50 p-2 rounded">"{question.remarks}"</p>
+                      </div>
+                    )}
+                    
+                    {question.customDescription && (
+                      <div className="text-sm text-[#6A707C] mt-2">
+                        <p className="font-medium text-[#1E232C] text-xs mb-1">Additional Details:</p>
+                        <p className="bg-gray-50 p-2 rounded">{question.customDescription}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right side with timestamp and actions */}
+            <div className="flex flex-col gap-3 w-full lg:w-auto lg:min-w-[200px]">
+              <span className="text-xs text-[#6A707C] bg-[#F0F1F3] px-2 py-1 rounded-full self-end">
+                {new Date(request.createdAt).toLocaleString()}
+              </span>
+              <div className="flex  gap-2">
+                <button
+                  onClick={() => handleAutoAssign(request._id)}
+                  className="w-full px-3 py-2 text-xs bg-black text-white rounded-[8px] 
+                    hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M5 13l4 4L19 7" />
+                  </svg>
+                  Auto-assign
+                </button>
+                <select
+                  id={`teacher-select-${request._id}`}
+                  onChange={(e) => handleManualAssign(request._id, e.target.value)}
+                  className="w-full px-3 py-2 text-xs border rounded-[8px] 
+                    focus:outline-none focus:border-black bg-white"
+                >
+                  <option value="">Assign to Teacher</option>
+                  <option value="1">Dr. Smith (Mathematics)</option>
+                  <option value="2">Prof. Johnson (Mathematics)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
       {renderNavbar()}
@@ -434,70 +557,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              {reEvaluationRequests.map(request => (
-                <div key={request.id} className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
-                  <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-                    {/* Request Details */}
-                    <div className="flex-grow w-full lg:w-auto">
-                      <div className="flex flex-wrap items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-[#1E232C]">
-                          {request.subject} - Question {request.questionNumber}
-                        </h3>
-                        <span className={`px-3 py-1 ${ISSUE_TYPES[request.issueType].bgColor} 
-                                ${ISSUE_TYPES[request.issueType].textColor} 
-                                text-xs rounded-full flex items-center gap-1 whitespace-nowrap`}>
-                          {ISSUE_TYPES[request.issueType].icon}
-                          {ISSUE_TYPES[request.issueType].label}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <svg className="w-4 h-4 text-[#6A707C] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <p className="text-sm text-[#6A707C]">{request.studentName} ({request.studentId})</p>
-                      </div>
-                      <p className="text-sm text-[#6A707C] bg-white p-3 rounded-md border border-[#DADADA]">
-                        "{request.doubt}"
-                      </p>
-                    </div>
-
-                    {/* Actions Section */}
-                    <div className="flex flex-col gap-3 w-full lg:w-auto lg:min-w-[200px]">
-                      <span className="text-xs text-[#6A707C] bg-[#F0F1F3] px-2 py-1 rounded-full self-end">
-                        {new Date(request.submittedAt).toLocaleString()}
-                      </span>
-                      <div className='grid md:grid-cols-2 gap-4 '> 
-                        <div className="flex flex-col gap-2  ">
-                          <button
-                            onClick={() => handleAutoAssign(request.id)}
-                            className=" px-3 py-2 text-xs bg-black text-white rounded-[8px] 
-                          hover:bg-gray-800 transition-all flex items-center justify-center gap-2 "
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                d="M5 13l4 4L19 7" />
-                            </svg>
-                            Auto-assign
-                          </button>
-                        </div>
-                        <select
-                          id={`teacher-select-${request.id}`}
-                          onChange={(e) => handleManualAssign(request.id, e.target.value)}
-                          className="w-full px-3 py-2 text-xs border rounded-[8px] 
-                                   focus:outline-none focus:border-black bg-white"
-                        >
-                          <option value="">Select Teacher</option>
-                          <option value="1">Dr. Smith (Mathematics)</option>
-                          <option value="2">Prof. Johnson (Mathematics)</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {renderRequests()}
           </div>
 
           <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 w-full h-full">

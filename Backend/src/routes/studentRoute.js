@@ -24,40 +24,49 @@ studentRouter.get('/get-papers-for-reevaluation', authMiddleware('student'), get
 
 studentRouter.post('/apply-reevaluation', authMiddleware('student'), async (req, res) => {
     try {
-        // Log the incoming data to verify it’s coming through as expected
         console.log("Received reevaluation request body:", req.body);
 
-        // Destructure expected fields
-        const { paper, selectedQuestions, paymentId } = req.body;
-        
-        if (!paper || !paper._id || !paper.subjectName || !paymentId) {
+        const { subject, selectedQuestions, paymentId } = req.body;
+
+        if (!subject || !subject.id || !subject.name || !paymentId) {
             return res.status(400).json({
                 success: false,
-                message: "Missing required fields: ensure paper object and paymentId are provided"
+                message: "Missing required fields"
             });
         }
-        
+
+        // Transform selectedQuestions into proper format
+        const formattedQuestions = selectedQuestions.map(questionId => ({
+            questionId: questionId,
+            remarks: req.body.remarks?.[questionId] || '',
+            issueType: req.body.issueTypes?.[questionId] || '',
+            customDescription: req.body.customIssueDescriptions?.[questionId] || ''
+        }));
+
+        // Create the application first
         const application = new ReevaluationApplication({
             studentId: req.student._id,
-            paperId: paper._id,
-            subject: paper.subjectName,
-            selectedQuestions,
+            paperId: subject.id,
+            subject: subject.name,
+            selectedQuestions: formattedQuestions,
             paymentId
         });
 
-        await application.save();
+        // Save the application to get its _id
+        const savedApplication = await application.save();
+        console.log("Saved application:", savedApplication);
 
-        // Optionally, store reference in student's reevaluationRequests
+        // Update student record with just the application ID
         await Student.findByIdAndUpdate(
             req.student._id,
-            { $push: { reevaluationRequests: application._id } },
+            { $push: { reevaluationRequests: savedApplication._id } }, // Push only the ID
             { new: true }
         );
 
         res.json({
             success: true,
             message: 'Re-evaluation application submitted successfully',
-            data: application
+            data: savedApplication
         });
     } catch (error) {
         console.error('Error submitting re-evaluation application:', error);

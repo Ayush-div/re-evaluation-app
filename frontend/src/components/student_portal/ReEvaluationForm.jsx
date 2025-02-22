@@ -25,9 +25,6 @@ const ReEvaluationForm = () => {
     fetchReEvaluationData();
   }, []);
 
-
-
-// Payment Gateway 
   const [PaymentresponseId, setPaymentResponseId] = useState("");
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -62,16 +59,16 @@ const ReEvaluationForm = () => {
     }
 
     axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data))
-      handleRazorpayScreen(response.data.amount)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        handleRazorpayScreen(response.data.amount)
 
-    })
-    .catch((error) => {
-      console.log("createRszorpayOrder error at", error)
-    })
+      })
+      .catch((error) => {
+        console.log("createRszorpayOrder error at", error)
+      })
   }
-  const handleRazorpayScreen = async(amount) => {
+  const handleRazorpayScreen = async (amount) => {
     const res = await loadScript("https:/checkout.razorpay.com/v1/checkout.js")
 
     if (!res) {
@@ -85,11 +82,11 @@ const ReEvaluationForm = () => {
       currency: 'INR',
       name: "Reevaluation Portal",
       description: "payment to Revaluation Portal",
-      
-      handler: function (response){
+
+      handler: function (response) {
         setPaymentResponseId(response.razorpay_payment_id)
       },
-      
+
       // prefill: {
       //   name: "Devansh",
       //   email: "srivastavadevansh123@gmail.com",
@@ -103,19 +100,45 @@ const ReEvaluationForm = () => {
     paymentObject.open()
   }
 
-  useEffect(async() => {
-    if (PaymentresponseId !== "") {
-      
-      await axios.post('/api/students/apply-reevaluation', formData);
-      navigate('/student/reevaluation-application-success');
-      window.location.reload();
-    }
-    
-  }, [PaymentresponseId]);
+  useEffect(() => {
+    const handlePaymentSuccess = async () => {
+      if (PaymentresponseId !== "") {
+        try {
+          const submissionData = {
+            subject: {
+              id: formData.subject.id,
+              name: formData.subject.name
+            },
+            selectedQuestions: formData.selectedQuestions,
+            paymentId: PaymentresponseId,
+            remarks: formData.remarks,
+            issueTypes: formData.issueTypes,
+            customIssueDescriptions: formData.customIssueDescriptions
+          };
 
+          console.log('Submitting data:', submissionData);
 
+          const response = await axios.post('/api/students/apply-reevaluation', submissionData, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
 
+          if (response.data.success) {
+            navigate('/student/reevaluation-application-success');
+          } else {
+            throw new Error(response.data.message || 'Submission failed');
+          }
+        } catch (error) {
+          console.error('Payment submission error:', error);
+          alert('Error submitting payment. Please try again.');
+        }
+      }
+    };
 
+    handlePaymentSuccess();
+  }, [PaymentresponseId, formData, navigate]);
 
   const fetchReEvaluationData = async () => {
     try {
@@ -590,7 +613,7 @@ const ReEvaluationForm = () => {
               className="w-full p-2 rounded-[8px] border border-[#DADADA] focus:outline-none focus:border-[#000000] text-sm"
               onChange={(e) => handleRemarkChange(subSubpart.id, e.target.value)}
               value={formData.remarks[subSubpart.id] || ''}
-            />):null    }    </div>
+            />) : null}    </div>
       )}
     </div>
   );
