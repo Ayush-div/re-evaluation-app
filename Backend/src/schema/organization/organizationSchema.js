@@ -170,7 +170,7 @@ const organizationSchema = new mongoose.Schema({
             amount: Number,
             studentId: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'student'
+                ref: 'Student'
             },
             reevaluationId: {
                 type: mongoose.Schema.Types.ObjectId,

@@ -30,6 +30,16 @@ const reevaluationApplicationSchema = new mongoose.Schema({
         ref: 'QuestionPaper',
         required: true
     },
+    organizationId: {  // Add this field
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Organization',
+        required: true
+    },
+    assignedTeacher: {  // Add this field
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+        default: null
+    },
     subject: {
         type: String,
         required: true
@@ -41,7 +51,7 @@ const reevaluationApplicationSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'in_progress', 'completed', 'rejected'],
+        enum: ['pending', 'in_review', 'completed', 'rejected'],
         default: 'pending'
     },
     createdAt: {

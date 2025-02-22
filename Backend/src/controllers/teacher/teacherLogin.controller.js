@@ -12,6 +12,7 @@ const loginTeacherController = async (req, res) => {
         const payload = {
             id: result.teacher._id,
             organizationId: result.teacher.organizationId, // Include organization's id here
+            department: result.teacher.department, // Add department to payload
             role: 'teacher'
         };
         console.log(payload)

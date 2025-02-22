@@ -19,7 +19,7 @@ async function getReevaluationRequestsService(organizationId) {
             })
             .populate({
                 path: 'studentId',
-                model: 'student', 
+                model: 'Student', 
                 select: 'studentName rollNumber'
             });
 

@@ -9,8 +9,10 @@ const { authMiddleware } = require("../middlewares/auth.middleware.js")
 const { getPapersController } = require("../controllers/getPapers.controller.js");
 // const { getTeacherUploadedVideos } = require("../controllers/teacher/getTeacherUploadedVideos.controller.js");
 const { Teacher } = require("../schema/teacher/teacher.schema.js");
+const { Student } = require("../schema/student/studentSchema.js"); // Add this import
+const { Organization } = require("../schema/organization/organizationSchema.js"); // Add this import
 // console.log("here in route");
-
+const ReevaluationApplication = require("../schema/re-evaluation/reevaluationApplication.schema.js")
 teacherRouter.post('/register', createTeacher)
 teacherRouter.post('/login', loginTeacherController)
 
@@ -72,53 +74,78 @@ teacherRouter.get('/uploaded-videos', authMiddleware('teacher'), async (req, res
   }
 });
 
-teacherRouter.get('/assigned-reevaluations', async (req, res) => {
+teacherRouter.get('/assigned-reevaluations', authMiddleware('teacher'), async (req, res) => {
   try {
-    const applications = await ReevaluationApplication.find({
-      assignedTeacher: req.teacher._id,
-      status: { $in: ['assigned', 'in_review'] }
-    })
-      .populate('studentId', 'name rollNumber')
-      .populate('paperId', 'subjectName');
+    console.log("Fetching reevaluations for teacher:", req.teacher.id);
 
-    res.json({
+    const teacher = await Teacher.findById(req.teacher.id).lean();
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: 'Teacher not found'
+      });
+    }
+
+    // First get the organization with its question papers
+    const organization = await Organization.findById(teacher.organizationId).lean();
+    if (!organization) {
+      throw new Error('Organization not found');
+    }
+
+    // Get assigned requests
+    const assignedRequests = await ReevaluationApplication.find({
+      organizationId: teacher.organizationId,
+      assignedTeacher: req.teacher.id,
+      status: { $in: ['pending', 'in_review'] }
+    })
+      .populate({
+        path: 'studentId',
+        model: Student,
+        select: 'studentName rollNumber'
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // Map through requests and add paper details from organization
+    const formattedRequests = assignedRequests.map(request => {
+      // Find matching paper from organization's questionPapers array
+      const paper = organization.questionPapers.find(
+        p => p._id.toString() === request.paperId.toString()
+      );
+
+      return {
+        _id: request._id,
+        subject: paper?.subjectName || request.subject || 'N/A',
+        department: paper?.department || 'N/A',
+        selectedQuestions: request.selectedQuestions.map(q => ({
+          questionId: q.questionId,
+          remarks: q.remarks,
+          issueType: q.issueType,
+          customDescription: q.customDescription
+        })),
+        studentId: {
+          studentName: request.studentId?.studentName || 'Unknown',
+          rollNumber: request.studentId?.rollNumber || 'N/A'
+        },
+        createdAt: request.createdAt,
+        status: request.status,
+        isAssigned: true
+      };
+    });
+
+    return res.json({
       success: true,
-      data: applications
+      data: formattedRequests
     });
   } catch (error) {
-    console.error('Error fetching assigned re-evaluations:', error);
-    res.status(500).json({
+    console.error('Error fetching reevaluations:', error);
+    return res.status(500).json({
       success: false,
-      message: 'Error fetching assigned re-evaluations',
+      message: 'Failed to fetch reevaluations',
       error: error.message
     });
   }
 });
-
-// teacher profile ke liye
-// teacherRouter.get('/profile', authenticateTeacher, async (req, res) => {
-//   try {
-//     // The teacher info should be available in req.teacher after authentication
-//     const teacherInfo = req.teacher;
-
-//     res.json({
-//       success: true,
-//       data: {
-//         _id: teacherInfo._id,
-//         name: teacherInfo.name,
-//         email: teacherInfo.email,
-//         department: teacherInfo.department
-//         // Add other relevant teacher info
-//       }
-//     });
-//   } catch (error) {
-//     console.error('Error fetching teacher profile:', error);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Error fetching teacher profile'
-//     });
-//   }
-// });
 
 teacherRouter.post('/upload-solution', authMiddleware('teacher'), uploader.single('video'), uploadSolution);
 

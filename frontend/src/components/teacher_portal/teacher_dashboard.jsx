@@ -32,8 +32,10 @@ function TeacherDashboard() {
   });
   const [teacherInfo, setTeacherInfo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard'); 
-  const [uploadedVideos, setUploadedVideos] = useState([]); 
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [uploadedVideos, setUploadedVideos] = useState([]);
+  const [reevaluationRequests, setReevaluationRequests] = useState([]);
+  const [requestsLoading, setRequestsLoading] = useState(true);
   const targetRef = useRef(null);
   useEffect(() => {
     fetchInitialData();
@@ -72,7 +74,7 @@ function TeacherDashboard() {
       setUploadStep(1);
     }
   };
-  
+
 
   const fetchInitialData = async () => {
     try {
@@ -865,6 +867,141 @@ function TeacherDashboard() {
     </div>
   );
 
+  useEffect(() => {
+    const fetchAssignedReevaluations = async () => {
+      try {
+        setRequestsLoading(true);
+        console.log("hello i am at teacher dashboard")
+        const response = await axios.get('/api/teacher/assigned-reevaluations', {
+          withCredentials: true
+        });
+
+        if (response.data.success) {
+          // Sort requests by status and date
+          const sortedRequests = response.data.data.sort((a, b) => {
+            // Unassigned requests first
+            if (!a.isAssigned && b.isAssigned) return -1;
+            if (a.isAssigned && !b.isAssigned) return 1;
+            // Then by date
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+console.log("sorted requests are -> ")
+          console.log(sortedRequests)
+
+          setReevaluationRequests(sortedRequests);
+        }
+      } catch (error) {
+        console.error('Error fetching assigned reevaluations:', error);
+      } finally {
+        setRequestsLoading(false);
+      }
+    };
+
+    fetchAssignedReevaluations();
+  }, []);
+
+  const renderReevaluations = () => (
+    <div className="space-y-4">
+      {reevaluationRequests.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          No reevaluation requests assigned to you yet
+        </div>
+      ) : (
+        reevaluationRequests.map(request => (
+          <div key={request._id}
+            className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all"
+          >
+            {/* Request Header */}
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-[#1E232C]">
+                    {request.subject}
+                  </h3>
+                  <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                    Assigned to You
+                  </span>
+                </div>
+                <p className="text-sm text-[#6A707C] mt-1">
+                  Department: {request.department}
+                </p>
+              </div>
+              <span className="text-xs text-[#6A707C]">
+                {new Date(request.createdAt).toLocaleString()}
+              </span>
+            </div>
+
+            {/* Student Info */}
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="w-4 h-4 text-[#6A707C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <p className="text-sm text-[#6A707C]">
+                {request.studentId.studentName} ({request.studentId.rollNumber})
+              </p>
+            </div>
+
+            {/* Questions Section */}
+            <div className="space-y-3">
+              {request.selectedQuestions.map((question, index) => (
+                <div key={index} className="bg-white p-3 rounded-md border border-[#DADADA]">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="font-medium text-[#1E232C]">
+                        Question {question.questionId}
+                      </span>
+                      {question.issueType && (
+                        <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
+                          question.issueType === 'Calculation Errors' ? 'bg-orange-100 text-orange-800' :
+                          question.issueType === 'Unmarked Answers' ? 'bg-purple-100 text-purple-800' :
+                          question.issueType === 'Incorrect Marking' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {question.issueType}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {question.remarks && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-[#1E232C]">Student's Remarks:</p>
+                      <p className="text-sm text-[#6A707C] bg-gray-50 p-2 rounded mt-1">
+                        {question.remarks}
+                      </p>
+                    </div>
+                  )}
+
+                  {question.customDescription && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-[#1E232C]">Additional Details:</p>
+                      <p className="text-sm text-[#6A707C] bg-gray-50 p-2 rounded mt-1">
+                        {question.customDescription}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => handleViewDoubt(request)}
+                className="px-4 py-2 bg-black text-white rounded-[6px] hover:bg-gray-800 text-sm"
+              >
+                Review Details
+              </button>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+
+  // Remove handleAssignToMe function since assignment is now done by organization only
+  
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
@@ -932,6 +1069,23 @@ function TeacherDashboard() {
               {renderDoubtsSection()}
             </div>
 
+            <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-lg font-bold text-[#1E232C]">Assigned Re-evaluation Requests</h2>
+                  <p className="text-sm text-[#6A707C] mt-1">Review and respond to student requests</p>
+                </div>
+              </div>
+              {requestsLoading ? (
+                <div className="text-center py-8">
+                  <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading requests...</p>
+                </div>
+              ) : (
+                renderReevaluations()
+              )}
+            </div>
+
             {renderDetailedUpload()}
             {renderStatistics()}
 
@@ -975,7 +1129,7 @@ function TeacherDashboard() {
                           </div>
                           <div className="bg-gray-50 p-3 rounded">
                             <p className="text-sm text-gray-600 mb-2">Attachments</p>
-                            <div className="flex gap-2">
+                            <div classN ame="flex gap-2">
                               {selectedDoubt.attachments.map((file, index) => (
                                 <button
                                   key={index}
@@ -1020,8 +1174,8 @@ function TeacherDashboard() {
             />
           </>
         ) : (
-            renderUploadedVideosTab()
-        
+          renderUploadedVideosTab()
+
         )}
       </div>
     </div>

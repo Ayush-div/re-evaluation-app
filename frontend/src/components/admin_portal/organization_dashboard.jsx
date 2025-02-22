@@ -47,25 +47,24 @@ const AdminDashboard = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const fetchReevaluationRequests = async () => {
-      try {
-        console.log("fetching reevaluation requests")
-        const response = await axios.get('/api/organization/reevaluation-requests', {
-          withCredentials: true
-        });
-        console.log("fetched all the requests")
-        console.log(response)
-        if (response.data.success) {
-          setReevaluationRequests(response.data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching reevaluation requests:', error);
-      } finally {
-        setRequestsLoading(false);
+  const fetchReevaluationRequests = async () => {
+    try {
+      console.log("fetching reevaluation requests")
+      const response = await axios.get('/api/organization/reevaluation-requests', {
+        withCredentials: true
+      });
+      console.log("fetched all the requests")
+      if (response.data.success) {
+        setReevaluationRequests(response.data.data);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching reevaluation requests:', error);
+    } finally {
+      setRequestsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchReevaluationRequests();
   }, []);
 
@@ -211,26 +210,46 @@ const AdminDashboard = () => {
     console.log("Auto-assigning request:", requestId);
   };
 
-  const handleManualAssign = (requestId, teacherId) => {
-    // Get teacher name from value
-    const selectElement = document.getElementById(`teacher-select-${requestId}`);
-    const teacherName = selectElement.options[selectElement.selectedIndex].text;
+  const handleManualAssign = async (requestId, teacherId) => {
+    try {
+      // Get teacher name from select element
+      const selectElement = document.getElementById(`teacher-select-${requestId}`);
+      const teacherName = selectElement.options[selectElement.selectedIndex].text;
 
-    setSelectedAssignment({
-      requestId,
-      teacherId,
-      teacherName
-    });
-    setShowConfirmModal(true);
+      setSelectedAssignment({
+        requestId,
+        teacherId,
+        teacherName
+      });
+      setShowConfirmModal(true);
+    } catch (error) {
+      console.error('Error in manual assign:', error);
+      alert('Failed to prepare assignment. Please try again.');
+    }
   };
 
-  const confirmAssignment = () => {
-    // Implement the actual assignment logic here
-    console.log("Confirmed assignment:", selectedAssignment);
-    // Add your API call here to assign the teacher
+  const confirmAssignment = async () => {
+    try {
+      console.log("here in the confirm assignment component_______________--------------------------------")
+      const response = await axios.post(
+        `/api/organization/assign-teacher/${selectedAssignment.requestId}`,
+        { teacherId: selectedAssignment.teacherId },
+        { withCredentials: true }
+      );
 
-    setShowConfirmModal(false);
-    setSelectedAssignment({ requestId: null, teacherId: null, teacherName: null });
+      if (response.data.success) {
+        await fetchReevaluationRequests(); // Now this will work
+        alert('Teacher assigned successfully!');
+      } else {
+        throw new Error(response.data.message || 'Failed to assign teacher');
+      }
+    } catch (error) {
+      console.error('Error assigning teacher:', error);
+      alert(error.message || 'Failed to assign teacher. Please try again.');
+    } finally {
+      setShowConfirmModal(false);
+      setSelectedAssignment({ requestId: null, teacherId: null, teacherName: null });
+    }
   };
 
   const handleLogout = async () => {
@@ -335,6 +354,11 @@ const AdminDashboard = () => {
                 <h3 className="font-semibold text-[#1E232C]">
                   {request.subject}
                 </h3>
+                {request.assignedTeacher && (
+                  <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                    Assigned
+                  </span>
+                )}
                 <span className="text-sm text-[#6A707C]">
                   {request.selectedQuestions.length} question(s) selected
                 </span>
@@ -392,31 +416,39 @@ const AdminDashboard = () => {
               <span className="text-xs text-[#6A707C] bg-[#F0F1F3] px-2 py-1 rounded-full self-end">
                 {new Date(request.createdAt).toLocaleString()}
               </span>
-              <div className="flex  gap-2">
-                <button
-                  onClick={() => handleAutoAssign(request._id)}
-                  className="w-full px-3 py-2 text-xs bg-black text-white rounded-[8px] 
-                    hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M5 13l4 4L19 7" />
-                  </svg>
-                  Auto-assign
-                </button>
-                <select
-                  id={`teacher-select-${request._id}`}
-                  onChange={(e) => handleManualAssign(request._id, e.target.value)}
-                  className="w-full px-3 py-2 text-xs border rounded-[8px] 
-                    focus:outline-none focus:border-black bg-white"
-                >
-                  <option value="">Assign to Teacher</option>
-                  {availableTeachers.map(teacher => (
-                    <option key={teacher._id} value={teacher._id}>
-                      {teacher.teacherName} ({teacher.department})
-                    </option>
-                  ))}
-                </select>
+              <div className="flex gap-2">
+                {!request.assignedTeacher ? (
+                  <>
+                    <button
+                      onClick={() => handleAutoAssign(request._id)}
+                      className="w-full px-3 py-2 text-xs bg-black text-white rounded-[8px] 
+                        hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M5 13l4 4L19 7" />
+                      </svg>
+                      Auto-assign
+                    </button>
+                    <select
+                      id={`teacher-select-${request._id}`}
+                      onChange={(e) => handleManualAssign(request._id, e.target.value)}
+                      className="w-full px-3 py-2 text-xs border rounded-[8px] 
+                        focus:outline-none focus:border-black bg-white"
+                    >
+                      <option value="">Assign to Teacher</option>
+                      {availableTeachers.map(teacher => (
+                        <option key={teacher._id} value={teacher._id}>
+                          {teacher.teacherName} ({teacher.department})
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <div className="w-full text-center p-2 bg-gray-50 rounded-md text-sm text-gray-600">
+                    Already assigned to teacher
+                  </div>
+                )}
               </div>
             </div>
           </div>

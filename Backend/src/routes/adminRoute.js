@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-
+const mongoose = require("mongoose")
 const { addAdminStudent } = require("../controllers/adminStudentController.js");
 const { addQuestionPaperController } = require("../controllers/addQuestionPaperController.js");
 const { registerOrganization } = require("../controllers/registerOrganization.controller.js")
@@ -14,6 +14,8 @@ const { getPapersController } = require('../controllers/getPapers.controller.js'
 const { Organization } = require("../schema/organization/organizationSchema.js")
 const { getReevaluationRequestsController } = require("../controllers/getReevaluationRequests.controller.js")
 const { getAuthorizedTeachersController } = require('../controllers/getAuthorizedTeachers.controller.js');
+const ReevaluationApplication = require("../schema/re-evaluation/reevaluationApplication.schema.js")
+const { Teacher } = require("../schema/teacher/teacher.schema.js")
 
 adminRouter.post("/addStudent",
   authMiddleware('organization'),
@@ -338,6 +340,160 @@ adminRouter.post("/chat", async (req, res) => {
   } catch (error) {
     console.error("Chatbot Error:", error);
     res.status(500).json({ error: "Something went wrong with the chatbot." });
+  }
+});
+
+adminRouter.post('/assign-teacher/:requestId', authMiddleware('organization'), async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const { teacherId } = req.body;
+    console.log("Assigning request:", requestId, "to teacher:", teacherId);
+
+    if (!teacherId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Teacher ID is required'
+      });
+    }
+
+    // Start a session for transaction
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      // 1. Verify teacher belongs to organization
+      const teacher = await Teacher.findOne({
+        _id: teacherId,
+        organizationId: req.organization._id
+      }).session(session);
+
+      if (!teacher) {
+        throw new Error('Invalid teacher selection');
+      }
+
+      // 2. Verify the reevaluation request exists and is available
+      const existingRequest = await ReevaluationApplication.findById(requestId).session(session);
+      if (!existingRequest) {
+        throw new Error('Reevaluation request not found');
+      } console.log("assigned teacher is there")
+      console.log(existingRequest.assignedTeacher)
+      if (existingRequest.assignedTeacher) {
+        throw new Error('Request is already assigned to a teacher');
+      }
+
+      // 3. Update reevaluation application
+      const updated = await ReevaluationApplication.findOneAndUpdate(
+        {
+          _id: requestId,
+          status: { $in: ['pending', null] },  // Allow null status
+          $or: [
+            { assignedTeacher: null },
+            { assignedTeacher: { $exists: false } }
+          ]
+        },
+        {
+          $set: {
+            assignedTeacher: teacherId,
+            status: 'in_review',
+            organizationId: req.organization._id // Ensure organizationId is set
+          }
+        },
+        {
+          new: true,
+          session,
+          runValidators: true
+        }
+      );
+
+      if (!updated) {
+        throw new Error('Failed to update reevaluation request');
+      }
+
+      // 4. Update teacher's assigned reevaluations
+      await Teacher.findByIdAndUpdate(
+        teacherId,
+        {
+          $addToSet: { assignedReevaluations: requestId }
+        },
+        { session }
+      );
+
+      await session.commitTransaction();
+
+      return res.json({
+        success: true,
+        message: 'Teacher assigned successfully',
+        data: updated
+      });
+
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  } catch (error) {
+    console.error('Error assigning teacher:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to assign teacher'
+    });
+  }
+});
+
+// Also add endpoint to mark reevaluation as complete
+adminRouter.post('/complete-reevaluation/:requestId', authMiddleware('teacher'), async (req, res) => {
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const { requestId } = req.params;
+
+      // Update reevaluation status
+      const updated = await ReevaluationApplication.findOneAndUpdate(
+        {
+          _id: requestId,
+          assignedTeacher: req.teacher.id,
+          status: 'in_review'
+        },
+        { status: 'completed' },
+        { new: true, session }
+      );
+
+      if (!updated) {
+        throw new Error('Reevaluation not found or not assigned to you');
+      }
+
+      // Move from assigned to completed in teacher's records
+      await Teacher.findByIdAndUpdate(
+        req.teacher.id,
+        {
+          $pull: { assignedReevaluations: requestId },
+          $addToSet: { completedReevaluations: requestId }
+        },
+        { session }
+      );
+
+      await session.commitTransaction();
+
+      return res.json({
+        success: true,
+        message: 'Reevaluation marked as completed',
+        data: updated
+      });
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  } catch (error) {
+    console.error('Error completing reevaluation:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to complete reevaluation'
+    });
   }
 });
 

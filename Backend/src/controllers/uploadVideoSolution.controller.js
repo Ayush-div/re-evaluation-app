@@ -26,7 +26,7 @@ const uploadSolution = async (req, res) => {
         const questionFilter = getQuestionFilter(questionId);
 
         const cloudinaryResponse = await uploadToCloudinary(videoFile);
-
+        console.log(req.teacher)
         const solutionVideo = {
             url: cloudinaryResponse.url,
             public_id: cloudinaryResponse.public_id,
@@ -35,7 +35,7 @@ const uploadSolution = async (req, res) => {
                 id: req.teacher._id,
                 name: req.teacher.teacherName,
                 email: req.teacher.email,
-                department:req.teacher.department
+                department: req.teacher.department
             },
             duration: cloudinaryResponse.duration,
             format: cloudinaryResponse.format,

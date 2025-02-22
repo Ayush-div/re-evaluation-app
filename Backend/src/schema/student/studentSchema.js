@@ -113,6 +113,6 @@ studentSchema.pre('save', async function () {
     const hasedPassword = await bcrypt.hash(this.password, 10);
     this.password = hasedPassword;
 })
-const Student = mongoose.model("student", studentSchema); // collection
+const Student = mongoose.model('Student', studentSchema); // collection
 
-module.exports = {Student};
+module.exports = { Student };  // Make sure it's exported this way

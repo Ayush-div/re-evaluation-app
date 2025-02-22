@@ -67,7 +67,11 @@ const teacherSchema = new mongoose.Schema(
         },
         assignedReevaluations: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Reevaluation'
+            ref: 'ReevaluationApplication'
+        }],
+        completedReevaluations: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'ReevaluationApplication'
         }],
         subjects: [{
             type: String,
