@@ -103,14 +103,16 @@ const ReEvaluationForm = () => {
     paymentObject.open()
   }
 
-  useEffect(async() => {
-    if (PaymentresponseId !== "") {
-      
-      await axios.post('/api/students/apply-reevaluation', formData);
-      navigate('/student/reevaluation-application-success');
-      window.location.reload();
-    }
-    
+
+useEffect(() => {
+      async function applyForReevaluation() {
+        if (PaymentresponseId !== "") {
+          await axios.post('/api/students/apply-reevaluation', formData);
+          navigate('/student/reevaluation-application-success');
+          window.location.reload();
+        }
+      }
+      applyForReevaluation();    
   }, [PaymentresponseId]);
 
 
