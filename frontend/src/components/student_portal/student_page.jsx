@@ -1,9 +1,76 @@
-import { div } from 'framer-motion/client'
-import React from 'react'
+import { div } from 'framer-motion/client';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Dashboard = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [studentInfo, setStudentInfo] = useState(null);
+
+  useEffect(() => {
+    // Try to get student info from localStorage
+    const cachedStudentData = localStorage.getItem('studentData');
+    if (cachedStudentData) {
+      setStudentInfo(JSON.parse(cachedStudentData));
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear cookies
+      await axios.post('/api/students/logout', {}, { withCredentials: true });
+      
+      // Clear all stored data
+      localStorage.removeItem('studentData');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('organizationData');
+      sessionStorage.clear();
+      
+      // Redirect to login page
+      navigate('/student/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still clear storage and redirect even if API call fails
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/student/login');
+    }
+  };
+
+  // Update the navbar section with the logout handler
+  const renderNavBar = () => (
+    <nav className="bg-white shadow-md w-full sticky top-0 z-10">
+      <div className="max-w-[1440px] mx-auto px-6">
+        <div className="flex justify-between items-center h-16">
+          <div className="text-xl font-bold text-[#1E232C]">
+            Student Dashboard
+          </div>
+          <div className="flex items-center space-x-6">
+            <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Profile</button>
+            <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Settings</button>
+            <button 
+              onClick={handleLogout}
+              className="text-[#6A707C] hover:text-red-500 hover:scale-[1.1] duration-300"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+
+  const renderGreeting = () => (
+    <div className="pt-8 pb-6">
+      <h1 className="text-2xl font-bold text-[#1E232C]">
+        Welcome, {studentInfo?.studentName || 'Student'}! 👋
+      </h1>
+      <p className="text-[#6A707C] mt-2">
+        Here's what you can do with your re-evaluation portal
+      </p>
+    </div>
+  );
 
   const stats = [
     {
@@ -84,32 +151,18 @@ const Dashboard = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
-      {/* Navbar */}
-      <nav className="bg-white shadow-md w-full sticky top-0 z-10">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex justify-between items-center h-16">
-            <div className="text-xl font-bold text-[#1E232C]">
-              Student Dashboard
-            </div>
-            <div className="flex items-center space-x-6">
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Profile</button>
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Settings</button>
-              <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Logout</button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+      {renderNavBar()}
       <div className="max-w-[1440px] mx-auto px-6">
+        {renderGreeting()}
         {/* Greeting Section */}
-        <div className="pt-8 pb-6">
+        {/* <div className="pt-8 pb-6">
           <h1 className="text-2xl font-bold text-[#1E232C]">
             Welcome back, Student! 👋
           </h1>
           <p className="text-[#6A707C] mt-2">
             Here's what you can do with your re-evaluation portal
           </p>
-        </div>
+        </div> */}
 
         {/* Stats Section */}
         {/* <div className="flex justify-center mb-8 "> */}

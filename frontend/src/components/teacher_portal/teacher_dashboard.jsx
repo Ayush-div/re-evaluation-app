@@ -43,38 +43,67 @@ function TeacherDashboard() {
   }, []);
 
   useEffect(() => {
-    // Check for activeTab in navigation state
     const { state } = location;
     if (state?.activeTab) {
       setActiveTab(state.activeTab);
     }
   }, []);
 
-  // will take teacher info from here 
-  /*
   useEffect(() => {
     const fetchTeacherInfo = async () => {
       try {
-        const response = await axios.get('/api/teacher/profile');
-        setTeacherInfo(response.data.data);
+        const response = await axios.get('/api/teacher/profile', {
+          withCredentials: true
+        });
+        
+        if (response.data.success) {
+          setTeacherInfo(response.data.data);
+          localStorage.setItem('teacherData', JSON.stringify(response.data.data));
+        }
       } catch (error) {
         console.error('Error fetching teacher info:', error);
+        const cachedData = localStorage.getItem('teacherData');
+        if (cachedData) {
+          setTeacherInfo(JSON.parse(cachedData));
+        }
       }
     };
 
     fetchTeacherInfo();
   }, []);
-  */
 
   const handleScroll = () => {
     const uploadSection = document.getElementById('upload-section');
     if (uploadSection) {
       uploadSection.scrollIntoView({ behavior: 'smooth' });
-      // Also set the upload step to 1 to ensure the form is ready
       setUploadStep(1);
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/teacher/logout', {}, { withCredentials: true });
+      
+      localStorage.removeItem('teacherData');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('accessToken');
+      sessionStorage.clear();
+      
+      setTeacherInfo(null);
+      setUploadedVideos([]);
+      setReevaluationRequests([]);
+      setSelectedPaper(null);
+      setSelectedQuestion(null);
+      setSelectedVideo(null);
+      
+      navigate('/teacher/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/teacher/login');
+    }
+  };
 
   const fetchInitialData = async () => {
     try {
@@ -545,12 +574,17 @@ function TeacherDashboard() {
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="flex justify-between items-center h-16">
           <div className="text-xl font-bold text-[#1E232C]">
-            Teacher Dashboard
+            {teacherInfo?.teacherName}'s Dashboard
           </div>
           <div className="flex items-center space-x-6">
             <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Profile</button>
             <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Settings</button>
-            <button className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300">Logout</button>
+            <button 
+              onClick={handleLogout}
+              className="text-[#6A707C] hover:text-red-500 hover:scale-[1.1] duration-300"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
@@ -738,46 +772,46 @@ function TeacherDashboard() {
     </div>
   );
 
-  const renderDoubtsSection = () => (
-    <div className="space-y-4">
-      {doubts.map((doubt) => (
-        <div key={doubt.id} className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h3 className="font-semibold text-[#1E232C]">
-                Question #{doubt.questionNumber} - {doubt.subject}
-              </h3>
-              <p className="text-[#6A707C] text-sm">{doubt.topic}</p>
-              <p className="text-[#6A707C] text-sm mt-1">
-                Student: {doubt.studentName} ({doubt.rollNumber})
-              </p>
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
-                {doubt.doubtCount} doubts
-              </span>
-              <span className="text-[#6A707C] text-xs">
-                {new Date(doubt.timestamp).toLocaleString()}
-              </span>
-            </div>
-          </div>
-          <div className="flex gap-2 mt-3">
-            <button
-              onClick={() => handleViewDoubt(doubt)}
-              className="text-sm px-4 py-2 bg-black text-white rounded-[6px] hover:bg-gray-800"
-            >
-              View Details
-            </button>
-            <button
-              className="text-sm px-4 py-2 border border-[#DADADA] rounded-[6px] hover:border-black"
-            >
-              Mark as Resolved
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  // const renderDoubtsSection = () => (
+  //   <div className="space-y-4">
+  //     {doubts.map((doubt) => (
+  //       <div key={doubt.id} className="p-4 bg-[#F7F8F9] rounded-[8px] hover:shadow-md transition-all">
+  //         <div className="flex justify-between items-start mb-2">
+  //           <div>
+  //             <h3 className="font-semibold text-[#1E232C]">
+  //               Question #{doubt.questionNumber} - {doubt.subject}
+  //             </h3>
+  //             <p className="text-[#6A707C] text-sm">{doubt.topic}</p>
+  //             <p className="text-[#6A707C] text-sm mt-1">
+  //               Student: {doubt.studentName} ({doubt.rollNumber})
+  //             </p>
+  //           </div>
+  //           <div className="flex flex-col items-end gap-2">
+  //             <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
+  //               {doubt.doubtCount} doubts
+  //             </span>
+  //             <span className="text-[#6A707C] text-xs">
+  //               {new Date(doubt.timestamp).toLocaleString()}
+  //             </span>
+  //           </div>
+  //         </div>
+  //         <div className="flex gap-2 mt-3">
+  //           <button
+  //             onClick={() => handleViewDoubt(doubt)}
+  //             className="text-sm px-4 py-2 bg-black text-white rounded-[6px] hover:bg-gray-800"
+  //           >
+  //             View Details
+  //           </button>
+  //           <button
+  //             className="text-sm px-4 py-2 border border-[#DADADA] rounded-[6px] hover:border-black"
+  //           >
+  //             Mark as Resolved
+  //           </button>
+  //         </div>
+  //       </div>
+  //     ))}
+  //   </div>
+  // );
 
   const renderStatistics = () => (
     <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -1013,6 +1047,17 @@ console.log("sorted requests are -> ")
     );
   }
 
+  const renderGreeting = () => (
+    <div className="pt-8 pb-6">
+      <h1 className="text-2xl font-bold text-[#1E232C]">
+        Welcome back, {teacherInfo?.teacherName || 'Professor'}! 👋
+      </h1>
+      <p className="text-[#6A707C] mt-2">
+        Here's an overview of student re-evaluation requests
+      </p>
+    </div>
+  );
+
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
       {renderNavBar()}
@@ -1020,14 +1065,7 @@ console.log("sorted requests are -> ")
       <div className="max-w-[1440px] mx-auto px-6">
         {activeTab === 'dashboard' ? (
           <>
-            <div className="pt-8 pb-6">
-              <h1 className="text-2xl font-bold text-[#1E232C]">
-                Welcome back, Professor! 👋
-              </h1>
-              <p className="text-[#6A707C] mt-2">
-                Here's an overview of student re-evaluation requests
-              </p>
-            </div>
+            {renderGreeting()}
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-white p-4 rounded-[12px] border border-[#DADADA] hover:shadow-md transition-all">
@@ -1050,7 +1088,7 @@ console.log("sorted requests are -> ")
 
             {renderHeroSection()}
 
-            <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
+            {/* <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-bold text-[#1E232C]">Questions Requiring Attention</h2>
                 <div className="flex gap-3">
@@ -1067,7 +1105,7 @@ console.log("sorted requests are -> ")
                 </div>
               </div>
               {renderDoubtsSection()}
-            </div>
+            </div> */}
 
             <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 mb-8">
               <div className="flex justify-between items-center mb-6">

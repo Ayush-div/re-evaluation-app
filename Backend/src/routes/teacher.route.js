@@ -149,5 +149,47 @@ teacherRouter.get('/assigned-reevaluations', authMiddleware('teacher'), async (r
 
 teacherRouter.post('/upload-solution', authMiddleware('teacher'), uploader.single('video'), uploadSolution);
 
+teacherRouter.post('/logout', authMiddleware('teacher'), async (req, res) => {
+  try {
+    res.clearCookie('token');
+    res.clearCookie('accessToken');
+    
+    return res.json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error during logout'
+    });
+  }
+});
+
+teacherRouter.get('/profile', authMiddleware('teacher'), async (req, res) => {
+  try {
+    const teacher = await Teacher.findById(req.teacher.id).select('teacherName email department').lean();
+    
+    if (!teacher) {
+      return res.status(404).json({
+        success: false,
+        message: 'Teacher not found'
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: teacher
+    });
+  } catch (error) {
+    console.error('Error fetching teacher profile:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching teacher profile',
+      error: error.message
+    });
+  }
+});
 
 module.exports = teacherRouter;

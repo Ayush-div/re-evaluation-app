@@ -175,6 +175,23 @@ studentRouter.post('/orders2', async (req, res) => {
     }
 })
 
+studentRouter.post('/logout', authMiddleware('student'), async (req, res) => {
+  try {
+    res.clearCookie('token');
+    res.clearCookie('accessToken');
+    
+    return res.json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error during logout'
+    });
+  }
+});
 
 studentRouter.post('/', (_, res) => {
     res.send("registered in");
