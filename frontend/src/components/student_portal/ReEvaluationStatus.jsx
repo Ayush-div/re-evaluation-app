@@ -46,7 +46,7 @@ const ReEvaluationStatus = () => {
               completed: true 
             },
             { 
-              name: "With Organization", 
+              name: "With Exam Cell", 
               date: app.status === 'in_review' || app.status === 'completed' ? new Date(app.updatedAt).toLocaleDateString() : null, 
               completed: app.status === 'in_review' || app.status === 'completed' 
             },
@@ -87,7 +87,7 @@ const ReEvaluationStatus = () => {
   const getDefaultRemarks = (status) => {
     const remarkMap = {
       'pending': 'Application is being processed',
-      'in_review': 'Currently under review by the organization',
+      'in_review': 'Currently under review by the Exam Cell',
       'completed': 'Review process completed',
       'rejected': 'Application was rejected'
     };

@@ -95,7 +95,7 @@ const LoginOrganization = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder='Enter Organization Email'
+                        placeholder='Enter Exam Cell Email'
                         className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 py-2 text-[14px] 
                         transition-all duration-300 hover:shadow-md hover:border-gray-400 
                         focus:outline-none focus:border-[#000000] focus:shadow-lg focus:scale-[1.02]
@@ -158,7 +158,7 @@ const LoginOrganization = () => {
                     </div>
 
                     <div className=" justify- items-center mt-6">
-                        <div className="text-[#1E232C] text-[15px] flex justify-center">Don't have an organization account? </div>
+                        <div className="text-[#1E232C] text-[15px] flex justify-center">Don't have Exam Cell account? </div>
                         <div
                             className="text-[#35C2C1] text-[15px] font-semibold ml-1 cursor-pointer flex justify-center"
                             onClick={() => navigate('/organization/register')}

@@ -13,7 +13,7 @@ const LandingPage = () => {
 
   const roles = [
     {
-      title: "Organization",
+      title: "Exam Cell",
       description: "Manage your institution's re-evaluation system",
       icon: (
         <svg className="w-12 h-12 text-[#1E232C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

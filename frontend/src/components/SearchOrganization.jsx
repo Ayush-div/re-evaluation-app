@@ -118,7 +118,7 @@ const SearchOrganization = () => {
             <div className="bg-[#F7F8F9] py-8">
                 <div className="container mx-auto px-4">
                     <h1 className="text-2xl font-bold text-black text-center">
-                        Find Your Organization
+                        Find Your Exam Cell.
                     </h1>
                 </div>
             </div>
@@ -209,7 +209,7 @@ const SearchOrganization = () => {
 
                     {organizations.length === 0 && searchQuery && !loading && (
                         <div className="text-center py-6">
-                            <p className="text-[#6A707C] text-sm">No organizations found</p>
+                            <p className="text-[#6A707C] text-sm">No Exam Cell's found</p>
                             <button
                                 onClick={() => setSearchQuery('')}
                                 className="mt-2 text-black hover:underline text-sm"

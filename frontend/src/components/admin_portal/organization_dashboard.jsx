@@ -319,7 +319,7 @@ const AdminDashboard = () => {
           Welcome, {orgData?.organizationName || 'Organization'} 👋
         </h1>
         <p className="text-[#6A707C] mt-2">
-          Here's your organization's overview
+          Here's your Examination Cell overview
         </p>
       </div>
       <div className="flex gap-4">
