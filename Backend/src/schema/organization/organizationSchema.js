@@ -38,6 +38,7 @@ const organizationTeacherSchema = new mongoose.Schema({
         required: [true, "Email should be required"],
         type: String,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+        sparse:true
     },
     fullName: {
         type: String,
