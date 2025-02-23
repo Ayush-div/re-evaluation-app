@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [reevaluationRequests, setReevaluationRequests] = useState([]);
   const [requestsLoading, setRequestsLoading] = useState(true);
   const [availableTeachers, setAvailableTeachers] = useState([]);
+  const [organizationSubjects, setOrganizationSubjects] = useState([]);
+  const [subjectAnalytics, setSubjectAnalytics] = useState([]);
 
   useEffect(() => {
     const storedOrgData = localStorage.getItem('organizationData');
@@ -88,6 +90,78 @@ const AdminDashboard = () => {
     fetchTeachers();
   }, []);
 
+  useEffect(() => {
+    const calculateSubjectAnalytics = async () => {
+      try {
+        // Get organization's question papers
+        const response = await axios.get('/api/organization/get-all-papers', {
+          withCredentials: true
+        });
+
+        if (response.data.success) {
+          // Extract unique subjects from question papers
+          const subjects = [...new Set(response.data.data.map(paper => paper.subjectName))];
+          setOrganizationSubjects(subjects);
+
+          // Calculate analytics for each subject
+          const analytics = subjects.map(subject => {
+            const subjectRequests = reevaluationRequests.filter(
+              req => req.subject === subject
+            );
+
+            const issueBreakdown = {
+              CALCULATION_ERROR: 0,
+              UNMARKED_ANSWER: 0,
+              INCORRECT_MARKING: 0
+            };
+
+            let totalMarksChange = 0;
+            let completedRequests = 0;
+
+            subjectRequests.forEach(req => {
+              req.selectedQuestions.forEach(q => {
+                switch (q.issueType) {
+                  case 'Calculation Errors':
+                    issueBreakdown.CALCULATION_ERROR++;
+                    break;
+                  case 'Unmarked Answers':
+                    issueBreakdown.UNMARKED_ANSWER++;
+                    break;
+                  case 'Incorrect Marking':
+                    issueBreakdown.INCORRECT_MARKING++;
+                    break;
+                }
+              });
+
+              if (req.status === 'completed') {
+                completedRequests++;
+                // Add logic here to calculate marks change if available
+              }
+            });
+
+            return {
+              subject,
+              requests: subjectRequests.length,
+              avgMarksChange: totalMarksChange / completedRequests || 0,
+              issueBreakdown,
+              successRate: (completedRequests / subjectRequests.length) * 100 || 0,
+              averageResponseTime: "2.5 days", // You can calculate this based on actual data
+              pendingRequests: subjectRequests.filter(r => r.status === 'pending').length
+            };
+          });
+
+          setSubjectAnalytics(analytics);
+        }
+      } catch (error) {
+        console.error('Error calculating subject analytics:', error);
+      }
+    };
+
+    if (reevaluationRequests.length > 0) {
+      calculateSubjectAnalytics();
+    }
+  }, [reevaluationRequests]);
+
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist'] flex items-center justify-center">
@@ -106,26 +180,6 @@ const AdminDashboard = () => {
     pendingReviews: 23
   }
 
-  // Updated re-evaluation requests data with issue types
-  /*
-  const reEvaluationRequests = [
-    {
-      id: "REV-2023-001",
-      studentName: "John Doe",
-      studentId: "2021CS01",
-      subject: "Mathematics",
-      issueType: "CALCULATION_ERROR", // CALCULATION_ERROR, UNMARKED_ANSWER, INCORRECT_MARKING
-      questionNumber: "4a",
-      submittedAt: "2023-12-20T10:30:00",
-      status: "pending_assignment",
-      doubt: "The integration method used seems incorrect, expecting partial marks for correct steps",
-      assignedTeacher: null
-    },
-    // Add more requests...
-  ];
-  */
-
-  // Issue type configuration with colors and labels
   const ISSUE_TYPES = {
     CALCULATION_ERROR: {
       label: "Calculation Errors",
@@ -161,49 +215,6 @@ const AdminDashboard = () => {
       )
     }
   };
-
-  // Enhanced subject analytics with more detailed metrics
-  const subjectAnalytics = [
-    {
-      subject: "Mathematics",
-      requests: 45,
-      avgMarksChange: 2.5,
-      issueBreakdown: {
-        CALCULATION_ERROR: 20,
-        UNMARKED_ANSWER: 15,
-        INCORRECT_MARKING: 10
-      },
-      successRate: 75, // percentage of successful re-evaluations
-      averageResponseTime: "2.5 days",
-      pendingRequests: 8
-    },
-    {
-      subject: "Physics",
-      requests: 32,
-      avgMarksChange: 1.8,
-      issueBreakdown: {
-        CALCULATION_ERROR: 12,
-        UNMARKED_ANSWER: 10,
-        INCORRECT_MARKING: 10
-      },
-      successRate: 68,
-      averageResponseTime: "2.8 days",
-      pendingRequests: 5
-    },
-    {
-      subject: "Chemistry",
-      requests: 28,
-      avgMarksChange: 2.1,
-      issueBreakdown: {
-        CALCULATION_ERROR: 15,
-        UNMARKED_ANSWER: 8,
-        INCORRECT_MARKING: 5
-      },
-      successRate: 72,
-      averageResponseTime: "2.2 days",
-      pendingRequests: 6
-    }
-  ];
 
   const handleAutoAssign = (requestId) => {
     // Logic to automatically assign to available teachers
@@ -457,6 +468,58 @@ const AdminDashboard = () => {
     </div>
   );
 
+  const renderSubjectAnalytics = () => (
+    <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 w-full h-full">
+      <h2 className="text-lg font-bold text-[#1E232C] mb-4">Subject Analytics</h2>
+      <div className="space-y-4">
+        {subjectAnalytics.length > 0 ? (
+          subjectAnalytics.map((subject, index) => (
+            <div key={index} className="p-4 bg-[#F7F8F9] rounded-[8px] ">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="font-semibold text-[#1E232C]">{subject.subject}</h3>
+                <span className="text-sm text-[#6A707C]">{subject.requests} requests</span>
+              </div>
+              <div className='flex justify-center flex-col items-center'>
+                <div className="flex items-center gap-2 mb-3 w-[70vw]">
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full">
+                    <div
+                      className="h-2 bg-black rounded-full"
+                      style={{ width: `${(subject.requests / stats.totalReEvaluations) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-green-600">
+                    Avg. +{subject.avgMarksChange} marks
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs mb-3 w-[50vw]">
+                  {Object.entries(subject.issueBreakdown).map(([issue, count]) => (
+                    <div key={issue} className="text-center">
+                      <div className={`${ISSUE_TYPES[issue].bgColor} ${ISSUE_TYPES[issue].textColor} p-1 rounded-md`}>
+                        {count}
+                      </div>
+                      <p className="text-[#6A707C] mt-1 text-[10px]">
+                        {ISSUE_TYPES[issue].label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex justify-between text-xs text-[#6A707C] pt-2 border-t border-gray-200">
+                <span>Success Rate: {subject.successRate}%</span>
+                <span>Avg Response: {subject.averageResponseTime}</span>
+                <span>Pending: {subject.pendingRequests}</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No analytics available for your subjects yet
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <div className="w-full min-h-screen bg-[#F7F8F9] font-['Urbanist']">
       {renderNavbar()}
@@ -616,49 +679,7 @@ const AdminDashboard = () => {
             {renderRequests()}
           </div>
 
-          <div className="bg-white rounded-[12px] border border-[#DADADA] p-6 w-full h-full">
-            <h2 className="text-lg font-bold text-[#1E232C] mb-4 ">Subject Analytics</h2>
-            <div className="space-y-4">
-              {subjectAnalytics.map((subject, index) => (
-                <div key={index} className="p-4 bg-[#F7F8F9] rounded-[8px] ">
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-semibold text-[#1E232C]">{subject.subject}</h3>
-                    <span className="text-sm text-[#6A707C]">{subject.requests} requests</span>
-                  </div>
-                  <div className='flex justify-center flex-col items-center'>
-                    <div className="flex items-center gap-2 mb-3 w-[70vw]">
-                      <div className="flex-1 h-2 bg-gray-200 rounded-full">
-                        <div
-                          className="h-2 bg-black rounded-full"
-                          style={{ width: `${(subject.requests / stats.totalReEvaluations) * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-green-600">
-                        Avg. +{subject.avgMarksChange} marks
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-xs mb-3 w-[50vw]">
-                      {Object.entries(subject.issueBreakdown).map(([issue, count]) => (
-                        <div key={issue} className="text-center">
-                          <div className={`${ISSUE_TYPES[issue].bgColor} ${ISSUE_TYPES[issue].textColor} p-1 rounded-md`}>
-                            {count}
-                          </div>
-                          <p className="text-[#6A707C] mt-1 text-[10px]">
-                            {ISSUE_TYPES[issue].label}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-between text-xs text-[#6A707C] pt-2 border-t border-gray-200">
-                    <span>Success Rate: {subject.successRate}%</span>
-                    <span>Avg Response: {subject.averageResponseTime}</span>
-                    <span>Pending: {subject.pendingRequests}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {renderSubjectAnalytics()}
         </div>
 
         {/* Recent Activity */}

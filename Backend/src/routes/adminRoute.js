@@ -121,7 +121,6 @@ adminRouter.get('/get-all-papers', authMiddleware('organization'), async (req, r
 adminRouter.delete('/delete-paper/:paperId', authMiddleware('organization'), async (req, res) => {
   try {
     const { paperId } = req.params;
-    // Remove paper from organization's questionPapers array using $pull
     const updatedOrg = await Organization.findOneAndUpdate(
       { _id: req.organization._id },
       { $pull: { questionPapers: { _id: paperId } } },
@@ -496,6 +495,66 @@ adminRouter.post('/complete-reevaluation/:requestId', authMiddleware('teacher'),
     });
   }
 });
+
+adminRouter.get('/subject-analytics', authMiddleware('organization'), async (req, res) => {
+  try {
+    // Get organization's question papers subjects
+    const orgSubjects = req.organization.questionPapers.map(paper => paper.subjectName);
+    const uniqueSubjects = [...new Set(orgSubjects)];
+
+    // Get all reevaluation requests for this organization
+    const reevaluationRequests = await ReevaluationApplication.find({
+      organizationId: req.organization._id
+    }).populate('studentId');
+
+    // Calculate analytics for each subject
+    const subjectAnalytics = uniqueSubjects.map(subject => {
+      const subjectRequests = reevaluationRequests.filter(
+        req => req.subject === subject
+      );
+
+      return {
+        subject,
+        totalRequests: subjectRequests.length,
+        pendingRequests: subjectRequests.filter(r => r.status === 'pending').length,
+        completedRequests: subjectRequests.filter(r => r.status === 'completed').length,
+        issueBreakdown: subjectRequests.reduce((acc, req) => {
+          req.selectedQuestions.forEach(q => {
+            acc[q.issueType] = (acc[q.issueType] || 0) + 1;
+          });
+          return acc;
+        }, {}),
+        averageResponseTime: calculateAverageResponseTime(subjectRequests)
+      };
+    });
+
+    res.json({
+      success: true,
+      data: subjectAnalytics
+    });
+  } catch (error) {
+    console.error('Error fetching subject analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching subject analytics',
+      error: error.message
+    });
+  }
+});
+
+function calculateAverageResponseTime(requests) {
+  const completedRequests = requests.filter(r => r.status === 'completed');
+  if (completedRequests.length === 0) return 'N/A';
+
+  const totalTime = completedRequests.reduce((sum, req) => {
+    const completedAt = new Date(req.updatedAt);
+    const createdAt = new Date(req.createdAt);
+    return sum + (completedAt - createdAt);
+  }, 0);
+
+  const avgTimeInDays = (totalTime / completedRequests.length) / (1000 * 60 * 60 * 24);
+  return `${avgTimeInDays.toFixed(1)} days`;
+}
 
 module.exports = adminRouter;
 
