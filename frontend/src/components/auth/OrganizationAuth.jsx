@@ -38,7 +38,7 @@ const OrganizationAuth = () => {
                 </svg>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[#1E232C] mb-2">Register Organization</h3>
+                <h3 className="text-xl font-bold text-[#1E232C] mb-2">Register Exam Cell</h3>
                 <p className="text-[#6A707C] text-sm mb-6">
                   Create a new account for your educational institution
                 </p>
@@ -61,7 +61,7 @@ const OrganizationAuth = () => {
               <div>
                 <h3 className="text-xl font-bold text-[#1E232C] mb-2">Login to Dashboard</h3>
                 <p className="text-[#6A707C] text-sm mb-6">
-                  Access your organization's dashboard
+                  Access your Exam Cell's dashboard
                 </p>
               </div>
               <Link to="/organization/login" className="w-full">

@@ -223,7 +223,7 @@ const RegisterOrganization = () => {
             <nav className="bg-white shadow-md w-full sticky top-0 z-10">
                 <div className="max-w-[1440px] mx-auto px-6">
                     <div className="flex justify-between items-center h-16">
-                        <div className="text-xl font-bold text-[#1E232C]">Register Organization</div>
+                        <div className="text-xl font-bold text-[#1E232C]">Register Exam Cell</div>
                         <button
                             onClick={() => navigate(-1)}
                             className="text-[#6A707C] hover:text-[#000000] hover:scale-[1.1] duration-300"
@@ -237,8 +237,8 @@ const RegisterOrganization = () => {
             <div className="max-w-[1440px] mx-auto px-6 py-8">
                 <div className="max-w-2xl mx-auto">
                     <div className="bg-white rounded-t-[12px] border border-b-0 border-[#DADADA] p-6">
-                        <h2 className="text-xl font-bold text-[#1E232C]">Organization Information</h2>
-                        <p className="text-[#6A707C] text-sm mt-1">Register your organization to the system</p>
+                        <h2 className="text-xl font-bold text-[#1E232C]">Exam Cell Information</h2>
+                        <p className="text-[#6A707C] text-sm mt-1">Register your Exam Cell to the system</p>
                     </div>
 
                     <div className="bg-white rounded-b-[12px] border border-[#DADADA] p-6">
@@ -256,7 +256,7 @@ const RegisterOrganization = () => {
                                 <h3 className="text-lg font-semibold text-[#1E232C] pb-2 border-b">Basic Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-[#1E232C] font-medium text-sm mb-2">Organization Name</label>
+                                        <label className="block text-[#1E232C] font-medium text-sm mb-2">Exam Cell Name</label>
                                         <input
                                             type="text"
                                             name="orgName"
@@ -265,7 +265,7 @@ const RegisterOrganization = () => {
                                             className="w-full h-[50px] bg-[#F7F8F9] rounded-[8px] border border-[#DADADA] px-4 
                                transition-all duration-300 hover:shadow-md hover:border-gray-400 
                                focus:outline-none focus:border-[#000000] focus:shadow-lg"
-                                            placeholder="Enter organization name"
+                                            placeholder="Enter Exam Cell's name"
                                             required
                                         />
                                     </div>
@@ -445,7 +445,7 @@ const RegisterOrganization = () => {
                             transition-all duration-300 hover:bg-gray-800 hover:scale-[1.02]
                             active:scale-[0.98]"
                                 >
-                                    Register Organization
+                                    Register Exam Cell
                                 </button>
                             </div>
                         </form>
